@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/ionicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Login-Form-blue-Gradient-1.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Login-Form-blue-Gradient.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Pretty-Registration-Form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body id="login">
+    <!-- Start: Login-Form-blue-Gradient -->
+    <section>
+        <div class="lgp-hd">
+            <h2><strong>WELCOME TO THE MCREIF INTRANET</strong></h2>
+            <h5><strong>login to view Dashboard</strong></h5>
+        </div>
+        <div class="container login-cont">
+            <div class="row">
+                <div class="col-10 col-sm-6 col-md-4 col-lg-4 offset-1 offset-sm-3 offset-md-4 offset-lg-4 login-col"><i class="icon ion-lock-combination"></i>
+                    <form action="login" method="POST">
+                        {{ form.as_p }}
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <!-- Start: submit button --><button class="btn btn-light btn-lg login-btn" type="submit" value="Submit"><strong>Login</strong></button>
+                            <!-- End: submit button --><a class="form-text text-muted" href="forgotten.html"><small>Forgotten password?</small></a></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End: Login-Form-blue-Gradient -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+</body>
+
+</html>
