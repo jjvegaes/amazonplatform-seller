@@ -19,8 +19,26 @@ from users import views
 
 urlpatterns = [
     path('', views.welcome),
+    path('index.html', views.welcome),
     path('register', views.register),
     path('login', views.login),
     path('logout', views.logout),
+
+
+
+    path('graphics.html', views.graphics),
+    path('customers.html', views.customers),
+    path('products.html', views.products),
+    path('refunds.html', views.refunds),
+    path('reports.html', views.reports),
+    path('sales.html', views.sales),
+    path('settings.html', views.settings),
+    path('shipments.html', views.shipments),
+    path('storage_fees.html', views.storage_fees),
+    path('support.html', views.support),
+
+
+
+
     path('admin/', admin.site.urls),
 ]
