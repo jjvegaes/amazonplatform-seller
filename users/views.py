@@ -5,12 +5,56 @@ from django.contrib.auth.forms import AuthenticationForm
 
 
 # Create your views here.
+from django.urls import path
+
+
 def welcome(request):
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:
         return render(request, "index.html")
     # En otro caso redireccionamos al login
     return redirect('/login')
+
+
+def graphics(request):
+    return render(request, "graphics.html")
+
+
+def products(request):
+    return render(request, "products.html")
+
+
+def customers(request):
+    return render(request, "customers.html")
+
+
+def refunds(request):
+    return render(request, "refunds.html")
+
+
+def sales(request):
+    return render(request, "sales.html")
+
+
+def settings(request):
+    return render(request, "settings.html")
+
+
+def shipments(request):
+    return render(request, "shipments.html")
+
+
+def storage_fees(request):
+    return render(request, "storage_fees.html")
+
+
+def support(request):
+    return render(request, "support.html")
+
+
+def reports(request):
+    return render(request, "reports.html")
+
 
 def register(request):
     return render(request, "register.html")
@@ -44,4 +88,4 @@ def logout(request):
     # Finalizamos la sesión
     do_logout(request)
     # Redireccionamos a la portada
-    return redirect('login')
+    return redirect('/login')
