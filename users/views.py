@@ -7,6 +7,9 @@ from django.contrib.auth.forms import AuthenticationForm
 # Create your views here.
 from django.urls import path
 
+from users import limpieza
+from users.limpieza import limpieza
+
 
 def welcome(request):
     # Si estamos identificados devolvemos la portada
@@ -15,6 +18,16 @@ def welcome(request):
     # En otro caso redireccionamos al login
     return redirect('/login')
 
+
+#def testingDf(request):
+#    df = limpieza("_GET_MERCHANT_LISTINGS_DATA_LITE_")
+#    return render(request, 'testingDf.html', {'df': df})
+
+
+def testingDf(request):
+    df = limpieza("_GET_MERCHANT_LISTINGS_DATA_LITE_")
+    html_table = df.to_html()
+    return render(request, 'testingDf.html', {'html_table': html_table})
 
 def graphics(request):
     return render(request, "graphics.html")
