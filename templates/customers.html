@@ -1,388 +1,137 @@
+{% load static %}
+{% load users_extras_test %}
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>plantilla_v3_mcreif</title>
-    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cookie">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik">
-    <link rel="stylesheet" href="../static/fonts/fontawesome-all.min.css">
-    <link rel="stylesheet" href="../static/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="../static/fonts/ionicons.min.css">
-    <link rel="stylesheet" href="../static/fonts/fontawesome5-overrides.min.css">
-    <link rel="stylesheet" href="../static/css/Bootstrap-DataTables.css">
-    <link rel="stylesheet" href="../static/css/CDRReporteCuotas.css">
-    <link rel="stylesheet" href="../static/css/Corporate-Footer-Clean.css">
-    <link rel="stylesheet" href="../static/css/Data-Summary-Panel---3-Column-Overview--Mobile-Responsive.css">
-    <link rel="stylesheet" href="../static/css/Data-Table-with-Search-Sort-Filter-and-Zoom-using-TableSorter.css">
-    <link rel="stylesheet" href="../static/css/Feedback-Form.css">
-    <link rel="stylesheet" href="../static/css/gradient-navbar.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/theme.bootstrap_4.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
-    <link rel="stylesheet" href="../static/css/Map-Clean.css">
-    <link rel="stylesheet" href="../static/css/Modern-Contact-Form.css">
-    <link rel="stylesheet" href="../static/css/Navigation-Menu.css">
-    <link rel="stylesheet" href="../static/css/Off-Canvas-Sidebar-Drawer-Navbar.css">
-    <link rel="stylesheet" href="../static/css/Pretty-Footer.css">
-    <link rel="stylesheet" href="../static/css/Profile-Edit-Form.css">
-    <link rel="stylesheet" href="../static/css/styles.css">
-    <link rel="stylesheet" href="../static/css/tablaresponsive.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>Dashboard Beta - McReif</title>
+  <link rel="stylesheet" href="{% static 'fonts/ionicons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/fontawesome5-overrides.min.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/fontawesome-all.min.css' %}">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cookie">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik">
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Bootstrap-DataTables.css' %}">
+  <link rel="stylesheet" href="{% static 'css/CDRReporteCuotas.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Corporate-Footer-Clean.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Data-Summary-Panel---3-Column-Overview--Mobile-Responsive.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Data-Table-with-Search-Sort-Filter-and-Zoom-using-TableSorter.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Feedback-Form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/gradient-navbar.css' %}">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/theme.bootstrap_4.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+  <link rel="stylesheet" href="{% static 'css/Map-Clean.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Modern-Contact-Form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Navigation-Menu.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Off-Canvas-Sidebar-Drawer-Navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Pretty-Footer.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Profile-Edit-Form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
 <body>
-    <nav class="navbar navbar-dark navbar-expand-md" id="app-navbar">
-        <div class="container-fluid"><a class="navbar-brand" href="#"><i class="icon ion-ios-infinite" id="brand-logo"></i></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div
-                class="collapse navbar-collapse" id="navcol-1">
-                <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link active" href="#"><i class="far fa-envelope" style="color: rgb(0,0,0);"></i></a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="#"><i class="fa fa-language" style="color: rgba(0,0,0,0.5);"></i></a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="#"><i class="fa fa-user" style="color: rgba(0,0,0,0.5);"></i></a></li>
-                </ul>
-        </div>
-        </div>
-    </nav>
-    <nav class="navbar navbar-dark fixed-top bg-dark off-canvas" data-right-drawer="0" data-open-drawer="1" style="width: 202px;">
-        <div class="container-fluid flex-column"><button class="btn btn-dark drawer-knob" type="button" data-open="drawer"><i class="fas fa-bars"></i></button>
-            <div class="d-flex justify-content-between brand-line"><a class="navbar-brand" href="#">McReif</a><button class="btn btn-dark" type="button" data-dismiss="drawer"><span class="sr-only">Toggle Navigation&nbsp;</span><i class="fas fa-times"></i></button></div>
-            <ul class="nav navbar-nav flex-column drawer-menu">
-                <li class="nav-item" role="presentation"><a class="nav-link active" href="index.html"><i class="fa fa-dashboard"></i>&nbsp; Dashboard</a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" href="graphics.html"><i class="fas fa-chart-line"></i>&nbsp; Graphics</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="graphics.html"><i class="fas fa-chart-line"></i>&nbsp; Graphics</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="products.html"><i class="fa fa-product-hunt"></i>&nbsp; Products</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="sales.html"><i class="fa fa-shopping-cart"></i>&nbsp; &nbsp;Sales</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="customers.html"><i class="fa fa-users"></i>&nbsp; Customers</a><a class="nav-link" href="refunds.html"><i class="fa fa-retweet"></i>&nbsp; Refunds Manager</a><a class="nav-link" href="reports.html"><i class="fa fa-print"></i>&nbsp; Reports</a>
-                    <a
-                        class="nav-link" href="shipments.html"><i class="fa fa-ship"></i>&nbsp; Shipments</a><a class="nav-link" href="storage_fees.html"><i class="fas fa-store-alt"></i>&nbsp; Storage Fees</a></li>
-            </ul>
-            <ul class="nav navbar-nav flex-column bottom-nav">
-                <li class="nav-item" role="presentation"></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="settings.html"><i class="fa fa-gear"></i>&nbsp; Settings</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="support.html"><i class="fab fa-hire-a-helper"></i>&nbsp; Support</a></li>
-            </ul>
-        </div>
-    </nav>
-    <div class="col"><div class="bootstrap_datatables">
-<div class="container py-5">
-  <header class="text-center text-black">
-    <h1 class="display-4">Customers</h1>
-  </header>
-  <div class="row py-5">
-    <div class="col-lg-10 mx-auto">
-      <div class="card rounded shadow border-0">
-        <div class="card-body p-5 bg-white rounded">
-          <div class="table-responsive">
-            <table id="example" style="width:100%" class="table table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Position</th>
-                  <th>Office</th>
-                  <th>Age</th>
-                  <th>Start date</th>
-                  <th>Total payment over the time</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Tiger Nixon</td>
-                  <td>System Architect</td>
-                  <td>Edinburgh</td>
-                  <td>61</td>
-                  <td>2011/04/25</td>
-                  <td>$320,800</td>
-                </tr>
-                <tr>
-                  <td>Garrett Winters</td>
-                  <td>Accountant</td>
-                  <td>Tokyo</td>
-                  <td>63</td>
-                  <td>2011/07/25</td>
-                  <td>$170,750</td>
-                </tr>
-                <tr>
-                  <td>Ashton Cox</td>
-                  <td>Junior Technical Author</td>
-                  <td>San Francisco</td>
-                  <td>66</td>
-                  <td>2009/01/12</td>
-                  <td>$86,000</td>
-                </tr>
-                <tr>
-                  <td>Cedric Kelly</td>
-                  <td>Senior Javascript Developer</td>
-                  <td>Edinburgh</td>
-                  <td>22</td>
-                  <td>2012/03/29</td>
-                  <td>$433,060</td>
-                </tr>
-                <tr>
-                  <td>Airi Satou</td>
-                  <td>Accountant</td>
-                  <td>Tokyo</td>
-                  <td>33</td>
-                  <td>2008/11/28</td>
-                  <td>$162,700</td>
-                </tr>
-                <tr>
-                  <td>Brielle Williamson</td>
-                  <td>Integration Specialist</td>
-                  <td>New York</td>
-                  <td>61</td>
-                  <td>2012/12/02</td>
-                  <td>$372,000</td>
-                </tr>
-                <tr>
-                  <td>Herrod Chandler</td>
-                  <td>Sales Assistant</td>
-                  <td>San Francisco</td>
-                  <td>59</td>
-                  <td>2012/08/06</td>
-                  <td>$137,500</td>
-                </tr>
-                <tr>
-                  <td>Rhona Davidson</td>
-                  <td>Integration Specialist</td>
-                  <td>Tokyo</td>
-                  <td>55</td>
-                  <td>2010/10/14</td>
-                  <td>$327,900</td>
-                </tr>
-                <tr>
-                  <td>Colleen Hurst</td>
-                  <td>Javascript Developer</td>
-                  <td>San Francisco</td>
-                  <td>39</td>
-                  <td>2009/09/15</td>
-                  <td>$205,500</td>
-                </tr>
-                <tr>
-                  <td>Sonya Frost</td>
-                  <td>Software Engineer</td>
-                  <td>Edinburgh</td>
-                  <td>23</td>
-                  <td>2008/12/13</td>
-                  <td>$103,600</td>
-                </tr>
-                <tr>
-                  <td>Jena Gaines</td>
-                  <td>Office Manager</td>
-                  <td>London</td>
-                  <td>30</td>
-                  <td>2008/12/19</td>
-                  <td>$90,560</td>
-                </tr>
-                <tr>
-                  <td>Quinn Flynn</td>
-                  <td>Support Lead</td>
-                  <td>Edinburgh</td>
-                  <td>22</td>
-                  <td>2013/03/03</td>
-                  <td>$342,000</td>
-                </tr>
-                <tr>
-                  <td>Charde Marshall</td>
-                  <td>Regional Director</td>
-                  <td>San Francisco</td>
-                  <td>36</td>
-                  <td>2008/10/16</td>
-                  <td>$470,600</td>
-                </tr>
-                <tr>
-                  <td>Haley Kennedy</td>
-                  <td>Senior Marketing Designer</td>
-                  <td>London</td>
-                  <td>43</td>
-                  <td>2012/12/18</td>
-                  <td>$313,500</td>
-                </tr>
-                <tr>
-                  <td>Tatyana Fitzpatrick</td>
-                  <td>Regional Director</td>
-                  <td>London</td>
-                  <td>19</td>
-                  <td>2010/03/17</td>
-                  <td>$385,750</td>
-                </tr>
-                <tr>
-                  <td>Michael Silva</td>
-                  <td>Marketing Designer</td>
-                  <td>London</td>
-                  <td>66</td>
-                  <td>2012/11/27</td>
-                  <td>$198,500</td>
-                </tr>
-                <tr>
-                  <td>Paul Byrd</td>
-                  <td>Chief Financial Officer (CFO)</td>
-                  <td>New York</td>
-                  <td>64</td>
-                  <td>2010/06/09</td>
-                  <td>$725,000</td>
-                </tr>
-                <tr>
-                  <td>Gloria Little</td>
-                  <td>Systems Administrator</td>
-                  <td>New York</td>
-                  <td>59</td>
-                  <td>2009/04/10</td>
-                  <td>$237,500</td>
-                </tr>
-                <tr>
-                  <td>Bradley Greer</td>
-                  <td>Software Engineer</td>
-                  <td>London</td>
-                  <td>41</td>
-                  <td>2012/10/13</td>
-                  <td>$132,000</td>
-                </tr>
-                <tr>
-                  <td>Dai Rios</td>
-                  <td>Personnel Lead</td>
-                  <td>Edinburgh</td>
-                  <td>35</td>
-                  <td>2012/09/26</td>
-                  <td>$217,500</td>
-                </tr>
-                <tr>
-                  <td>Jenette Caldwell</td>
-                  <td>Development Lead</td>
-                  <td>New York</td>
-                  <td>30</td>
-                  <td>2011/09/03</td>
-                  <td>$345,000</td>
-                </tr>
-                <tr>
-                  <td>Yuri Berry</td>
-                  <td>Chief Marketing Officer (CMO)</td>
-                  <td>New York</td>
-                  <td>40</td>
-                  <td>2009/06/25</td>
-                  <td>$675,000</td>
-                </tr>
-                <tr>
-                  <td>Caesar Vance</td>
-                  <td>Pre-Sales Support</td>
-                  <td>New York</td>
-                  <td>21</td>
-                  <td>2011/12/12</td>
-                  <td>$106,450</td>
-                </tr>
-                <tr>
-                  <td>Doris Wilder</td>
-                  <td>Sales Assistant</td>
-                  <td>Sidney</td>
-                  <td>23</td>
-                  <td>2010/09/20</td>
-                  <td>$85,600</td>
-                </tr>
-                <tr>
-                  <td>Angelica Ramos</td>
-                  <td>Chief Executive Officer (CEO)</td>
-                  <td>London</td>
-                  <td>47</td>
-                  <td>2009/10/09</td>
-                  <td>$1,200,000</td>
-                </tr>
-                <tr>
-                  <td>Gavin Joyce</td>
-                  <td>Developer</td>
-                  <td>Edinburgh</td>
-                  <td>42</td>
-                  <td>2010/12/22</td>
-                  <td>$92,575</td>
-                </tr>
-                <tr>
-                  <td>Jennifer Chang</td>
-                  <td>Regional Director</td>
-                  <td>Singapore</td>
-                  <td>28</td>
-                  <td>2010/11/14</td>
-                  <td>$357,650</td>
-                </tr>
-                <tr>
-                  <td>Brenden Wagner</td>
-                  <td>Software Engineer</td>
-                  <td>San Francisco</td>
-                  <td>28</td>
-                  <td>2011/06/07</td>
-                  <td>$206,850</td>
-                </tr>
-                <tr>
-                  <td>Fiona Green</td>
-                  <td>Chief Operating Officer (COO)</td>
-                  <td>San Francisco</td>
-                  <td>48</td>
-                  <td>2010/03/11</td>
-                  <td>$850,000</td>
-                </tr>
-                <tr>
-                  <td>Shou Itou</td>
-                  <td>Regional Marketing</td>
-                  <td>Tokyo</td>
-                  <td>20</td>
-                  <td>2011/08/14</td>
-                  <td>$163,000</td>
-                </tr>
-              </tbody>
-            </table>
+  <nav class="navbar navbar-dark navbar-expand-md" id="app-navbar" >
+    <div class="container-fluid"><a class="navbar-brand" href="#"><img src="../static/img/mc.png" id="brand-logo"></img></a><button style="background-color:transparent" data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+      <div
+      class="collapse navbar-collapse" id="navcol-1">
+      <ul class="nav navbar-nav ml-auto">
+
+        <li class="nav-item-dropdown" role="presentation">
+          <div class="dropdown btn-group" role="group"><button class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button"><i class="fa fa-envelope" style="color: rgba(0,0,0,0.5);"></i></button>
+            <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">My notifications </a></div>
           </div>
-        </div>
-      </div>
+        </li>
+
+        <li class="nav-item-dropdown">
+          <div class="dropdown btn-group" role="group"><button class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button"><i class="fa fa-language" style="color: rgba(0,0,0,0.5);"></i></button>
+            <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="index_es.html">Spanish </a><a class="dropdown-item" role="presentation" href="index.html">English </a></div>
+          </div>
+        </li>
+
+
+        <li class="nav-item-dropdown">
+          <div class="dropdown btn-group" role="group"><button class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button"><i class="fa fa-user" style="color: rgba(0,0,0,0.5);"></i></button>
+            <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">Profile </a><a class="dropdown-item" role="presentation" href="#">Settings </a><a class="dropdown-item" role="presentation" href="logout">Logout </a></div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
-</div>
-</div>
-        <footer style="background-color: rgb(248,248,248);">
-            <div class="row">
-                <div class="col-sm-6 col-md-4 footer-navigation">
-                    <h3><a href="#">Mc</a><span>Reif</span></h3>
-                    <h3></h3>
-                    <p class="links"><a href="#">Home</a><strong> · </strong><a href="#">Blog</a><strong> · </strong><a href="#">Pricing</a><strong> · </strong><a href="#">About</a><strong> · </strong><a href="#">Faq</a><strong> · </strong><a href="#">Contact</a></p>
-                    <p
-                        class="company-name">McReif © 2017</p>
-                </div>
-                <div class="col-sm-6 col-md-4 footer-contacts">
-                    <div><span class="fa fa-map-marker footer-contacts-icon"> </span>
-                        <p><span class="new-line-span">21 Revolution Street</span> Madrid, Spain</p>
-                    </div>
-                    <div><i class="fa fa-phone footer-contacts-icon"></i>
-                        <p class="footer-center-info email text-left"> +34 555 123 456</p>
-                    </div>
-                    <div><i class="fa fa-envelope footer-contacts-icon"></i>
-                        <p> <a href="#" target="_blank">paula@mcreif.com</a></p>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="col-md-4 footer-about">
-                    <h4>About the company</h4>
-                    <p> Improve sales in different marketplaces</p>
-                    <div class="social-links social-icons"><a href="#"><i class="fa fa-facebook"></i></a><a href="#"><i class="fa fa-twitter"></i></a><a href="#"><i class="fa fa-linkedin"></i></a><a href="#"><i class="fa fa-github"></i></a></div>
-                </div>
-            </div>
-        </footer>
-    </div>
-    <script src="../static/js/jquery.min.js"></script>
-    <script src="../static/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../static/js/smart-forms.min.js"></script>
+</nav>
+
+
+
+<nav class="navbar navbar-dark fixed-top bg-dark off-canvas" data-right-drawer="0" data-open-drawer="1" style="width: 200px;height: 944px;">
+  <div class="container-fluid flex-column"><button class="btn btn-dark drawer-knob" type="button" data-open="drawer"><i class="fas fa-bars"></i></button>
+    <div class="d-flex justify-content-between brand-line"><a class="navbar-brand" href="#">McReif</a><button class="btn btn-dark" type="button" data-dismiss="drawer"><span class="sr-only">Toggle Navigation&nbsp;</span><i class="fas fa-times"></i></button></div>
+    <ul class="nav navbar-nav flex-column drawer-menu">
+      <li class="nav-item" role="presentation"><a class="nav-link" href="products.html"><i class="fas fa-store-alt"></i>&nbsp; Products</a></li>
+      <li class="nav-item" role="presentation"><a class="nav-link" href="sales.html"><i class="fa fa-shopping-cart"></i>&nbsp; &nbsp;Marketing</a></li>
+      <li class="nav-item" role="presentation"><a class="nav-link" href="customers.html"><i class="fa fa-users"></i>&nbsp; Customers</a></li>
+        <li class="nav-item" role="presentation"><a class="nav-link" href="/logout"><i class="fa fa-print"></i>&nbsp; Logout</a>
+        </ul>
+      </div>
+</nav>
+
+ <div>
+    {{  graficos | safe }}
+ </div>
+
+    <footer class="mx-auto" style="background-color: rgb(248,248,248);">
+      <div class="row">
+        <div class="col-sm-6 col-md-4 footer-navigation">
+          <h3><a href="#">Mc</a><span>Reif</span></h3>
+          <h3></h3>
+          <p class="links"><a href="#">Home</a><strong> · </strong><a href="#">Blog</a><strong> · </strong><a href="#">Pricing</a><strong> · </strong><a href="#">About</a><strong> · </strong><a href="#">Faq</a><strong> · </strong><a href="#">Contact</a></p>
+          <p
+          class="company-name">McReif © 2017</p>
+        </div>
+        <div class="col-sm-6 col-md-4 footer-contacts">
+          <div><span class="fa fa-map-marker footer-contacts-icon"> </span>
+            <p><span class="new-line-span">21 Revolution Street</span> Madrid, Spain</p>
+          </div>
+          <div><i class="fa fa-phone footer-contacts-icon"></i>
+            <p class="footer-center-info email text-left"> +34 555 123 456</p>
+          </div>
+          <div><i class="fa fa-envelope footer-contacts-icon"></i>
+            <p> <a href="#" target="_blank">info@mcreif.com</a></p>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-4 footer-about">
+          <h4>About the company</h4>
+          <p> Improve sales in different marketplaces</p>
+        </div>
+      </div>
+    </footer>
+
+
+
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/smart-forms.min.js' %}"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-    <script src="../static/js/Off-Canvas-Sidebar-Drawer-Navbar.js"></script>
-    <script src="../static/js/Bootstrap-DataTables.js"></script>
-    <script src="../static/js/Off-Canvas-Sidebar-Drawer-Navbar-1.js"></script>
-    <script src="../static/js/Data-Table-with-Search-Sort-Filter-and-Zoom-using-TableSorter.js"></script>
-    <script src="../static/js/Feedback-Form.js"></script>
+    <script src="{% static 'js/Off-Canvas-Sidebar-Drawer-Navbar.js' %}"></script>
+    <script src="{% static 'js/Bootstrap-DataTables.js' %}"></script>
+    <script src="{% static 'js/Off-Canvas-Sidebar-Drawer-Navbar-1.js' %}"></script>
+    <script src="{% static 'js/Data-Table-with-Search-Sort-Filter-and-Zoom-using-TableSorter.js' %}"></script>
+    <script src="{% static 'js/Feedback-Form.js' %}"></script>
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-filter.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-storage.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
-    <script src="../static/js/Profile-Edit-Form.js"></script>
-</body>
+    <script src="{% static 'js/Profile-Edit-Form.js' %}"></script>
+  </body>
 
-</html>
+  </html>

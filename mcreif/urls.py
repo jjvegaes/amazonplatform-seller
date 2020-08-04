@@ -36,6 +36,7 @@ urlpatterns = [
     path('shipments.html', views.shipments),
     path('storage_fees.html', views.storage_fees),
     path('support.html', views.support),
+    path('testingDf.html', views.testingDf),
 
 
 

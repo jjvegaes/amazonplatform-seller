@@ -9,12 +9,13 @@ from django.urls import path
 
 from users import limpieza
 from users.limpieza import limpieza
+from users.vendor import productos, customers2, ventas
 
 
 def welcome(request):
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:
-        return render(request, "index.html")
+        return render(request, "products.html")
     # En otro caso redireccionamos al login
     return redirect('/login')
 
@@ -33,12 +34,18 @@ def graphics(request):
     return render(request, "graphics.html")
 
 
-def products(request):
-    return render(request, "products.html")
-
-
 def customers(request):
-    return render(request, "customers.html")
+    grap_customers = customers2()
+    return render(request, "customers.html", {'graficos': grap_customers})
+
+
+def products(request):
+    grap_products = productos()
+    return render(request, "products.html", {'graficos': grap_products})
+
+
+
+
 
 
 def refunds(request):
@@ -46,7 +53,8 @@ def refunds(request):
 
 
 def sales(request):
-    return render(request, "sales.html")
+    grap_sales = ventas()
+    return render(request, "sales.html", {'graficos': grap_sales})
 
 
 def settings(request):
@@ -92,7 +100,7 @@ def login(request):
                 # Hacemos el login manualmente
                 do_login(request, user)
                 # Y le redireccionamos a la portada
-                return redirect('/')
+                return redirect('/products.html')
 
     # Si llegamos al final renderizamos el formulario
     return render(request, "login.html", {'form': form})

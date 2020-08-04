@@ -1,0 +1,13 @@
+
+opython:S1192,"RDefine a constant instead of duplicating this literal 'Unidades enviadas' 3 times.(¤Ìù½üÿÿÿÿ
+ppython:S1192-"YDefine a constant instead of duplicating this literal 'Buy box perdida (Precio)' 6 times.(ë*
+jpython:S1192\"KDefine a constant instead of duplicating this literal " estrellas" 6 times.(˜ŠéÛ8õãş¹.
+{python:S1192T"^Define a constant instead of duplicating this literal 'ValoraciÃ³n media del cliente' 3 times.(ÊÓˆÔÿÿÿÿÿ
+vpython:S1192)"RDefine a constant instead of duplicating this literal '/informes_vendor/' 5 times.(¾‰­Øÿÿÿÿÿ8õãş¹.
+python:S1192l"iDefine a constant instead of duplicating this literal 'Unidades disponibles no aptas para venta' 4 times.(ì© ßÿÿÿÿÿ8õãş¹.
+ypython:S11924"\Define a constant instead of duplicating this literal 'diagnostico de ventas sin 0' 4 times.(±–êàıÿÿÿÿ
+opython:S101"XRename class "crearGraficasVendor" to match the regular expression ^[A-Z_][a-zA-Z0-9]+$.(¥¨†
+jpython:S116"NRename this field "myRute" to match the regular expression ^[_a-z][_a-z0-9]*$.(µ–Şüøÿÿÿÿ
+;python:S125c"Remove this commented out code.(îø×‡ùÿÿÿÿ
+>python:S125…"Remove this commented out code.(ÃÓôÅ8õãş¹.
+rpython:S1192$"UDefine a constant instead of duplicating this literal 'Ingresos por envÃ­os' 8 times.(å›‚æûÿÿÿÿ
