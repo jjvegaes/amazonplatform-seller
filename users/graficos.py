@@ -18,69 +18,71 @@ class graficas():
 
     #Se le pasa el id del dataframe a usar, etiquetas para las barras, valores para la algura de las barras, colores se pondrá a true si queremos tener un degradado de colores para cada valor de 'valores', título del gráfico y orientación de las barras
     #Etiquetas es una lista de uno o dos valores, si lleva dos el primero será para cada columna y el segundo para el color de columna, valores es una lista sin limite por cada valor se usará un color de columna según etiqueta.
-    def barras(self, id, etiquetas, valores, colores=False, titulo=None, orientacion='v'):
+    def barras(self, id, etiquetas, valores, colores=False, titulo=None, orientacion='v', hovertext=None):
         if orientacion=='v': 
             if colores==True:
-                return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], hover_data=[valores[0]], color=valores[0], title=titulo, orientation=orientacion)
+                return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], hover_data=hovertext, color=valores[0], title=titulo, orientation=orientacion)
             else:
                 if len(valores)==1 and len(etiquetas)==1:
-                    return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], barmode='group', title=titulo, orientation=orientacion, labels={'y':valores[0]})
+                    return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], barmode='group',hover_data=hovertext, title=titulo, orientation=orientacion, labels={'y':valores[0]})
                 else:
                     if len(valores)==1:
-                        return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], color=etiquetas[1], barmode='group', title=titulo, orientation=orientacion)
+                        return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], color=etiquetas[1],hover_data=hovertext, barmode='group', title=titulo, orientation=orientacion)
                     else:
+                        for h in hovertext:
+                            etiquetas.append(h)
                         df_aux=self.dict_df[id].melt(id_vars=etiquetas, value_vars=valores)
-                        return px.bar(df_aux, x=etiquetas[0], y="value", color='variable', barmode='group', title=titulo, orientation=orientacion)
+                        return px.bar(df_aux, x=etiquetas[0], y="value", color='variable', barmode='group',hover_data=hovertext, title=titulo, orientation=orientacion)
         else:
             if colores==True:
-                return px.bar(self.dict_df[id], x=valores[0], y=etiquetas[0], hover_data=[valores[0]], color=valores[0], title=titulo, orientation=orientacion)
+                return px.bar(self.dict_df[id], x=valores[0], y=etiquetas[0], hover_data=hovertext, color=valores[0], title=titulo, orientation=orientacion)
             else:
                 if len(valores)==1 and len(etiquetas)==1:
-                    return px.bar(self.dict_df[id], x=valores[0], y=etiquetas[0], barmode='group', title=titulo, orientation=orientacion)
+                    return px.bar(self.dict_df[id], x=valores[0], y=etiquetas[0], barmode='group',hover_data=hovertext, title=titulo, orientation=orientacion)
                 else:
                     if len(valores)==1:
-                        return px.bar(self.dict_df[id], x=valores[0], y=etiquetas[0], color=etiquetas[1], barmode='group', title=titulo, orientation=orientacion)
+                        return px.bar(self.dict_df[id], x=valores[0], y=etiquetas[0], color=etiquetas[1],hover_data=hovertext, barmode='group', title=titulo, orientation=orientacion)
                     else:
                         df_aux=self.dict_df[id].melt(id_vars=etiquetas, value_vars=valores)
-                        return px.bar(df_aux, x="value", y=etiquetas[0], color='variable', barmode='group', title=titulo, orientation=orientacion)
+                        return px.bar(df_aux, x="value", y=etiquetas[0], color='variable', barmode='group',hover_data=hovertext, title=titulo, orientation=orientacion)
 
 
     #Gráfico de barras apiladas, tiene los mismos parámetros que barras normal (sin colores)
-    def barras_apiladas(self, id, etiquetas, valores, titulo=None, orientacion='v'):
+    def barras_apiladas(self, id, etiquetas, valores, titulo=None, orientacion='v', hovertext=None):
         if orientacion=='v':
             if(len(etiquetas)==1):
-                return px.bar(self.dict_df[id], x=etiquetas[0], y=valores, title=titulo, orientation=orientacion)
+                return px.bar(self.dict_df[id], x=etiquetas[0], y=valores, title=titulo, hover_data=hovertext, orientation=orientacion)
             else:
-                return px.bar(self.dict_df[id], x=etiquetas[0], y=valores, color=etiquetas[1], title=titulo, orientation=orientacion)
+                return px.bar(self.dict_df[id], x=etiquetas[0], y=valores, color=etiquetas[1], title=titulo, hover_data=hovertext, orientation=orientacion)
         else:
             if(len(etiquetas)==1):
-                return px.bar(self.dict_df[id], x=valores, y=etiquetas[0], title=titulo, orientation=orientacion)
+                return px.bar(self.dict_df[id], x=valores, y=etiquetas[0], title=titulo, hover_data=hovertext, orientation=orientacion)
             else:
-                return px.bar(self.dict_df[id], x=valores, y=etiquetas[0], color=etiquetas[1], title=titulo, orientation=orientacion)
+                return px.bar(self.dict_df[id], x=valores, y=etiquetas[0], color=etiquetas[1], hover_data=hovertext, title=titulo, orientation=orientacion)
 
     #Crea un gráfico circular donde etiquetas puede ser una lista, si es una lista se creará un gráfico circular con pisos, si no uno normal. Valor no es una lista
-    def circular(self, id, etiquetas, valor, titulo=None):
+    def circular(self, id, etiquetas, valor, titulo=None, hovertext=None):
         if len(etiquetas)==1:
-            return px.pie(self.dict_df[id], values=valor, names=etiquetas[0], title=titulo)
+            return px.pie(self.dict_df[id], values=valor, names=etiquetas[0], title=titulo, hover_data=hovertext)
         else:
-            return px.sunburst(self.dict_df[id], path=etiquetas, values=valor, title=titulo)
+            return px.sunburst(self.dict_df[id], path=etiquetas, values=valor, title=titulo, hover_data=hovertext)
  
     #Crea un gráfico de una recta y/o puntos (según se marquen los parámetros rectas y puntos) con los valores x e y.
     #x e y no son listas, son strings con las variables del df a usar
-    def lineal(self, id, x, y, rectas=True, puntos=True, titulo=None):
+    def lineal(self, id, x, y, rectas=True, puntos=True, titulo=None, hovertext=None):
         if rectas and puntos:
-            fig = go.Figure(data=go.Scatter(x=self.dict_df[id][x], y=self.dict_df[id][y], mode='lines+markers', name=y))
+            fig = go.Figure(data=go.Scatter(x=self.dict_df[id][x], y=self.dict_df[id][y], mode='lines+markers', name=y, hovertext=hovertext))
         elif rectas:
-            fig = go.Figure(data=go.Scatter(x=self.dict_df[id][x], y=self.dict_df[id][y], mode='lines', name=y))
+            fig = go.Figure(data=go.Scatter(x=self.dict_df[id][x], y=self.dict_df[id][y], mode='lines', name=y, hovertext=hovertext))
         else:
-            fig = go.Figure(data=go.Scatter(x=self.dict_df[id][x], y=self.dict_df[id][y], mode='markers', name=y))
+            fig = go.Figure(data=go.Scatter(x=self.dict_df[id][x], y=self.dict_df[id][y], mode='markers', name=y, hovertext=hovertext))
         fig.update_layout(title=titulo)
         return fig
 
     #lineal('hola', 'asin', 'gastos', rectas=False)
     #Crea un gráfico lineal como el anterior pero en este caso x debe de ser datos del tipo DateTime
-    def temporal(self, id, x, y, titulo):
-        fig = go.Figure(data=go.Scatter(x=self.dict_df[id][x], y=self.dict_df[id][y], mode='lines', name=y))
+    def temporal(self, id, x, y, titulo, hovertext=None):
+        fig = go.Figure(data=go.Scatter(x=self.dict_df[id][x], y=self.dict_df[id][y], mode='lines', name=y, hovertext=hovertext))
         fig.update_xaxes(
             rangeslider_visible=True,
             rangeselector=dict(
@@ -97,11 +99,11 @@ class graficas():
         return fig
 
     #Crea un gráfico de embudo etiquetas es una lista de 1 o 2 valores, si etiquetas tiene un valor se crea un gráfico de embudo normal, si tiene 2 el primero se usará para el eje 'y' y el segundo para el color
-    def embudo(self, id, etiquetas, valor, titulo=None):
+    def embudo(self, id, etiquetas, valor, titulo=None, hovertext=None):
         if(len(etiquetas)==1):
-            return px.funnel(self.dict_df[id], x=valor, y=etiquetas[0], title=titulo)
+            return px.funnel(self.dict_df[id], x=valor, y=etiquetas[0], title=titulo, hover_data=hovertext)
         else:
-            return px.funnel(self.dict_df[id], x=valor, y=etiquetas[0], color=etiquetas[1], title=titulo)
+            return px.funnel(self.dict_df[id], x=valor, y=etiquetas[0], color=etiquetas[1], title=titulo, hover_data=hovertext,)
 
 
     def indicador(self, id, etiqueta, mean=False, titulo=None, formato={'suffix': "€"}):
@@ -111,6 +113,12 @@ class graficas():
         fig= go.Figure(go.Indicator( mode = "number", value = total, number = formato, domain = {'x': [0, 1], 'y': [0, 1]}))
         fig.update_layout(title=titulo)
         return fig
+
+
+    def mapa_calor(self, id, etiqueta, hovertext=None):
+        return px.density_mapbox(self.dict_df[id], lat='Latitud', lon='Longitud', z=etiqueta, radius=20,
+                        center=dict(lat=40.4167, lon=-3.70325), zoom=5,
+                        mapbox_style="stamen-terrain", hover_data=hovertext)
     #Esta función es capaz de integrar varios gráficos en los mismos ejes, los distintos gráficos se pasan en param como una lista de diccionarios.
     #Por ejemplo:
     #gr=graficas(dict_df)
@@ -128,19 +136,19 @@ class graficas():
         fig.update_layout(title_text=titulo)
         for p in param:
             if(p['id']=='barras'):
-                data=self.barras(id,p['etiquetas'], p['valores'], p['colores'], titulo).data
+                data=self.barras(id,p['etiquetas'], p['valores'], p['colores'], titulo, 'v', p['hovertext']).data
                 fig.update_layout(barmode='group')
             elif(p['id']=='barras_apiladas'):
-                data=self.barras_apiladas(id,p['etiquetas'], p['valores'], titulo).data
+                data=self.barras_apiladas(id,p['etiquetas'], p['valores'], titulo, p['hovertext']).data
                 fig.update_layout(barmode='stack')
             elif(p['id']=='circular'):
-                data=self.circular(id,p['etiquetas'], p['valor'], titulo).data
+                data=self.circular(id,p['etiquetas'], p['valor'], titulo, p['hovertext']).data
             elif(p['id']=='lineal'):
-                data=self.lineal(id,p['x'], p['y'], p['rectas'], p['puntos'], titulo).data
+                data=self.lineal(id,p['x'], p['y'], p['rectas'], p['puntos'], titulo, p['hovertext']).data
             elif(p['id']=='temporal'):
-                data=self.temporal(id, p['x'], p['y'], titulo).data
+                data=self.temporal(id, p['x'], p['y'], titulo, p['hovertext']).data
             else:
-                data=self.embudo(id, p['x'], p['y'],  titulo).data
+                data=self.embudo(id, p['x'], p['y'],  titulo, p['hovertext']).data
             for d in data:
                 d.marker.color=self.colors[color]
                 color+=1
@@ -196,21 +204,21 @@ class graficas():
         fig.update_layout(title_text=titulo)
         for p in param:
             if(p['id']=='barras'):
-                data=self.barras(p['id_df'] ,p['etiquetas'], p['valores'], p['colores'], titulo, p['orientacion']).data
+                data=self.barras(p['id_df'] ,p['etiquetas'], p['valores'], p['colores'], titulo, p['orientacion'], p['hovertext']).data
                 fig.update_layout(barmode='group')
             elif(p['id']=='barras_apiladas'):
-                data=self.barras_apiladas(p['id_df'],p['etiquetas'], p['valores'], titulo).data
+                data=self.barras_apiladas(p['id_df'],p['etiquetas'], p['valores'], titulo, p['hovertext']).data
                 fig.update_layout(barmode='stack')
             elif(p['id']=='circular'):
-                data=self.circular(p['id_df'],p['etiquetas'], p['valor'], titulo).data
+                data=self.circular(p['id_df'],p['etiquetas'], p['valor'], titulo, p['hovertext']).data
             elif(p['id']=='lineal'):
-                data=self.lineal(p['id_df'],p['x'], p['y'], p['rectas'], p['puntos'], titulo).data
+                data=self.lineal(p['id_df'],p['x'], p['y'], p['rectas'], p['puntos'], titulo,p['hovertext']).data
             elif(p['id']=='temporal'):
-                data=self.temporal(p['id_df'], p['x'], p['y'], titulo).data
+                data=self.temporal(p['id_df'], p['x'], p['y'], titulo, p['hovertext']).data
             elif(p['id']=='indicador'):
                 data=self.indicador(p['id_df'], p['etiqueta'], p['mean'], titulo, p['formato']).data
             else:
-                data=self.embudo(p['id_df'], p['etiquetas'], p['valor'], titulo).data
+                data=self.embudo(p['id_df'], p['etiquetas'], p['valor'], titulo, p['hovertext']).data
             for d in data:
                 if p['id']!='circular' and p['id']!= 'indicador':
                     d.marker.color=self.colors[color]
@@ -225,3 +233,5 @@ class graficas():
 
     def tam(self, fig, w=None, h=None, color=None):
         return fig.update_layout( autosize=True, width=w, height=h, margin=dict( l=50, r=50, b=100, t=100, pad=4 ), paper_bgcolor=color)
+
+
