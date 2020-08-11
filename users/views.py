@@ -19,6 +19,9 @@ def welcome(request):
     # En otro caso redireccionamos al login
     return redirect('/login')
 
+def index(request):
+    return render(request, "index.html")
+
 
 #def testingDf(request):
 #    df = limpieza("_GET_MERCHANT_LISTINGS_DATA_LITE_")
@@ -42,10 +45,6 @@ def customers(request):
 def products(request):
     grap_products = productos()
     return render(request, "products.html", {'graficos': grap_products})
-
-
-
-
 
 
 def refunds(request):
