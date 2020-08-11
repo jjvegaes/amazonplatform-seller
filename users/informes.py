@@ -2,7 +2,6 @@ import mws
 import time
 from datetime import datetime
 
-
 class Informe():
     
     #Creamos el objeto tipo Reports
@@ -13,16 +12,20 @@ class Informe():
     
     #Devuelve un informe en concreto dados los parámetros necesarios para un informe
     def report(self, report, start_date=None, end_date=None, marketplace=None):
+        start_sleep=5
         marketplaces=[]
         if marketplace!=None:#Especificamos los ids de los marketplaces
             for i in range(len(marketplace)):
                 marketplaces.append(self.marketplaces[marketplace[i]])
         request_id=self.amazon_mws.request_report(report_type=report, start_date=start_date, end_date=end_date, marketplaceids=marketplaces)#Pedimos el informe
-        time.sleep(10)
+        time.sleep(start_sleep)
         info=self.amazon_mws.get_report_request_list(request_id.parsed['ReportRequestInfo']['ReportRequestId']['value'])#Comprobamos su estado
         while info.parsed['ReportRequestInfo']['ReportProcessingStatus']['value']=='_SUBMITTED_' or info.parsed['ReportRequestInfo']['ReportProcessingStatus']['value']=='_IN_PROGRESS_':#Si aún se esta generando seguimos comprobando su estado
-            time.sleep(45)#Tiempo mínimo de espera entre dos "get_report_request_list"
+            print(info.parsed['ReportRequestInfo']['ReportProcessingStatus']['value'])
+            time.sleep(start_sleep)          #Tiempo mínimo de espera entre dos "get_report_request_list"
             info=self.amazon_mws.get_report_request_list(request_id.parsed['ReportRequestInfo']['ReportRequestId']['value'])
+            if start_sleep<45:
+                start_sleep+=5
         if info.parsed['ReportRequestInfo']['ReportProcessingStatus']['value']=='_DONE_':#Si se ha completado el informe lo devolvemos
             return self.amazon_mws.get_report(info.parsed['ReportRequestInfo']['GeneratedReportId']['value']).parsed
         return None
