@@ -33,12 +33,14 @@
   <link rel="stylesheet" href="{% static 'css/Pretty-Footer.css' %}">
   <link rel="stylesheet" href="{% static 'css/Profile-Edit-Form.css' %}">
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/RAFFY.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Animated-Type-Heading.css' %}">
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
 <body>
   <nav class="navbar navbar-dark navbar-expand-md" id="app-navbar" >
-    <div class="container-fluid"><a class="navbar-brand" href="#"><img src="../static/img/mc.png" id="brand-logo" style="width: 200px;height: 50px"></img></a><button style="background-color:transparent" data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+    <div class="container-fluid"><a class="navbar-brand" href="index.html"><img src="../static/img/mc.png" id="brand-logo"></img></a><button style="background-color:transparent" data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
       <div
       class="collapse navbar-collapse" id="navcol-1">
       <ul class="nav navbar-nav ml-auto">
@@ -75,7 +77,8 @@
       <li class="nav-item" role="presentation"><a class="nav-link" href="products.html"><i class="fas fa-store-alt"></i>&nbsp; Products</a></li>
       <li class="nav-item" role="presentation"><a class="nav-link" href="sales.html"><i class="fa fa-shopping-cart"></i>&nbsp; &nbsp;Marketing</a></li>
       <li class="nav-item" role="presentation"><a class="nav-link" href="customers.html"><i class="fa fa-users"></i>&nbsp; Customers</a></li>
-        <li class="nav-item" role="presentation"><a class="nav-link" href="/logout"><i class="fa fa-print"></i>&nbsp; Logout</a>
+        <li class="nav-item" role="presentation"><a class="nav-link" href="support.html"><i class="fa fa-life-ring"></i>&nbsp; Support</a></li>
+        <li class="nav-item" role="presentation"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i>&nbsp; Logout</a>
         </ul>
       </div>
 </nav>
@@ -90,8 +93,7 @@
           <h3><a href="#">Mc</a><span>Reif</span></h3>
           <h3></h3>
           <p class="links"><a href="#">Home</a><strong> · </strong><a href="#">Blog</a><strong> · </strong><a href="#">Pricing</a><strong> · </strong><a href="#">About</a><strong> · </strong><a href="#">Faq</a><strong> · </strong><a href="#">Contact</a></p>
-          <p
-          class="company-name">McReif © 2020</p>
+          <p class="company-name">McReif © 2020</p>
         </div>
         <div class="col-sm-6 col-md-4 footer-contacts">
           <div><span class="fa fa-map-marker footer-contacts-icon"> </span>
@@ -101,7 +103,7 @@
             <p class="footer-center-info email text-left"> +34 639 720 449</p>
           </div>
           <div><i class="fa fa-envelope footer-contacts-icon"></i>
-            <p> <a href="#" target="_blank">@mcreif.com</a></p>
+            <p> <a href="#" target="_blank">info@mcreif.com</a></p>
           </div>
         </div>
         <div class="clearfix"></div>
@@ -132,6 +134,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/Profile-Edit-Form.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.2.0/aos.js"></script>
+    <script src="{% static 'js/Animated-Type-Heading.js' %}"></script>
   </body>
 
   </html>

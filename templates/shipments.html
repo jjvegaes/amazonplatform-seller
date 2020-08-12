@@ -1,164 +1,141 @@
+{% load static %}
+{% load users_extras_test %}
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>plantilla_v3_mcreif</title>
-    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cookie">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik">
-    <link rel="stylesheet" href="../static/fonts/fontawesome-all.min.css">
-    <link rel="stylesheet" href="../static/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="../static/fonts/ionicons.min.css">
-    <link rel="stylesheet" href="../static/fonts/fontawesome5-overrides.min.css">
-    <link rel="stylesheet" href="../static/css/Bootstrap-DataTables.css">
-    <link rel="stylesheet" href="../static/css/CDRReporteCuotas.css">
-    <link rel="stylesheet" href="../static/css/Corporate-Footer-Clean.css">
-    <link rel="stylesheet" href="../static/css/Data-Summary-Panel---3-Column-Overview--Mobile-Responsive.css">
-    <link rel="stylesheet" href="../static/css/Data-Table-with-Search-Sort-Filter-and-Zoom-using-TableSorter.css">
-    <link rel="stylesheet" href="../static/css/Feedback-Form.css">
-    <link rel="stylesheet" href="../static/css/gradient-navbar.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/theme.bootstrap_4.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
-    <link rel="stylesheet" href="../static/css/Map-Clean.css">
-    <link rel="stylesheet" href="../static/css/Modern-Contact-Form.css">
-    <link rel="stylesheet" href="../static/css/Navigation-Menu.css">
-    <link rel="stylesheet" href="../static/css/Off-Canvas-Sidebar-Drawer-Navbar.css">
-    <link rel="stylesheet" href="../static/css/Pretty-Footer.css">
-    <link rel="stylesheet" href="../static/css/Profile-Edit-Form.css">
-    <link rel="stylesheet" href="../static/css/styles.css">
-    <link rel="stylesheet" href="../static/css/tablaresponsive.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>Dashboard Beta - McReif</title>
+  <link rel="stylesheet" href="{% static 'fonts/ionicons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/fontawesome5-overrides.min.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/fontawesome-all.min.css' %}">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cookie">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik">
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Bootstrap-DataTables.css' %}">
+  <link rel="stylesheet" href="{% static 'css/CDRReporteCuotas.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Corporate-Footer-Clean.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Data-Summary-Panel---3-Column-Overview--Mobile-Responsive.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Data-Table-with-Search-Sort-Filter-and-Zoom-using-TableSorter.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Feedback-Form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/gradient-navbar.css' %}">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/theme.bootstrap_4.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+  <link rel="stylesheet" href="{% static 'css/Map-Clean.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Modern-Contact-Form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Navigation-Menu.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Off-Canvas-Sidebar-Drawer-Navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Pretty-Footer.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Profile-Edit-Form.css' %}">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/RAFFY.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Animated-Type-Heading.css' %}">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
 <body>
-    <nav class="navbar navbar-dark navbar-expand-md" id="app-navbar">
-        <div class="container-fluid"><a class="navbar-brand" href="#"><i class="icon ion-ios-infinite" id="brand-logo"></i></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div
-                class="collapse navbar-collapse" id="navcol-1">
-                <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link active" href="#"><i class="far fa-envelope" style="color: rgb(0,0,0);"></i></a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="#"><i class="fa fa-language" style="color: rgba(0,0,0,0.5);"></i></a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="#"><i class="fa fa-user" style="color: rgba(0,0,0,0.5);"></i></a></li>
-                </ul>
-        </div>
-        </div>
-    </nav>
-    <nav class="navbar navbar-dark fixed-top bg-dark off-canvas" data-right-drawer="0" data-open-drawer="1" style="width: 197px;">
-        <div class="container-fluid flex-column"><button class="btn btn-dark drawer-knob" type="button" data-open="drawer"><i class="fas fa-bars"></i></button>
-            <div class="d-flex justify-content-between brand-line"><a class="navbar-brand" href="#">McReif</a><button class="btn btn-dark" type="button" data-dismiss="drawer"><span class="sr-only">Toggle Navigation&nbsp;</span><i class="fas fa-times"></i></button></div>
-            <ul class="nav navbar-nav flex-column drawer-menu">
-                <li class="nav-item" role="presentation"><a class="nav-link active" href="index.html"><i class="fa fa-dashboard"></i>&nbsp; Dashboard</a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" href="graphics.html"><i class="fas fa-chart-line"></i>&nbsp; Graphics</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="products.html"><i class="fa fa-product-hunt"></i>&nbsp; Products</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="sales.html"><i class="fa fa-shopping-cart"></i>&nbsp; &nbsp;Sales</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="customers.html"><i class="fa fa-users"></i>&nbsp; Customers</a><a class="nav-link" href="refunds.html"><i class="fa fa-retweet"></i>&nbsp; Refunds Manager</a><a class="nav-link" href="reports.html"><i class="fa fa-print"></i>&nbsp; Reports</a>
-                    <a
-                        class="nav-link" href="shipments.html"><i class="fa fa-ship"></i>&nbsp; Shipments</a><a class="nav-link" href="storage_fees.html"><i class="fas fa-store-alt"></i>&nbsp; Storage Fees</a></li>
-            </ul>
-            <ul class="nav navbar-nav flex-column bottom-nav">
-                <li class="nav-item" role="presentation"></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="settings.html"><i class="fa fa-gear"></i>&nbsp; Settings</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="support.html"><i class="fab fa-hire-a-helper"></i>&nbsp; Support</a></li>
-            </ul>
-        </div>
-    </nav>
-    <div class="col"><div class="container-tableres">
+  <nav class="navbar navbar-dark navbar-expand-md" id="app-navbar" >
+    <div class="container-fluid"><a class="navbar-brand" href="index.html"><img src="../static/img/mc.png" id="brand-logo"></img></a><button style="background-color:transparent" data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+      <div
+      class="collapse navbar-collapse" id="navcol-1">
+      <ul class="nav navbar-nav ml-auto">
 
-			<div class="wrap-tableres">
-					<div class="tableres">
-						<div class="rowres header">
-							<div class="cell">
-								Seccion
-							</div>
-							<div class="cell">
-								Dato
-							</div>
-							<div class="cell">
-								Imagen
-							</div>
-							<div class="cell">
-								Link 1
-							</div>
-        					<div class="cell">
-								Link 2
-							</div>
-        					<div class="cell">
-								Opciones
-							</div>
-						</div>
+        <li class="nav-item-dropdown" role="presentation">
+          <div class="dropdown btn-group" role="group"><button class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button"><i class="fa fa-envelope" style="color: rgba(0,0,0,0.5);"></i></button>
+            <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">My notifications </a></div>
+          </div>
+        </li>
 
-						<div class="rowres">
-							<div class="cell" data-title="Seccion">
-								cabecera1
-							</div>
-							<div class="cell" data-title="Dato">
-								Technical Consultant
-							</div>
-							<div class="cell" data-title="Imagen">
-								img
-							</div>
-							<div class="cell" data-title="Link 1">
-								link
-							</div>
-                            <div class="cell" data-title="Link 2">
-								link
-							</div>
-                            <div class="cell" data-title="Opciones">
-								<a class="nav-link" href="#"><i class="fa fa-edit" style="width: 12px;font-size: 32px;"></i></a>
-							</div>
-						</div>
-					</div>
-			</div>
-		</div>
-        <footer style="background-color: rgb(248,248,248);">
-            <div class="row">
-                <div class="col-sm-6 col-md-4 footer-navigation">
-                    <h3><a href="#">Mc</a><span>Reif</span></h3>
-                    <h3></h3>
-                    <p class="links"><a href="#">Home</a><strong> · </strong><a href="#">Blog</a><strong> · </strong><a href="#">Pricing</a><strong> · </strong><a href="#">About</a><strong> · </strong><a href="#">Faq</a><strong> · </strong><a href="#">Contact</a></p>
-                    <p
-                        class="company-name">McReif © 2017</p>
-                </div>
-                <div class="col-sm-6 col-md-4 footer-contacts">
-                    <div><span class="fa fa-map-marker footer-contacts-icon"> </span>
-                        <p><span class="new-line-span">21 Revolution Street</span> Madrid, Spain</p>
-                    </div>
-                    <div><i class="fa fa-phone footer-contacts-icon"></i>
-                        <p class="footer-center-info email text-left"> +34 555 123 456</p>
-                    </div>
-                    <div><i class="fa fa-envelope footer-contacts-icon"></i>
-                        <p> <a href="#" target="_blank">paula@mcreif.com</a></p>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="col-md-4 footer-about">
-                    <h4>About the company</h4>
-                    <p> Improve sales in different marketplaces</p>
-                    <div class="social-links social-icons"><a href="#"><i class="fa fa-facebook"></i></a><a href="#"><i class="fa fa-twitter"></i></a><a href="#"><i class="fa fa-linkedin"></i></a><a href="#"><i class="fa fa-github"></i></a></div>
-                </div>
-            </div>
-        </footer>
+        <li class="nav-item-dropdown">
+          <div class="dropdown btn-group" role="group"><button class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button"><i class="fa fa-language" style="color: rgba(0,0,0,0.5);"></i></button>
+            <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="index_es.html">Spanish </a><a class="dropdown-item" role="presentation" href="index.html">English </a></div>
+          </div>
+        </li>
+
+
+        <li class="nav-item-dropdown">
+          <div class="dropdown btn-group" role="group"><button class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button"><i class="fa fa-user" style="color: rgba(0,0,0,0.5);"></i></button>
+            <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation" href="#">Profile </a><a class="dropdown-item" role="presentation" href="#">Settings </a><a class="dropdown-item" role="presentation" href="logout">Logout </a></div>
+          </div>
+        </li>
+      </ul>
     </div>
-    <script src="../static/js/jquery.min.js"></script>
-    <script src="../static/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../static/js/smart-forms.min.js"></script>
+  </div>
+</nav>
+
+
+
+<nav class="navbar navbar-dark fixed-top bg-dark off-canvas" data-right-drawer="0" data-open-drawer="1" style="width: 200px;height: 944px;">
+  <div class="container-fluid flex-column"><button class="btn btn-dark drawer-knob" type="button" data-open="drawer"><i class="fas fa-bars"></i></button>
+    <div class="d-flex justify-content-between brand-line"><a class="navbar-brand" href="#">McReif</a><button class="btn btn-dark" type="button" data-dismiss="drawer"><span class="sr-only">Toggle Navigation&nbsp;</span><i class="fas fa-times"></i></button></div>
+    <ul class="nav navbar-nav flex-column drawer-menu">
+      <li class="nav-item" role="presentation"><a class="nav-link" href="products.html"><i class="fas fa-store-alt"></i>&nbsp; Products</a></li>
+      <li class="nav-item" role="presentation"><a class="nav-link" href="sales.html"><i class="fa fa-shopping-cart"></i>&nbsp; &nbsp;Marketing</a></li>
+      <li class="nav-item" role="presentation"><a class="nav-link" href="customers.html"><i class="fa fa-users"></i>&nbsp; Customers</a></li>
+        <li class="nav-item" role="presentation"><a class="nav-link" href="support.html"><i class="fa fa-life-ring"></i>&nbsp; Support</a></li>
+        <li class="nav-item" role="presentation"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i>&nbsp; Logout</a>
+        </ul>
+      </div>
+</nav>
+
+ <div>
+    {{  graficos | safe }}
+ </div>
+
+    <footer class="mx-auto" style="background-color: rgb(248,248,248);">
+      <div class="row">
+        <div class="col-sm-6 col-md-4 footer-navigation">
+          <h3><a href="#">Mc</a><span>Reif</span></h3>
+          <h3></h3>
+          <p class="links"><a href="#">Home</a><strong> · </strong><a href="#">Blog</a><strong> · </strong><a href="#">Pricing</a><strong> · </strong><a href="#">About</a><strong> · </strong><a href="#">Faq</a><strong> · </strong><a href="#">Contact</a></p>
+          <p class="company-name">McReif © 2020</p>
+        </div>
+        <div class="col-sm-6 col-md-4 footer-contacts">
+          <div><span class="fa fa-map-marker footer-contacts-icon"> </span>
+            <p><span class="new-line-span">Paseo De La Castellana 259C- C.Cuaro Torres Busine, 28064</span> Madrid, Spain</p>
+          </div>
+          <div><i class="fa fa-phone footer-contacts-icon"></i>
+            <p class="footer-center-info email text-left"> +34 639 720 449</p>
+          </div>
+          <div><i class="fa fa-envelope footer-contacts-icon"></i>
+            <p> <a href="#" target="_blank">info@mcreif.com</a></p>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-4 footer-about">
+          <h4>About the company</h4>
+          <p> Improve sales in different marketplaces</p>
+        </div>
+      </div>
+    </footer>
+
+
+
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/smart-forms.min.js' %}"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-    <script src="../static/js/Off-Canvas-Sidebar-Drawer-Navbar.js"></script>
-    <script src="../static/js/Bootstrap-DataTables.js"></script>
-    <script src="../static/js/Off-Canvas-Sidebar-Drawer-Navbar-1.js"></script>
-    <script src="../static/js/Data-Table-with-Search-Sort-Filter-and-Zoom-using-TableSorter.js"></script>
-    <script src="../static/js/Feedback-Form.js"></script>
+    <script src="{% static 'js/Off-Canvas-Sidebar-Drawer-Navbar.js' %}"></script>
+    <script src="{% static 'js/Bootstrap-DataTables.js' %}"></script>
+    <script src="{% static 'js/Off-Canvas-Sidebar-Drawer-Navbar-1.js' %}"></script>
+    <script src="{% static 'js/Data-Table-with-Search-Sort-Filter-and-Zoom-using-TableSorter.js' %}"></script>
+    <script src="{% static 'js/Feedback-Form.js' %}"></script>
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-filter.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/widgets/widget-storage.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
-    <script src="../static/js/Profile-Edit-Form.js"></script>
-</body>
+    <script src="{% static 'js/Profile-Edit-Form.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.2.0/aos.js"></script>
+    <script src="{% static 'js/Animated-Type-Heading.js' %}"></script>
+  </body>
 
-</html>
+  </html>
