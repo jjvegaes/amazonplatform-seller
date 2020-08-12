@@ -20,8 +20,11 @@ def welcome(request):
     return redirect('/login')
 
 def index(request):
-    return render(request, "index.html")
-
+    # Si estamos identificados devolvemos la portada
+    if request.user.is_authenticated:
+        return render(request, "index.html")
+    # En otro caso redireccionamos al login
+    return redirect('/login')
 
 #def testingDf(request):
 #    df = limpieza("_GET_MERCHANT_LISTINGS_DATA_LITE_")
@@ -34,46 +37,82 @@ def testingDf(request):
     return render(request, 'testingDf.html', {'html_table': html_table})
 
 def graphics(request):
-    return render(request, "graphics.html")
+    # Si estamos identificados devolvemos la portada
+    if request.user.is_authenticated:
+        return render(request, "graphics.html")
+    # En otro caso redireccionamos al login
+    return redirect('/login')
 
 
 def customers(request):
     grap_customers = customers2()
-    return render(request, "customers.html", {'graficos': grap_customers})
+    # Si estamos identificados devolvemos la portada
+    if request.user.is_authenticated:
+        return render(request, "customers.html", {'graficos': grap_customers})
+    # En otro caso redireccionamos al login
+    return redirect('/login')
 
 
 def products(request):
     grap_products = productos()
-    return render(request, "products.html", {'graficos': grap_products})
+    # Si estamos identificados devolvemos la portada
+    if request.user.is_authenticated:
+        return render(request, "products.html", {'graficos': grap_products})
+    # En otro caso redireccionamos al login
+    return redirect('/login')
+
 
 
 def refunds(request):
-    return render(request, "refunds.html")
+    # Si estamos identificados devolvemos la portada
+    if request.user.is_authenticated:
+        return render(request, "refunds.html")
+    # En otro caso redireccionamos al login
+    return redirect('/login')
 
 
 def sales(request):
     grap_sales = ventas()
-    return render(request, "sales.html", {'graficos': grap_sales})
+    # Si estamos identificados devolvemos la portada
+    if request.user.is_authenticated:
+        return render(request, "sales.html", {'graficos': grap_sales})
+    # En otro caso redireccionamos al login
+    return redirect('/login')
 
 
 def settings(request):
-    return render(request, "settings.html")
+    # Si estamos identificados devolvemos la portada
+    if request.user.is_authenticated:
+        return render(request, "settings.html")
+    # En otro caso redireccionamos al login
+    return redirect('/login')
 
 
 def shipments(request):
-    return render(request, "shipments.html")
+    # Si estamos identificados devolvemos la portada
+    if request.user.is_authenticated:
+        return render(request, "shipments.html")
+    # En otro caso redireccionamos al login
+    return redirect('/login')
 
 
 def storage_fees(request):
-    return render(request, "storage_fees.html")
-
+    # Si estamos identificados devolvemos la portada
+    if request.user.is_authenticated:
+        return render(request, "storage_fees.html")
+    # En otro caso redireccionamos al login
+    return redirect('/login')
 
 def support(request):
     return render(request, "support.html")
 
 
 def reports(request):
-    return render(request, "reports.html")
+    # Si estamos identificados devolvemos la portada
+    if request.user.is_authenticated:
+        return render(request, "reports.html")
+    # En otro caso redireccionamos al login
+    return redirect('/login')
 
 
 def register(request):
