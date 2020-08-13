@@ -28,6 +28,7 @@ class graficas():
                 else:
                     if len(valores)==1:
                         return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], color=etiquetas[1],hover_data=hovertext, barmode='group', title=titulo, orientation=orientacion)
+                        
                     else:
                         for h in hovertext:
                             etiquetas.append(h)
@@ -119,6 +120,14 @@ class graficas():
         return px.density_mapbox(self.dict_df[id], lat='Latitud', lon='Longitud', z=etiqueta, radius=20,
                         center=dict(lat=40.4167, lon=-3.70325), zoom=5,
                         mapbox_style="stamen-terrain", hover_data=hovertext)
+    
+    
+    def tabla(self, id, etiquetas, titulo):
+        fig= go.Figure(data=go.Table( header=dict(values=etiquetas, font=dict(size=10), align="left"), cells=dict( values=[self.dict_df[id][k].tolist() for k in etiquetas],align = "left")))
+        fig.update_layout(title=titulo)
+        return fig
+    
+    
     #Esta función es capaz de integrar varios gráficos en los mismos ejes, los distintos gráficos se pasan en param como una lista de diccionarios.
     #Por ejemplo:
     #gr=graficas(dict_df)
@@ -183,6 +192,7 @@ class graficas():
     #g4={'id':'barras', 'etiquetas':['asin'], 'valores':['ventas','gastos'], 'colores':False, 'orientacion':'h', 'row':1, 'col':1}
     #gr.varios('df1', [g1,g2,g3,g4], 'prueba', 2, 2)
     def varios(self, param, titulo, ncols, nrows):
+        
         color=0
         cuadricula=list(list())
         for i in range(nrows):
@@ -197,7 +207,7 @@ class graficas():
         fig = make_subplots(
             rows=nrows, cols=ncols,
             shared_xaxes=True,
-            vertical_spacing=0.03,
+            #vertical_spacing=0.03,
             specs=cuadricula,
             subplot_titles = titulos
         )
@@ -224,6 +234,9 @@ class graficas():
                     d.marker.color=self.colors[color]
                     color+=1
                 fig.add_trace(d, row=p['row']+1, col=p['col']+1)
+
+        #if titulo=='Unidades vendidas de inventario exceso':
+        #    fig.update_layout(showlegend=False)
         return fig
         
     #Devuelve el html de fig pasada como parámetro.

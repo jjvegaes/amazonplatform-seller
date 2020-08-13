@@ -46,8 +46,8 @@ class Limpieza():
             headers = df_no_headers.iloc[0]                     # Sacamos la primera fila como titulos de columna y creamos el siguiente dataframe definitivo con esos titulos
             df_headers = pd.DataFrame(df_no_headers.values[1:], columns=headers)
 
-            name = report_id + ".csv"                        # Descomentar estas dos lineas si queremos que se guarde en un excel
-            df_headers.to_csv(name)
+            #name = report_id + ".csv"                        # Descomentar estas dos lineas si queremos que se guarde en un excel
+            #df_headers.to_csv(name)
             return df_headers
 
 
