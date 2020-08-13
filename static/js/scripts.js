@@ -9,3 +9,11 @@ function closeNav() {
   document.getElementById("mySidebar").style.width = "0";
   document.getElementById("main").style.marginLeft = "0";
 }
+
+$(function () {
+        $.datepicker.setDefaults($.datepicker.regional["es"]);
+        $("#from").datepicker({
+        minDate: "-20D",
+        maxDate: "+2M, -10D"
+        });
+        });
