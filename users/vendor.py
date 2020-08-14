@@ -114,7 +114,7 @@ class crearGraficasVendor():
 
     #Dibujamos las gráficas:
     def gen_resenas(self):
-        return self.gr.get_html(self.gr.tam(self.gr.barras('resenas',etiquetas=['ASIN'], valores=['Valoración media del cliente'], titulo='valoracion media', colores=True, orientacion='v', hovertext=['Título del producto']), h=700))
+        return self.gr.get_html(self.gr.tam(self.gr.barras('resenas',etiquetas=['ASIN'], valores=['Valoración media del cliente'], titulo='Valoracion media', colores=True, orientacion='v', hovertext=['Título del producto']), h=700))
     
     def gen_resenas2(self):
         gr1={'id':'indicador', 'id_df':'resenas', 'etiqueta':'Valoración media del cliente', 'mean':True, 'formato':{'suffix': " estrellas"}, 'titulo': 'Valoración media', 'row':0, 'col':0}
