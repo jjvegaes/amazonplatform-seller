@@ -129,6 +129,8 @@ class crearGraficasSeller():
         df["Ingresos"]=df["item-price"]+df["shipping-price"]+df["item-tax"]+df["shipping-tax"]+df["gift-wrap-price"]+df["item-promotion-discount"]+df["ship-promotion-discount"]
         dfaux=df[['asin', 'product-name']]
         dfaux=dfaux.drop_duplicates('asin')
+        todos_asin=list(dfaux['asin'])
+        todos_titulos=list(dfaux['product-name'])
         df1=df.groupby(by="asin", as_index=False).sum()
         df1=pd.merge(df1, dfaux, on='asin')
         df1=df1.sort_values('Ingresos').iloc[::-1]
@@ -159,6 +161,7 @@ class crearGraficasSeller():
         self.gr.add_df('envios gestionados por amazon historico', self.filtra(df4, asin, search_asin, titulo, search_titulo))
         self.gr.add_df('envios gestionados por amazon mapa', self.filtra(df5, asin, search_asin, titulo, search_titulo))
         #df.to_excel(self.myRute+'/informes_seller/'+self.vendedor+'/envios_amazon/envios_gestionados_por_amazon.xlsx')
+        return todos_asin, todos_titulos
     #Creamos todas las gráficas
 
     def graph_envios_amazon(self):
@@ -195,7 +198,6 @@ class crearGraficasSeller():
 
     def get_estado_inventario(self, n_weeks_ago, asin, search_asin, titulo, search_titulo):
         try:
-            
             df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/estado inventario/estado inventario'+str(n_weeks_ago)+'.csv', encoding='cp1252')
         except:
             self.mws_csv('estado inventario', n_weeks_ago)
@@ -206,8 +208,10 @@ class crearGraficasSeller():
             except:
                 return
         df=df.sort_values('total-quantity').iloc[::-1]
+        todos_asin=list(df['asin'])
+        todos_titulo=list(df['product-name'])
         self.gr.add_df('estado inventario', self.filtra(df, asin, search_asin, titulo, search_titulo))
-
+        return todos_asin, todos_titulo
 
 
     def graph_estado_inventario(self):
@@ -288,7 +292,7 @@ secret_key='YBQi9mi3I/UVvTlbyPuElaJX737VBsoepGDTuDW2'
 
 def ventas_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
-    cgs.get_envios_amazon_historico(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
+    todos_asin, todos_titulos=cgs.get_envios_amazon_historico(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
     if len(threading.enumerate())<15:
         hilo=Thread(target=cgs.mws_csv_historico, args=['envios amazon', 20])
         hilo3=Thread(target=cgs.mws_csv, args=['datos inventario', 1])
@@ -298,11 +302,11 @@ def ventas_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=Non
     graph+=cgs.graph_envios_amazon2()
     graph+=cgs.graph_envios_amazon3()
     graph+=cgs.graph_envios_amazon4()
-    return graph
+    return graph, todos_asin, todos_titulos
 
 def productos_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
-    cgs.get_estado_inventario(n_weeks_ago=n_weeks_ago, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
+    todos_asin, todos_titulo=cgs.get_estado_inventario(n_weeks_ago=n_weeks_ago, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
     cgs.get_exceso_inventario(n_weeks_ago, asin, search_asin, titulo, search_titulo)
     if len(threading.enumerate())<15:
         hilo=Thread(target=cgs.mws_csv, args=['estado inventario', 1])
@@ -313,7 +317,7 @@ def productos_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=
     graph+=cgs.graph_exceso_inventario()
     graph+=cgs.graph_exceso_inventario2()
     graph+=cgs.graph_exceso_inventario3()
-    return graph
+    return graph, todos_asin, todos_titulo
 
 def customers_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
