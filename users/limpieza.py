@@ -19,9 +19,10 @@ class Limpieza():
         i=Informe(access_key, merchant_id, secret_key, 'ES')
         # new_date = datetime(2020, 6, 30, 10, 15, 00, 00000)
         #date_month = (datetime.today() - timedelta(weeks=n_weeks_ago))
-
-        rep = i.report(report_id, start_date=start_date, end_date=end_date, marketplace=['ES'])
-
+        try:
+            rep = i.report(report_id, start_date=start_date, end_date=end_date, marketplace=['ES'])
+        except:
+            rep = None
         string_rep = rep.__str__()
         if string_rep == "None":
             print("Informe vacío, prueba con otro informe o con otro rango de fechas.")
