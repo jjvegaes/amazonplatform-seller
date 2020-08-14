@@ -13,9 +13,14 @@ class cambiar_region():
         pass
 
     def accion(self):
-
-        d_data_old = pd.read_excel(self.archivo)
-        d_data_old = d_data_old.rename(columns = {"Región" : "Region"})
+        try:
+            d_data_old = pd.read_excel(self.archivo)
+            d_data_old = d_data_old.rename(columns = {"Región" : "Region"})
+        except:
+            d_data_old = pd.read_csv(self.archivo)
+            d_data_old = d_data_old.rename(columns = {"ship-state" : "Region"})
+            d_data_old = d_data_old.rename(columns = {"ship-postal-code" : "Código postal"})
+        
         codigos = []
         for i in range(1, 10):
             codigos.append("0" + str(i))

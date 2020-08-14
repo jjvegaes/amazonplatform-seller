@@ -12,12 +12,13 @@ class Informe():
     
     #Devuelve un informe en concreto dados los parámetros necesarios para un informe
     def report(self, report, start_date=None, end_date=None, marketplace=None):
-        start_sleep=5
+        start_sleep=45
         marketplaces=[]
         if marketplace!=None:#Especificamos los ids de los marketplaces
             for i in range(len(marketplace)):
                 marketplaces.append(self.marketplaces[marketplace[i]])
         request_id=self.amazon_mws.request_report(report_type=report, start_date=start_date, end_date=end_date, marketplaceids=marketplaces)#Pedimos el informe
+        print('Informe pedido')
         time.sleep(start_sleep)
         info=self.amazon_mws.get_report_request_list(request_id.parsed['ReportRequestInfo']['ReportRequestId']['value'])#Comprobamos su estado
         while info.parsed['ReportRequestInfo']['ReportProcessingStatus']['value']=='_SUBMITTED_' or info.parsed['ReportRequestInfo']['ReportProcessingStatus']['value']=='_IN_PROGRESS_':#Si aún se esta generando seguimos comprobando su estado
