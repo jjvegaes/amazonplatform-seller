@@ -41,13 +41,13 @@ class crearGraficasSeller():
 
     def filtra_x_titulo(self, df, titulo):
         if titulo!=None:
-            return df[df['Título del producto'].isin(titulo)]
+            return df[df['product-name'].isin(titulo)]
         else:
             return df
 
     def filtra_x_search_titulo(self, df, titulo):
         if titulo!=None:
-            return df[df['Título del producto'].str.contains(titulo, case=False)]
+            return df[df['product-name'].str.contains(titulo, case=False)]
         else:
             return df
 
@@ -79,6 +79,8 @@ class crearGraficasSeller():
                 df=df.append(df2, ignore_index = True)
                 if id=='datos inventario':
                     df = df.drop_duplicates('b"amazon-order-id')
+                elif id=='comentarios negativos':
+                    df= df.drop_duplicates('Comentarios')
                 df.to_csv(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+'historico'+'.csv', encoding="utf-8")
                 print('Cargado el informe '+id)
                
@@ -125,7 +127,10 @@ class crearGraficasSeller():
                 if df[v][i] != df[v][i]:
                     df[v][i]=0
         df["Ingresos"]=df["item-price"]+df["shipping-price"]+df["item-tax"]+df["shipping-tax"]+df["gift-wrap-price"]+df["item-promotion-discount"]+df["ship-promotion-discount"]
+        dfaux=df[['asin', 'product-name']]
+        dfaux=dfaux.drop_duplicates('asin')
         df1=df.groupby(by="asin", as_index=False).sum()
+        df1=pd.merge(df1, dfaux, on='asin')
         df1=df1.sort_values('Ingresos').iloc[::-1]
         df2 =df1.nlargest(20, 'Ingresos')#Obtenemos los 20 ASIN con más ingresos
         df3 =df1.nlargest(20, 'quantity-shipped')#Obtenemos los 20 asin con más unidades enviadas
@@ -136,7 +141,6 @@ class crearGraficasSeller():
             df4['ingresos por día'][i]=df4['payments-date'][i][:10]
         df4=df4.groupby(by="ingresos por día", as_index=False).sum()
         df4=df4.sort_values('ingresos por día').iloc[::-1]
-        print(list(df4['quantity-shipped']))
         df4['Precio medio de venta']=df4['Ingresos']/df4['quantity-shipped']
         #Para el mapa de calor:
         o=cambiar_region(self.myRute+'/informes_seller/'+self.vendedor+'/envios amazon/envios amazon'+'historico'+'.csv')
@@ -160,14 +164,14 @@ class crearGraficasSeller():
     def graph_envios_amazon(self):
         try:
         #return self.gr.get_html(self.gr.circular('envios gestionados por amazon', ['sales-channel', 'sku'], 'quantity-shipped', 'prueba'))
-            return self.gr.get_html(self.gr.tam(self.gr.barras('envios gestionados por amazon',etiquetas=['asin'], valores=['Ingresos'], titulo='Ingresos por ASIN', colores=True, orientacion='v', hovertext=['asin']), h=700))
+            return self.gr.get_html(self.gr.tam(self.gr.barras('envios gestionados por amazon',etiquetas=['asin'], valores=['Ingresos'], titulo='Ingresos por ASIN', colores=True, orientacion='v', hovertext=['product-name']), h=700))
         except:
             return '\n\nNo se ha podido cargar el gráfico "Ingresos por ASIN"\n\n'
     
     def graph_envios_amazon2(self):
         try:
-            gr1={'id':'circular', 'id_df':'envios gestionados por amazon 20 ingresos', 'etiquetas':['asin'], 'valor':'Ingresos', 'titulo':'Ingresos', 'row':0, 'col':0, 'hovertext':[]}
-            gr2={'id':'circular','id_df':'envios gestionados por amazon 20 cantidad', 'etiquetas':['asin'], 'valor':'quantity-shipped', 'titulo':'Unidades','row':0, 'col':1, 'hovertext':[]}
+            gr1={'id':'circular', 'id_df':'envios gestionados por amazon 20 ingresos', 'etiquetas':['asin'], 'valor':'Ingresos', 'titulo':'Ingresos', 'row':0, 'col':0, 'hovertext':['product-name']}
+            gr2={'id':'circular','id_df':'envios gestionados por amazon 20 cantidad', 'etiquetas':['asin'], 'valor':'quantity-shipped', 'titulo':'Unidades','row':0, 'col':1, 'hovertext':['product-name']}
             return self.gr.get_html(self.gr.tam(self.gr.varios([gr1, gr2], 'Top 20 productos', 2, 1),h=600, color='lightblue'))
         except:
             return '\n\nNo se ha podido cargar el gráfico "Top 20 productos"\n\n'
@@ -191,10 +195,12 @@ class crearGraficasSeller():
 
     def get_estado_inventario(self, n_weeks_ago, asin, search_asin, titulo, search_titulo):
         try:
+            
             df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/estado inventario/estado inventario'+str(n_weeks_ago)+'.csv', encoding='cp1252')
         except:
             self.mws_csv('estado inventario', n_weeks_ago)
             try:
+                print('except')
                 df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/estado inventario/estado inventario'+str(n_weeks_ago)+'.csv')
                 self.gr.add_df('estado inventario', self.filtra(df, asin, search_asin, titulo, search_titulo))
             except:
@@ -207,7 +213,7 @@ class crearGraficasSeller():
     def graph_estado_inventario(self):
         try:
             return self.gr.get_html(self.gr.tam(self.gr.barras('estado inventario',etiquetas=['asin'], valores=['total-quantity','sellable-quantity'], titulo='Inventario disponible', colores=False, orientacion='v', hovertext=['product-name']), h=700))
-        except
+        except:
             return '\n\nNo se ha podido cargar el gráfico "INventario disponible"\n\n'
 
     #INFORME: COMENTARIOS NEGATIVOS
@@ -221,7 +227,6 @@ class crearGraficasSeller():
                 df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/comentarios negativos/comentarios negativos'+'historico'+'.csv')
             except:
                 return
-        print(df.columns)
         #df["Comentarios"]=df["Comentarios"].astype(str)
         #df["Comentarios"]=[x.encode("utf-8") for x in list(df['Comentarios'])]
         df = df.rename(columns = {"Clasificaci\\xc3\\xb3n" : "Clasificación"})
@@ -239,27 +244,29 @@ class crearGraficasSeller():
         try:
             df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/exceso inventario/exceso inventario'+str(n_weeks_ago)+'.csv')
         except:
+            print('except')
             self.mws_csv('exceso inventario', n_weeks_ago)
             try:
                 df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/exceso inventario/exceso inventario'+str(n_weeks_ago)+'.csv')
             except:
                 return
         df["a"]=1
+        df =df.rename(columns = {'Asin' : 'asin', 'Product Name':'product-name'})
         self.gr.add_df('excedente de inventario', self.filtra(df, asin, search_asin, titulo, search_titulo))
 
 
     def graph_exceso_inventario(self):
         try:
-            return self.gr.get_html(self.gr.tam(self.gr.barras('excedente de inventario',etiquetas=['Asin'], valores=['Total Quantity (Sellable)', 'Estimated Excess'], titulo='Cantidad total y excesa', orientacion='v', hovertext=['Product Name']), h=700))
+            return self.gr.get_html(self.gr.tam(self.gr.barras('excedente de inventario',etiquetas=['asin'], valores=['Total Quantity (Sellable)', 'Estimated Excess'], titulo='Cantidad total y excesa', orientacion='v', hovertext=['product-name']), h=700))
         except:
             return '\n\nNo se ha podido cargar el gráfico "Cantidad total y excesa de inventario"\n\n'
     
     def graph_exceso_inventario2(self):
         try:
-            gr1={'id':'barras', 'id_df':'excedente de inventario', 'etiquetas':['Asin', 'Marketplace'], 'valores':['Units Sold - Last 7 Days'], 'orientacion':'v', 'hovertext':['Product Name'], 'row':0, 'col':0, 'titulo':'Unidades vendidas últimos 7 días', 'colores':False}
-            gr2={'id':'barras', 'id_df':'excedente de inventario', 'etiquetas':['Asin', 'Marketplace'], 'valores':['Units Sold - Last 30 Days'], 'orientacion':'v', 'hovertext':['Product Name'], 'row':0, 'col':1, 'titulo':'Unidades vendidas últimos 30 días', 'colores':False}
-            gr3={'id':'barras', 'id_df':'excedente de inventario', 'etiquetas':['Asin', 'Marketplace'], 'valores':['Units Sold - Last 60 Days'], 'orientacion':'v', 'hovertext':['Product Name'], 'row':1, 'col':0, 'titulo':'Unidades vendidas últimos 60 días', 'colores':False}
-            gr4={'id':'barras', 'id_df':'excedente de inventario', 'etiquetas':['Asin', 'Marketplace'], 'valores':['Units Sold - Last 90 Days'], 'orientacion':'v', 'hovertext':['Product Name'], 'row':1, 'col':1, 'titulo':'Unidades vendidas últimos 90 días', 'colores':False}
+            gr1={'id':'barras', 'id_df':'excedente de inventario', 'etiquetas':['asin', 'Marketplace'], 'valores':['Units Sold - Last 7 Days'], 'orientacion':'v', 'hovertext':['Marketplace'], 'row':0, 'col':0, 'titulo':'Unidades vendidas últimos 7 días', 'colores':False}
+            gr2={'id':'barras', 'id_df':'excedente de inventario', 'etiquetas':['asin', 'Marketplace'], 'valores':['Units Sold - Last 30 Days'], 'orientacion':'v', 'hovertext':['Marketplace'], 'row':0, 'col':1, 'titulo':'Unidades vendidas últimos 30 días', 'colores':False}
+            gr3={'id':'barras', 'id_df':'excedente de inventario', 'etiquetas':['asin', 'Marketplace'], 'valores':['Units Sold - Last 60 Days'], 'orientacion':'v', 'hovertext':['Marketplace'], 'row':1, 'col':0, 'titulo':'Unidades vendidas últimos 60 días', 'colores':False}
+            gr4={'id':'barras', 'id_df':'excedente de inventario', 'etiquetas':['asin', 'Marketplace'], 'valores':['Units Sold - Last 90 Days'], 'orientacion':'v', 'hovertext':['Marketplace'], 'row':1, 'col':1, 'titulo':'Unidades vendidas últimos 90 días', 'colores':False}
             fig = self.gr.tam(self.gr.varios([gr1, gr2, gr3, gr4], 'Unidades vendidas de inventario exceso', 2, 2), h=800, color='lightblue')
             fig.update_layout(showlegend=False)
             return self.gr.get_html(fig)
@@ -270,7 +277,7 @@ class crearGraficasSeller():
     
     def graph_exceso_inventario3(self):
         try:
-            return self.gr.get_html(self.gr.tam(self.gr.circular('excedente de inventario', etiquetas=[ 'Alert', 'Marketplace', 'Asin'], valor='a', titulo='Alertas', hovertext=[]), h=800))
+            return self.gr.get_html(self.gr.tam(self.gr.circular('excedente de inventario', etiquetas=[ 'Alert', 'Marketplace', 'asin'], valor='a', titulo='Alertas', hovertext=['product-name']), h=800))
         except:
             return '\n\nNo se ha podido cargar el gráfico "Ingresos por ASIN"\n\n'
 
@@ -303,11 +310,12 @@ def productos_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=
         hilo.start()
         hilo2.start()
     graph=cgs.graph_estado_inventario()
-    graph+= cgs.graph_exceso_inventario()
+    graph+=cgs.graph_exceso_inventario()
     graph+=cgs.graph_exceso_inventario2()
     graph+=cgs.graph_exceso_inventario3()
+    return graph
 
-def customers(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
+def customers_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
     cgs.get_comentarios_negativos(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
     if len(threading.enumerate())<15:
@@ -317,10 +325,7 @@ def customers(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, a
     return graph
 
 
-
-
-
-print(ventas_seller('izas', access_key, merchant_id, secret_key, 2))
+print(customers_seller('izas', access_key, merchant_id, secret_key, 2))
 #print(ventas('nose', access_key, merchant_id, secret_key, 1))
 #hilo=Thread(target=hola, args=['envios amazon'], name='mws')
 #hilo.start()
