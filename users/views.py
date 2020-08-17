@@ -10,7 +10,7 @@ from django import forms
 from django.urls import path
 
 from users import limpieza
-from users.limpieza import limpieza
+from users.limpieza import Limpieza
 from users.vendor import productos, customers2, ventas
 
 class ContactForm(forms.Form):
@@ -69,7 +69,7 @@ def index(request):
 
 
 def testingDf(request):
-    df = limpieza("_GET_MERCHANT_LISTINGS_DATA_LITE_")
+    df = Limpieza("_GET_MERCHANT_LISTINGS_DATA_LITE_")
     html_table = df.to_html()
     return render(request, 'testingDf.html', {'html_table': html_table})
 
@@ -91,7 +91,9 @@ def customers(request):
 
 
 def products(request):
-    grap_products = productos()
+    if request.POST.get('edad'):
+        edad = int(request.POST.get('edad'))
+    grap_products, a, b = productos(search_asin=edad)
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:
         return render(request, "products.html", {'graficos': grap_products})

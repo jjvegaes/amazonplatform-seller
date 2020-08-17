@@ -136,6 +136,11 @@
         </div>
     </div>
 
+    <form action="/" method="POST">
+        <input type="number" name="edad" value="0" style="width:40px" / >
+        <input type="submit" value="Filtrar">
+        {% csrf_token %}
+    </form>
     <div id="graphicsmargin">
         {{ graficos | safe }}
     </div>
