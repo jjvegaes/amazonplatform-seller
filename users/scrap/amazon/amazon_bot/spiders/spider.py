@@ -84,25 +84,25 @@ class AmazonBotSpider(CrawlSpider):
                 final=valoracion.find(" ")
                 ml_item['valoracion_media']=valoracion[12:final]#El principio de la valoración está a partir de el índice 12 y acaba cuando hay un espacio
                 '''
-                print('1')
-                print(Link)
+                #print('1')
+                #print(Link)
                 ml_item['asin'], ml_item['rank'], ml_item['categoria'], ml_item['valoracion_media'], ml_item['start_date']=self.get_details(Link[0])
             else:#No existe esta sección, no podemos obtener estos datos
                 
                 if Link!=[]:
-                    print('2')
+                    #print('2')
                     ml_item['asin'], ml_item['rank'], ml_item['categoria'], ml_item['valoracion_media'], ml_item['start_date']=self.get_details3(Link[0])
                 else:
                     Link = response.xpath('//*[@id="detail-bullets"]').extract()
                     if Link!=[]:
-                        print('3')
-                        print(Link)
+                        #print('3')
+                        #print(Link)
                         ml_item['asin'], ml_item['rank'], ml_item['categoria'], ml_item['valoracion_media'], ml_item['start_date']=self.get_details(Link[0])
-                        print('adios')
+                        
                     else:
                         Link=response.xpath('//*[@id="detailBullets"]').extract()
                         if Link!=[]:
-                            print(Link)
+                            #print(Link)
                             ml_item['asin'], ml_item['rank'], ml_item['categoria'], ml_item['valoracion_media'], ml_item['start_date']=self.get_details3(Link[0])
                         else:
                             ml_item['categoria']=''
@@ -137,8 +137,8 @@ class AmazonBotSpider(CrawlSpider):
             final=valoracion.find(" ")
             ml_item['valoracion_media']=valoracion[12:final]
             '''
-            print('4')
-            print(Link)
+            #print('4')
+            #print(Link)
             ml_item['asin'], ml_item['rank'], ml_item['categoria'], ml_item['valoracion_media'], ml_item['start_date']=self.get_details2(Link[0])
         if (self.marketplace=='it' or self.marketplace=='de') and ml_item['categoria'] != '':
             ml_item['categoria']=ml_item['categoria'][3:]
@@ -231,7 +231,7 @@ class AmazonBotSpider(CrawlSpider):
 
     #Ejemplo de estos productos: busca shirt en amazon.com y selecciona uno
     def get_details3(self, details):
-        print("hola")
+        
         #Obtenemos ASIN:
         indice=details.find('asin=')#Buscamos en Link el asin
         asin=details[indice+6:indice+16]#El Asin estará a 5 posiciones de indice (porque len('asin=')==5) y tiene un tamaño de 10 (10+5=15)
