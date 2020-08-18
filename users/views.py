@@ -91,12 +91,17 @@ def customers(request):
 
 
 def products(request):
+    search_asin=None
+    asins_picked=None
     if request.POST.get('edad'):
-        edad = int(request.POST.get('edad'))
-    grap_products, a, b = productos(search_asin=edad)
+        search_asin = int(request.POST.get('edad'))
+        form = yourForm(request.POST)
+        asins_picked=form.cleaned_data.get('picked')
+    grap_products, asins, b = productos(asin=asins_picked, search_asin=search_asin)
+    form=yourForm(asins)
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:
-        return render(request, "products.html", {'graficos': grap_products})
+        return render(request, "products.html", {'graficos': grap_products, 'form':form})
     # En otro caso redireccionamos al login
     return redirect('/login')
 
@@ -163,3 +168,12 @@ def logout(request):
     do_logout(request)
     # Redireccionamos a la portada
     return redirect('/login')
+
+from django import forms
+
+class yourForm(forms.Form):
+    def __init__(self, o):
+        OPTIONS=list()
+        for i in range(len(o)):
+            OPTIONS.append((o[i], o[i]))
+        self.options = forms.MultipleChoiceField( choices=OPTIONS, widget=forms.CheckboxSelectMultiple(),label="ASIN", required=True, error_messages={'required': 'D'})

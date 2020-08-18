@@ -140,7 +140,18 @@
         <input type="number" name="edad" value="0" style="width:40px" / >
         <input type="submit" value="Filtrar">
         {% csrf_token %}
+        {% for field in form %}
+            <div class="col-md-12 dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{ field.label_tag }}
+                    <span class="caret"></span>
+                </button>
+                <div class="dropdown-menu">
+                    <div><a href="#">{{ field }}</a></div>
+                </div>
+            </div>
+        {% endfor %}
     </form>
+    
     <div id="graphicsmargin">
         {{ graficos | safe }}
     </div>

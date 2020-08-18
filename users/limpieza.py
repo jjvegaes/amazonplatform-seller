@@ -6,7 +6,7 @@ import mws
 import re
 import os
 from datetime import datetime, timedelta
-from users.informes import Informe
+from informes import Informe
 #from users import informes as Informe
 
 

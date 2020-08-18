@@ -24,7 +24,7 @@ class graficas():
                 return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], hover_data=hovertext, color=valores[0], title=titulo, orientation=orientacion)
             else:
                 if len(valores)==1 and len(etiquetas)==1:
-                    return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], barmode='group',hover_data=hovertext, title=titulo, orientation=orientacion, labels={'y':valores[0]})
+                    return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], barmode='group',hover_data=hovertext, title=titulo, orientation=orientacion)
                 else:
                     if len(valores)==1:
                         return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], color=etiquetas[1],hover_data=hovertext, barmode='group', title=titulo, orientation=orientacion)
