@@ -4,8 +4,8 @@ import os
 import plotly.express as px
 import plotly
 
-from users.graficos import graficas
-from users.cambiar_region import cambiar_region
+from graficos import graficas
+from cambiar_region import cambiar_region
 
 #Esta clase obtendrá los dataframes y el html de todas las gráficas, dentro hay dos tipos de funciones, las que empiezan por 'get' se encargan de obtener los dataframes y guardarlos en la clase Graficas, las que empiezan por 'gen' se encargan de obtener el html de los gráficos usando funciones de la clase Graficas
 class crearGraficasVendor():
@@ -238,8 +238,6 @@ class crearGraficasVendor():
     def get_todo(self, asin, search_asin, titulo, search_titulo):
         try:
             ventas=pd.read_excel(self.myRute+'/informes_vendor/'+self.vendedor+'/diagnostico de ventas/Diagnóstico de ventas_Vista de detalles_ES3.xlsx')
-            todos_asin=list(df['ASIN'])
-            todos_titulo=list(df['Título del producto'])
             ventas = ventas.groupby(by="ASIN").sum()
             trafico=pd.read_excel(self.myRute+'/informes_vendor/'+self.vendedor+'/diagnostico de trafico/Diagnóstico de tráfico_Detalles_ES3.xlsx')
             trafico=trafico.drop(trafico[trafico['% de visitas totales']=='—'].index)
@@ -249,6 +247,8 @@ class crearGraficasVendor():
             publicidad=publicidad.rename(columns = {'ASIN anunciados' : 'ASIN'})
             publicidad = publicidad.groupby(by="ASIN").sum()
             inventario=pd.read_excel(self.myRute+'/informes_vendor/'+self.vendedor+'/estado inventario/Estado del inventario_ES3.xlsx')
+            todos_asin=list(inventario['ASIN'])
+            todos_titulo=list(inventario['Título del producto'])
             #inventario = inventario.groupby(by="ASIN").sum()
             df=pd.merge(ventas, trafico, on='ASIN')
             df=pd.merge(df, publicidad, on='ASIN')
@@ -272,7 +272,7 @@ class crearGraficasVendor():
 
     def gen_visitas_ventas_publicidad(self):
         try:
-            gr1={'id':'barras', 'etiquetas':['ASIN'], 'valores':['% de visitas totales', 'Ingresos por envíos: % del total'], 'colores':False, 'secondary_y':False, 'hovertext':['Título del producto']}
+            gr1={'id':'barras', 'etiquetas':['ASIN'], 'valores':['% de visitas totales', 'Ingresos por envíos: % del total'], 'colores':False, 'secondary_y':False, 'hovertext':['Título del producto', 'Ingresos por envíos']}
             gr2={'id':'lineal', 'x':'ASIN', 'y':'Gasto', 'rectas':True, 'puntos':False, 'secondary_y':True, 'hovertext':['Título del producto']}
             return self.gr.get_html(self.gr.multiple('estratefia ordenado visitas', [gr1, gr2], 'Visitas, ventas y gasto en publicidad', True, '% de visitas y ventas', 'Gasto publicidad'))
         except:
@@ -361,8 +361,6 @@ def todo(vendedor):
     graph=index1(vendedor)
     graph=graph+index2(vendedor)
     return graph+index3(vendedor)'''
-
-
 
 
 
