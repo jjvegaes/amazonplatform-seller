@@ -10,6 +10,7 @@ from threading import Thread
 import threading
 import time
 import math
+import re
 
 mutex=threading.Lock()
 
@@ -129,6 +130,8 @@ class crearGraficasSeller():
         df["Ingresos"]=df["item-price"]+df["shipping-price"]+df["item-tax"]+df["shipping-tax"]+df["gift-wrap-price"]+df["item-promotion-discount"]+df["ship-promotion-discount"]
         dfaux=df[['asin', 'product-name']]
         dfaux=dfaux.drop_duplicates('asin')
+        todos_asin=list(dfaux['asin'])
+        todos_titulos=list(dfaux['product-name'])
         df1=df.groupby(by="asin", as_index=False).sum()
         df1=pd.merge(df1, dfaux, on='asin')
         df1=df1.sort_values('Ingresos').iloc[::-1]
@@ -159,6 +162,7 @@ class crearGraficasSeller():
         self.gr.add_df('envios gestionados por amazon historico', self.filtra(df4, asin, search_asin, titulo, search_titulo))
         self.gr.add_df('envios gestionados por amazon mapa', self.filtra(df5, asin, search_asin, titulo, search_titulo))
         #df.to_excel(self.myRute+'/informes_seller/'+self.vendedor+'/envios_amazon/envios_gestionados_por_amazon.xlsx')
+        return todos_asin, todos_titulos
     #Creamos todas las gráficas
 
     def graph_envios_amazon(self):
@@ -195,7 +199,6 @@ class crearGraficasSeller():
 
     def get_estado_inventario(self, n_weeks_ago, asin, search_asin, titulo, search_titulo):
         try:
-            
             df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/estado inventario/estado inventario'+str(n_weeks_ago)+'.csv', encoding='cp1252')
         except:
             self.mws_csv('estado inventario', n_weeks_ago)
@@ -206,8 +209,10 @@ class crearGraficasSeller():
             except:
                 return
         df=df.sort_values('total-quantity').iloc[::-1]
+        todos_asin=list(df['asin'])
+        todos_titulo=list(df['product-name'])
         self.gr.add_df('estado inventario', self.filtra(df, asin, search_asin, titulo, search_titulo))
-
+        return todos_asin, todos_titulo
 
 
     def graph_estado_inventario(self):
@@ -252,6 +257,11 @@ class crearGraficasSeller():
                 return
         df["a"]=1
         df =df.rename(columns = {'Asin' : 'asin', 'Product Name':'product-name'})
+        df['Your Price']=[float(re.findall("\d+\.\d+", x)[0]) for x in list(df['Your Price'])]
+        marketplaces=set(list(df['Marketplace']))
+        for m in marketplaces:
+            dfaux=df[df.Marketplace.isin([m])]
+            self.gr.add_df('excedente de inventario '+m, self.filtra(dfaux, asin, search_asin, titulo, search_titulo))
         self.gr.add_df('excedente de inventario', self.filtra(df, asin, search_asin, titulo, search_titulo))
 
 
@@ -281,6 +291,20 @@ class crearGraficasSeller():
         except:
             return '\n\nNo se ha podido cargar el gráfico "Ingresos por ASIN"\n\n'
 
+    def graph_exceso_inventario4(self):
+        #try:
+        marketplaces=set(list(self.gr.dict_df['excedente de inventario']['Marketplace']))
+        grs=""
+        for m in marketplaces:
+            gr1={'id':'lineal', 'x':'asin', 'y':'Your Price', 'rectas':True, 'puntos':False, 'hovertext':None, 'secondary_y':True}
+            gr2={'id':'lineal', 'x':'asin', 'y':'Recommended sales price', 'rectas':True, 'puntos':False, 'hovertext':None, 'secondary_y':True}
+            gr3={'id':'barras', 'etiquetas':['asin'], 'valores':['Recommended sale duration (days)'], 'colores':False, 'hovertext':['product-name'], 'secondary_y':False}
+            grs+= self.gr.get_html(self.gr.tam(self.gr.multiple('excedente de inventario '+m, [gr3, gr1, gr2], 'Precio de venta y recomendado '+m, True, 'Días', 'Precio'), h=450, color='aquamarine'))
+        return grs
+        #except:
+        #    return '\n\nNo se ha podido cargar el gráfico "Precio de venta y recomendado"\n\n'
+
+
 access_key='AKIAIRF2R7EOJFNTGBEA'
 merchant_id='A2GU67S0S60AC1'
 secret_key='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'
@@ -288,13 +312,18 @@ secret_key='YBQi9mi3I/UVvTlbyPuElaJX737VBsoepGDTuDW2'
 
 def ventas_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
-    cgs.get_envios_amazon_historico(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
+    todos_asin, todos_titulos=cgs.get_envios_amazon_historico(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
+    graph=''
     if len(threading.enumerate())<15:
         hilo=Thread(target=cgs.mws_csv_historico, args=['envios amazon', 20])
         hilo3=Thread(target=cgs.mws_csv, args=['datos inventario', 1])
-        hilo.start()
-        hilo3.start()
-    graph= cgs.graph_envios_amazon()
+        try:
+            hilo.start()
+            hilo3.start()
+            graph+='Se actualizan los gráficos'
+        except:
+            graph+='No se actualizan los gráficos'
+    graph+= cgs.graph_envios_amazon()
     graph+=cgs.graph_envios_amazon2()
     graph+=cgs.graph_envios_amazon3()
     graph+=cgs.graph_envios_amazon4()
@@ -302,30 +331,41 @@ def ventas_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=Non
 
 def productos_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
-    cgs.get_estado_inventario(n_weeks_ago=n_weeks_ago, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
+    todos_asin, todos_titulo=cgs.get_estado_inventario(n_weeks_ago=n_weeks_ago, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
     cgs.get_exceso_inventario(n_weeks_ago, asin, search_asin, titulo, search_titulo)
+    graph=""
     if len(threading.enumerate())<15:
         hilo=Thread(target=cgs.mws_csv, args=['estado inventario', 1])
         hilo2=Thread(target=cgs.mws_csv, args=['exceso inventario', 1])
-        hilo.start()
-        hilo2.start()
-    graph=cgs.graph_estado_inventario()
+        try:
+            hilo.start()
+            hilo2.start()
+            graph+='Se actualizan los gráficos'
+        except:
+            graph+='No se actualizan los gráficos'
+    graph+=cgs.graph_estado_inventario()
     graph+=cgs.graph_exceso_inventario()
     graph+=cgs.graph_exceso_inventario2()
     graph+=cgs.graph_exceso_inventario3()
+    graph+=cgs.graph_exceso_inventario4()
     return graph
 
 def customers_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
     cgs.get_comentarios_negativos(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
+    graph=''
     if len(threading.enumerate())<15:
         hilo=Thread(target=cgs.mws_csv_historico, args=['comentarios negativos', 20])
-        hilo.start()
-    graph=cgs.graph_comentarios_negativos()
+        try:
+            hilo.start()
+            graph+='Se actualizan los gráficos'
+        except:
+            graph+='No se actualizan los gráficos'
+    graph+=cgs.graph_comentarios_negativos()
     return graph
 
 
-print(customers_seller('izas', access_key, merchant_id, secret_key, 2))
+#print(productos_seller('izas', access_key, merchant_id, secret_key, 2))
 #print(ventas('nose', access_key, merchant_id, secret_key, 1))
 #hilo=Thread(target=hola, args=['envios amazon'], name='mws')
 #hilo.start()
