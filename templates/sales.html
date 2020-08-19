@@ -49,41 +49,57 @@
             <button style="background-color:transparent" data-toggle="collapse" class="navbar-toggler"
                     data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span
                     class="navbar-toggler-icon"></span></button>
-            <div
-                    class="collapse navbar-collapse" id="navcol-1">
+
+
+            <div class="collapse navbar-collapse" id="navcol-1" style="margin-right: 25%">
                 <ul class="nav navbar-nav ml-auto">
 
-                    <li class="nav-item-dropdown" role="presentation">
-                        <div class="dropdown btn-group" role="group">
-                            <button class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
-                                    type="button"><i class="fa fa-envelope" style="color: rgba(0,0,0,0.5);"></i>
-                            </button>
-                            <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation"
-                                                                      href="#">My notifications </a></div>
+                    <li class="dropdown show nav-item"><a class="dropdown-toggle nav-link" data-toggle="dropdown"
+                                                          aria-expanded="true" href="#"><i class="fas fa-bell"></i>
+
+&nbsp;</a>
+                        <div class="dropdown-menu notification-menu" role="menu"><a
+                                class="dropdown-item notification-item" role="presentation" href="#">
+                            <div><p>La campaña del producto "X" se ha detenido automáticamente</p>
+                                <span style="font-size: 12px;">5 minutes ago...</span></div>
+                        </a>
+                            <a
+                                    class="dropdown-item notification-item" role="presentation" href="#">
+                                <div>
+                                    <p>El producto "Y" puede posicionarse mejor</p>
+                                    <span style="font-size: 12px;">38 minutes ago...</span></div>
+                            </a><a class="dropdown-item notification-item" role="presentation" href="#">
+                                <div><p>Se ha perdido la buybox de 21 productos</p>
+                                    <span style="font-size: 12px;">50 minutes ago...</span></div>
+                            </a></div>
+                    </li>
+
+                    <li class="dropdown show nav-item"><a class="dropdown-toggle nav-link" data-toggle="dropdown"
+                                                          aria-expanded="false" href="#"><i class="fa fa-language" style="color: rgba(0,0,0,0.5);"></i>&nbsp;</a>
+                        <div class="dropdown-menu" role="menu"><a
+                                class="dropdown-item" role="presentation" href="index_es.html">
+                            <p>Spanish</p>
+                        </a>
+                            <a class="dropdown-item" role="presentation" href="index.html">
+                                    <p>English</p>
+                            </a>
                         </div>
                     </li>
 
-                    <li class="nav-item-dropdown">
-                        <div class="dropdown btn-group" role="group">
-                            <button class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
-                                    type="button"><i class="fa fa-language" style="color: rgba(0,0,0,0.5);"></i>
-                            </button>
-                            <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation"
-                                                                      href="index_es.html">Spanish </a><a
-                                    class="dropdown-item" role="presentation" href="index.html">English </a></div>
-                        </div>
-                    </li>
 
-
-                    <li class="nav-item-dropdown">
-                        <div class="dropdown btn-group" role="group">
-                            <button class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
-                                    type="button"><i class="fa fa-user" style="color: rgba(0,0,0,0.5);"></i></button>
-                            <div class="dropdown-menu" role="menu"><a class="dropdown-item" role="presentation"
-                                                                      href="#">Profile </a><a class="dropdown-item"
-                                                                                              role="presentation"
-                                                                                              href="#">Settings </a><a
-                                    class="dropdown-item" role="presentation" href="logout">Logout </a></div>
+                    <li class="dropdown show nav-item"><a class="dropdown-toggle nav-link" data-toggle="dropdown"
+                                                          aria-expanded="false" href="#"><i class="fa fa-user" style="color: rgba(0,0,0,0.5);"></i>&nbsp;</a>
+                        <div class="dropdown-menu" role="menu">
+                            <a class="dropdown-item" role="presentation" href="settings.html">
+                                <div>
+                                    <p><i class="fas fa-user-cog"></i> Settings</p>
+                                </div>
+                            </a>
+                            <a class="dropdown-item" role="presentation" href="logout">
+                                <div>
+                                    <p><i class="fas fa-sign-out-alt"></i> Logout</p>
+                                </div>
+                            </a>
                         </div>
                     </li>
                 </ul>
@@ -93,11 +109,12 @@
 </div>
 
 <nav class="navbar navbar-dark fixed-top bg-dark off-canvas" data-right-drawer="0" data-open-drawer="1"
-     style="width: 200px;height: 944px;">
+     style="width: 13%;">
     <div class="container-fluid flex-column">
-        <button class="btn btn-dark drawer-knob" type="button" data-open="drawer"><i class="fas fa-bars"></i></button>
-        <div class="d-flex justify-content-between brand-line"><a class="navbar-brand" href="#">McReif</a></div>
+        <br>
         <ul class="nav navbar-nav flex-column drawer-menu">
+            <li class="nav-item" role="presentation"><a class="nav-link" href="index.html"><i
+                    class="fas fa-home"></i>&nbsp; Home</a></li>
             <li class="nav-item" role="presentation"><a class="nav-link" href="products.html"><i
                     class="fas fa-store-alt"></i>&nbsp; Products</a></li>
             <li class="nav-item" role="presentation"><a class="nav-link" href="sales.html"><i
@@ -111,6 +128,17 @@
         </ul>
     </div>
 </nav>
+
+    <div class="caption v-middle text-center">
+
+    <form action="/sales.html" method="POST">
+        <input type="text" name="asin" value="" style="width:100px" / >
+        <input type="text" name="titulo" value="" style="width:100px" / >
+        <input type="submit" value="Filtrar">
+        {% csrf_token %}
+        
+    </form>
+    </div>
 
 <br><br><br>
 

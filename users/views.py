@@ -10,8 +10,13 @@ from django import forms
 from django.urls import path
 
 from users import limpieza
-from users.limpieza import Limpieza
-from users.vendor import productos, customers2, ventas
+from limpieza import Limpieza
+from vendor import productos, customers2, ventas
+from seller import productos_seller, customers_seller, ventas_seller
+
+access_key='AKIAIRF2R7EOJFNTGBEA'
+merchant_id='A2GU67S0S60AC1'
+secret_key='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'
 
 class ContactForm(forms.Form):
     name = forms.CharField(required=True)
@@ -82,26 +87,36 @@ def graphics(request):
 
 
 def customers(request):
-    grap_customers = customers2()
+    if request.method == "POST":
+        s_asin = request.POST.get('asin')
+        s_titulo = request.POST.get('titulo')
+        #form = yourForm(request.POST)
+        #asins_picked=form.cleaned_data.get('picked')
+        grap_customers = customers_seller('izas', access_key, merchant_id, secret_key, 2, search_asin=s_asin, search_titulo=s_titulo)
+    else:
+        grap_customers = customers_seller('izas', access_key, merchant_id, secret_key, 2)
+    #form=yourForm(asins)
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:
         return render(request, "customers.html", {'graficos': grap_customers})
     # En otro caso redireccionamos al login
     return redirect('/login')
-
+    
 
 def products(request):
-    search_asin=None
-    asins_picked=None
-    if request.POST.get('edad'):
-        search_asin = int(request.POST.get('edad'))
-        form = yourForm(request.POST)
-        asins_picked=form.cleaned_data.get('picked')
-    grap_products, asins, b = productos(asin=asins_picked, search_asin=search_asin)
-    form=yourForm(asins)
+
+    if request.method == "POST":
+        s_asin = request.POST.get('asin')
+        s_titulo = request.POST.get('titulo')
+        #form = yourForm(request.POST)
+        #asins_picked=form.cleaned_data.get('picked')
+        grap_products = productos_seller('izas', access_key, merchant_id, secret_key, 2, search_asin=s_asin, search_titulo=s_titulo)
+    else:
+        grap_products = productos_seller('izas', access_key, merchant_id, secret_key, 2)
+    #form=yourForm(asins)
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:
-        return render(request, "products.html", {'graficos': grap_products, 'form':form})
+        return render(request, "products.html", {'graficos': grap_products})
     # En otro caso redireccionamos al login
     return redirect('/login')
 
@@ -116,12 +131,21 @@ def refunds(request):
 
 
 def sales(request):
-    grap_sales = ventas()
+    if request.method == "POST":
+        s_asin = request.POST.get('asin')
+        s_titulo = request.POST.get('titulo')
+        #form = yourForm(request.POST)
+        #asins_picked=form.cleaned_data.get('picked')
+        grap_sales = ventas_seller('izas', access_key, merchant_id, secret_key, 2, search_asin=s_asin, search_titulo=s_titulo)
+    else:
+        grap_sales = ventas_seller('izas', access_key, merchant_id, secret_key, 2)
+    #form=yourForm(asins)
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:
         return render(request, "sales.html", {'graficos': grap_sales})
     # En otro caso redireccionamos al login
     return redirect('/login')
+    
 
 
 def settings(request):
@@ -173,7 +197,8 @@ from django import forms
 
 class yourForm(forms.Form):
     def __init__(self, o):
+        super(yourForm, self).__init__()
         OPTIONS=list()
-        for i in range(len(o)):
-            OPTIONS.append((o[i], o[i]))
-        self.options = forms.MultipleChoiceField( choices=OPTIONS, widget=forms.CheckboxSelectMultiple(),label="ASIN", required=True, error_messages={'required': 'D'})
+        for i in o:
+            OPTIONS.append((i, i))
+        self.fields = forms.MultipleChoiceField( choices=OPTIONS, widget=forms.CheckboxSelectMultiple(),label="ASIN", required=True, error_messages={'required': 'D'})

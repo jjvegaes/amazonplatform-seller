@@ -111,7 +111,17 @@
         </ul>
     </div>
 </nav>
+                                    
+    <div class="caption v-middle text-center">
 
+    <form action="/products.html" method="POST">
+        <input type="text" name="asin" value="" style="width:100px" / >
+        <input type="text" name="titulo" value="" style="width:100px" / >
+        <input type="submit" value="Filtrar">
+        {% csrf_token %}
+        
+    </form>
+    </div>
 <br><br><br>
 
 
@@ -122,6 +132,7 @@
         </h1>
     </div>
     <br><br>
+    
     <div class="container d-flex justify-content-center">
         <div class="card" id="example">
             <div class="card-body shadow p-5" id="example">
@@ -135,22 +146,8 @@
             </div>
         </div>
     </div>
-
-    <form action="/" method="POST">
-        <input type="number" name="edad" value="0" style="width:40px" / >
-        <input type="submit" value="Filtrar">
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="col-md-12 dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{ field.label_tag }}
-                    <span class="caret"></span>
-                </button>
-                <div class="dropdown-menu">
-                    <div><a href="#">{{ field }}</a></div>
-                </div>
-            </div>
-        {% endfor %}
-    </form>
+    
+    
     
     <div id="graphicsmargin">
         {{ graficos | safe }}

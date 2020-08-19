@@ -313,27 +313,37 @@ secret_key='YBQi9mi3I/UVvTlbyPuElaJX737VBsoepGDTuDW2'
 def ventas_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
     todos_asin, todos_titulos=cgs.get_envios_amazon_historico(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
+    graph=''
     if len(threading.enumerate())<15:
         hilo=Thread(target=cgs.mws_csv_historico, args=['envios amazon', 20])
         hilo3=Thread(target=cgs.mws_csv, args=['datos inventario', 1])
-        hilo.start()
-        hilo3.start()
-    graph= cgs.graph_envios_amazon()
+        try:
+            hilo.start()
+            hilo3.start()
+            graph+='Se actualizan los gráficos'
+        except:
+            graph+='No se actualizan los gráficos'
+    graph+= cgs.graph_envios_amazon()
     graph+=cgs.graph_envios_amazon2()
     graph+=cgs.graph_envios_amazon3()
     graph+=cgs.graph_envios_amazon4()
-    return graph, todos_asin, todos_titulos
+    return graph
 
 def productos_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
     todos_asin, todos_titulo=cgs.get_estado_inventario(n_weeks_ago=n_weeks_ago, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
     cgs.get_exceso_inventario(n_weeks_ago, asin, search_asin, titulo, search_titulo)
-    if len(threading.enumerate())<15 and False:
+    graph=""
+    if len(threading.enumerate())<15:
         hilo=Thread(target=cgs.mws_csv, args=['estado inventario', 1])
         hilo2=Thread(target=cgs.mws_csv, args=['exceso inventario', 1])
-        hilo.start()
-        hilo2.start()
-    graph=cgs.graph_estado_inventario()
+        try:
+            hilo.start()
+            hilo2.start()
+            graph+='Se actualizan los gráficos'
+        except:
+            graph+='No se actualizan los gráficos'
+    graph+=cgs.graph_estado_inventario()
     graph+=cgs.graph_exceso_inventario()
     graph+=cgs.graph_exceso_inventario2()
     graph+=cgs.graph_exceso_inventario3()
@@ -343,14 +353,19 @@ def productos_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=
 def customers_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
     cgs.get_comentarios_negativos(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
+    graph=''
     if len(threading.enumerate())<15:
         hilo=Thread(target=cgs.mws_csv_historico, args=['comentarios negativos', 20])
-        hilo.start()
-    graph=cgs.graph_comentarios_negativos()
+        try:
+            hilo.start()
+            graph+='Se actualizan los gráficos'
+        except:
+            graph+='No se actualizan los gráficos'
+    graph+=cgs.graph_comentarios_negativos()
     return graph
 
 
-print(productos_seller('izas', access_key, merchant_id, secret_key, 2))
+#print(productos_seller('izas', access_key, merchant_id, secret_key, 2))
 #print(ventas('nose', access_key, merchant_id, secret_key, 1))
 #hilo=Thread(target=hola, args=['envios amazon'], name='mws')
 #hilo.start()
