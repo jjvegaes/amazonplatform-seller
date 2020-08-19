@@ -122,8 +122,8 @@ class graficas():
                         mapbox_style="stamen-terrain", hover_data=hovertext)
     
     
-    def tabla(self, id, etiquetas, titulo):
-        fig= go.Figure(data=go.Table( header=dict(values=etiquetas, font=dict(size=10), align="left"), cells=dict( values=[self.dict_df[id][k].tolist() for k in etiquetas],align = "left")))
+    def tabla(self, id, etiquetas, titulo, columnwidth=None):
+        fig= go.Figure(data=go.Table(columnwidth = columnwidth, header=dict(values=etiquetas, font=dict(size=10), align="left"), cells=dict( values=[self.dict_df[id][k].tolist() for k in etiquetas],align = "left")))
         fig.update_layout(title=titulo)
         return fig
     

@@ -11,6 +11,8 @@ import threading
 import time
 import math
 import re
+from scrapear import scrap_amazon
+from scrapear import scrap_resenas
 
 mutex=threading.Lock()
 
@@ -282,8 +284,7 @@ class crearGraficasSeller():
             return self.gr.get_html(fig)
             #return self.gr.get_html(self.gr.tam(self.gr.barras('excedente de inventario',etiquetas=['Asin'], valores=['Units Sold - Last 7 Days', 'Units Sold - Last 30 Days', 'Units Sold - Last 60 Days', 'Units Sold - Last 90 Days'], titulo='Unidades vendidas de los productos excesos', orientacion='v', hovertext=['Product Name']), h=700))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Unidades vendidas de inventario exceso"\n\n'
-        
+            return '\n\nNo se ha podido cargar el gráfico "Unidades vendidas de inventario exceso"\n\n'   
     
     def graph_exceso_inventario3(self):
         try:
@@ -303,6 +304,34 @@ class crearGraficasSeller():
         return grs
         #except:
         #    return '\n\nNo se ha podido cargar el gráfico "Precio de venta y recomendado"\n\n'
+
+    def get_competidores(self, termino, num_items, marketplace):
+        try:
+            scrap_amazon(termino, num_items, marketplace)
+            df=pd.read_csv(self.myRute+'/scrap/amazon/amazon_bot_items.csv')
+            self.gr.add_df('competidores', df)
+        except:
+            pass
+
+    def graph_competidores(self):
+        try:
+            return self.gr.get_html(self.gr.tam(self.gr.tabla('competidores',etiquetas=(self.gr.dict_df['competidores'].columns), titulo='Palabra clave'), h=700))
+        except:
+            return '\n\nNo se ha podido cargar el gráfico "Competidores"\n\n'
+
+    def get_resenas(self, asin, num_items, marketplace):
+        try:
+            scrap_resenas(asin, num_items, marketplace)
+            df=pd.read_csv(self.myRute+'/scrap/resenas/rresenas_bot_items.csv')
+            self.gr.add_df('resenas', df)
+        except:
+            pass
+
+    def graph_resenas(self):
+        try:
+            return self.gr.get_html(self.gr.tam(self.gr.tabla('resenas',etiquetas=(self.gr.dict_df['resenas'].columns), titulo='Reseñas', columnwidth=[50, 150, 50, 20, 50, 200]), h=700))
+        except:
+            return '\n\nNo se ha podido cargar el gráfico "Reseñas"\n\n'
 
 
 access_key='AKIAIRF2R7EOJFNTGBEA'
@@ -364,6 +393,18 @@ def customers_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=
     graph+=cgs.graph_comentarios_negativos()
     return graph
 
+def competidores(termino, num_items, marketplace):
+    cgs=crearGraficasSeller('', '', '', '')
+    cgs.get_competidores(termino, num_items, marketplace)
+    return cgs.graph_competidores()
+
+def resenas(asin, num_items, marketplace):
+    cgs=crearGraficasSeller('', '', '', '')
+    cgs.get_resenas(asin, num_items, marketplace)
+    return cgs.graph_resenas()
+
+
+#print(resenas('B07RYMPWHS', 5, 'es'))
 
 #print(productos_seller('izas', access_key, merchant_id, secret_key, 2))
 #print(ventas('nose', access_key, merchant_id, secret_key, 1))

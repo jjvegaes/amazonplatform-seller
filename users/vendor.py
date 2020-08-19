@@ -6,6 +6,8 @@ import plotly
 
 from graficos import graficas
 from cambiar_region import cambiar_region
+from scrapear import scrap_amazon
+from scrapear import scrap_resenas
 
 #Esta clase obtendrá los dataframes y el html de todas las gráficas, dentro hay dos tipos de funciones, las que empiezan por 'get' se encargan de obtener los dataframes y guardarlos en la clase Graficas, las que empiezan por 'gen' se encargan de obtener el html de los gráficos usando funciones de la clase Graficas
 class crearGraficasVendor():
@@ -285,6 +287,34 @@ class crearGraficasVendor():
             return self.gr.get_html(self.gr.multiple('estratefia ordenado unidades', [gr1, gr2], 'Unidades disponibles y gasto en publicidad', True, 'Unidades disponibles aptas para ventas', 'Gasto publicidad'))
         except:
             return '\n\nNo se ha podido cargar el gráfico "Unidades disponibles y gasto en publicidad"\n\n'
+
+        def get_competidores(self, termino, num_items, marketplace):
+        try:
+            scrap_amazon(termino, num_items, marketplace)
+            df=pd.read_csv(self.myRute+'/scrap/amazon/amazon_bot_items.csv')
+            self.gr.add_df('competidores', df)
+        except:
+            pass
+
+    def graph_competidores(self):
+        try:
+            return self.gr.get_html(self.gr.tam(self.gr.tabla('competidores',etiquetas=(self.gr.dict_df['competidores'].columns), titulo='Palabra clave'), h=700))
+        except:
+            return '\n\nNo se ha podido cargar el gráfico "Competidores"\n\n'
+
+    def get_resenas(self, asin, num_items, marketplace):
+        try:
+            scrap_resenas(asin, num_items, marketplace)
+            df=pd.read_csv(self.myRute+'/scrap/resenas/rresenas_bot_items.csv')
+            self.gr.add_df('resenas', df)
+        except:
+            pass
+
+    def graph_resenas(self):
+        try:
+            return self.gr.get_html(self.gr.tam(self.gr.tabla('resenas',etiquetas=(self.gr.dict_df['resenas'].columns), titulo='Reseñas', columnwidth=[50, 150, 50, 20, 50, 200]), h=700))
+        except:
+            return '\n\nNo se ha podido cargar el gráfico "Reseñas"\n\n'
 '''
 def gen_graficos():
     v=crearGraficasVendor('miquelrius')
@@ -338,6 +368,16 @@ def customers2(vendedor='miquelrius', asin=None, search_asin=None, titulo=None, 
     graph=graph+v.gen_resenas2()
     graph=graph+v.gen_resenas3()
     return graph, todos_asin, todos_titulo
+
+def competidores(termino, num_items, marketplace):
+    cgs=crearGraficasVendor('')
+    cgs.get_competidores(termino, num_items, marketplace)
+    return cgs.graph_competidores()
+
+def resenas(asin, num_items, marketplace):
+    cgs=crearGraficasVendor('')
+    cgs.get_resenas(asin, num_items, marketplace)
+    return cgs.graph_resenas()
 
 '''def index1(vendedor):
     v=crearGraficasVendor(vendedor)

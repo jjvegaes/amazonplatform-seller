@@ -15,13 +15,13 @@ import time
 setup()
 
 #Llama a esta función con una palabra clave y un número de items y te devuelve el df con la información
-def spider_crawler(busqueda, num_items, marketplace, version):
+def spider_crawler(asin, num_items, marketplace, version):
     settings = Settings()
     settings['USER_AGENT']='Mozilla / '+str(version)+'.0'
     settings['BOT_NAME'] = 'resenas_bot'
     settings['SPIDER_MODULES'] = ['scrap.resenas.resenas_bot.spiders']
     settings['NEWSPIDER_MODULE'] = 'scrap.resenas.resenas_bot.spiders'
-    #settings['DOWNLOAD_DELAY'] = 1
+    settings['DOWNLOAD_DELAY'] = 1
 
     #CSV import:
     settings['ITEM_PIPELINES']={'scrap.resenas.resenas_bot.pipelines.ResenasBotPipeline':200}
@@ -34,7 +34,7 @@ def spider_crawler(busqueda, num_items, marketplace, version):
     try:
         process = CrawlerProcess(settings)
 
-        process.crawl(AmazonBotSpider, busqueda=busqueda, num_items=num_items, marketplace=marketplace)
+        process.crawl(ResenasBotSpider, asin=asin, num_items=num_items, marketplace=marketplace)
     #process.start()
     #reactor.stop()
 

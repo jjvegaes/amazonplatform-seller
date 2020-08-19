@@ -22,7 +22,7 @@ def spider_crawler(busqueda, num_items, marketplace, version):
     settings['BOT_NAME'] = 'amazon_bot'
     settings['SPIDER_MODULES'] = ['scrap.amazon.amazon_bot.spiders']
     settings['NEWSPIDER_MODULE'] = 'scrap.amazon.amazon_bot.spiders'
-    #settings['DOWNLOAD_DELAY'] = 1
+    settings['DOWNLOAD_DELAY'] = 1
 
     #CSV import:
     settings['ITEM_PIPELINES']={'scrap.amazon.amazon_bot.pipelines.AmazonBotPipeline':200}

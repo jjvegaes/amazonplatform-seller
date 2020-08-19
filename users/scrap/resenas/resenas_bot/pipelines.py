@@ -12,6 +12,7 @@ from scrapy.exporters import CsvItemExporter
 import csv
 from scrapy.exporters import JsonItemExporter
 import pandas as pd
+import os
 
 class ResenasBotPipeline:
     def __init__(self):
@@ -26,7 +27,7 @@ class ResenasBotPipeline:
 
     #Al abrir la araña se ejecuta esta función
     def spider_opened(self, spider):
-        file = open('%s_items.csv' % spider.name, 'wb')#Se crea el fichero
+        file = open(os.path.dirname(__file__)[:-10]+'%s_items.csv' % spider.name, 'wb')#Se crea el fichero
         self.files[spider]=file
         self.exporter= CsvItemExporter(file, encoding = 'utf-8')
         self.exporter.fields_to_export = ['comprador', 'enlace_perfil', 'fecha', 'estrellas', 'titulo', 'descripcion']#Estos son los campos que vamos a usar para guardar los datos
