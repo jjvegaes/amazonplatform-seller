@@ -13,6 +13,7 @@ import math
 import re
 from scrapear import scrap_amazon
 from scrapear import scrap_resenas
+from datetime import datetime
 
 mutex=threading.Lock()
 
@@ -63,12 +64,18 @@ class crearGraficasSeller():
     #Informes que no son históricos (el nuevo sustituye al viejo y si no existe se crea)
     def mws_csv(self, id, n_weeks_ago):
         mutex.acquire()
-        l=Limpieza()
-        df=l.limpieza2(self.access_key, self.merchant_id, self.secret_key, self.dict_reports[id], n_weeks_ago)
-        if df.__str__() != "None": 
-            df.to_csv(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+str(n_weeks_ago)+'.csv')
-            print('Cargado el informe '+id)
-        mutex.release()
+        try:
+            l=Limpieza()
+            df=l.limpieza2(self.access_key, self.merchant_id, self.secret_key, self.dict_reports[id], n_weeks_ago)
+            if df.__str__() != "None": 
+                df.to_csv(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+str(n_weeks_ago)+'.csv')
+                print('Cargado el informe '+id)
+            f=open(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+str(n_weeks_ago)+'.txt', 'w')
+            f.write(str(datetime.now()))
+            f.close()
+            mutex.release()
+        except:
+            mutex.release()
 
     #Informes históricos (si no existe se crea y si existe se obtiene el informe de la última semana y se actualiza el actual)
     def mws_csv_historico(self, id, n_weeks_ago):
@@ -80,20 +87,30 @@ class crearGraficasSeller():
             df2=l.limpieza2(self.access_key, self.merchant_id, self.secret_key, self.dict_reports[id], 1)
             if df2.__str__() != "None": 
                 df=df.append(df2, ignore_index = True)
-                if id=='datos inventario':
+                if id=='envios amazon':
                     df = df.drop_duplicates('b"amazon-order-id')
                 elif id=='comentarios negativos':
                     df= df.drop_duplicates('Comentarios')
                 df.to_csv(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+'historico'+'.csv', encoding="utf-8")
                 print('Cargado el informe '+id)
-               
+            f=open(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+'historico'+'.txt', 'w')
+            f.write(str(datetime.now()))
+            f.close()
+            mutex.release()
         except:
-            l=Limpieza()
-            df=l.limpieza2(self.access_key, self.merchant_id, self.secret_key, self.dict_reports[id], n_weeks_ago)
-            if df.__str__() != "None": 
-                df.to_csv(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+'historico'+'.csv')
-                print('Cargado el informe '+id)
-        mutex.release()
+            try:
+                l=Limpieza()
+                df=l.limpieza2(self.access_key, self.merchant_id, self.secret_key, self.dict_reports[id], n_weeks_ago)
+                if df.__str__() != "None": 
+                    df.to_csv(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+'historico'+'.csv')
+                    print('Cargado el informe '+id)
+                f=open(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+'historico'+'.txt', 'w')
+                f.write(str(datetime.now()))
+                f.close()
+                mutex.release()
+            except:
+                mutex.release()
+        
 
     #INFORME: ENVÍOS AMAZON
 
@@ -103,19 +120,31 @@ class crearGraficasSeller():
         #Si no existe lo crea:
         try:
             df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/envios amazon/envios amazon'+'historico'+'.csv')
+            f = open (self.myRute+'/informes_seller/'+self.vendedor+'/envios amazon/envios amazon'+'historico'+'.txt','r')
+            ult_fecha = f.read()
+            f.close()
         except:
             self.mws_csv_historico('envios amazon', n_weeks_ago)
             try:
                 df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/envios amazon/envios amazon'+'historico'+'.csv')
+                f = open (self.myRute+'/informes_seller/'+self.vendedor+'/envios amazon/envios amazon'+'historico'+'.txt','r')
+                ult_fecha = f.read()
+                f.close()
             except:
                 return
         #Obtiene equivalencia entre asin y sku porque 'envios amazon' no tiene asin:
         try:
             inventario=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/datos inventario/datos inventario'+'1'+'.csv')
+            f = open (self.myRute+'/informes_seller/'+self.vendedor+'/datos inventario/datos inventario'+'1'+'.txt','r')
+            ult_fecha2 = f.read()
+            f.close()
         except:
             self.mws_csv('datos inventario', 1)
             try:
                 inventario=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/datos inventario/datos inventario'+'1'+'.csv')
+                f = open (self.myRute+'/informes_seller/'+self.vendedor+'/datos inventario/datos inventario'+'1'+'.txt','r')
+                ult_fecha2 = f.read()
+                f.close()
             except:
                 return
         #Cruzamos invenario con df para que aparezca asin:
@@ -164,7 +193,7 @@ class crearGraficasSeller():
         self.gr.add_df('envios gestionados por amazon historico', self.filtra(df4, asin, search_asin, titulo, search_titulo))
         self.gr.add_df('envios gestionados por amazon mapa', self.filtra(df5, asin, search_asin, titulo, search_titulo))
         #df.to_excel(self.myRute+'/informes_seller/'+self.vendedor+'/envios_amazon/envios_gestionados_por_amazon.xlsx')
-        return todos_asin, todos_titulos
+        return todos_asin, todos_titulos, ult_fecha, ult_fecha2
     #Creamos todas las gráficas
 
     def graph_envios_amazon(self):
@@ -202,19 +231,23 @@ class crearGraficasSeller():
     def get_estado_inventario(self, n_weeks_ago, asin, search_asin, titulo, search_titulo):
         try:
             df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/estado inventario/estado inventario'+str(n_weeks_ago)+'.csv', encoding='cp1252')
+            f = open (self.myRute+'/informes_seller/'+self.vendedor+'/estado inventario/estado inventario'+str(n_weeks_ago)+'.txt','r')
+            ult_fecha = f.read()
+            f.close()
         except:
             self.mws_csv('estado inventario', n_weeks_ago)
             try:
-                print('except')
                 df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/estado inventario/estado inventario'+str(n_weeks_ago)+'.csv')
-                self.gr.add_df('estado inventario', self.filtra(df, asin, search_asin, titulo, search_titulo))
+                f = open (self.myRute+'/informes_seller/'+self.vendedor+'/estado inventario/estado inventario'+str(n_weeks_ago)+'.txt','r')
+                ult_fecha = f.read()
+                f.close()
             except:
                 return
         df=df.sort_values('total-quantity').iloc[::-1]
         todos_asin=list(df['asin'])
         todos_titulo=list(df['product-name'])
         self.gr.add_df('estado inventario', self.filtra(df, asin, search_asin, titulo, search_titulo))
-        return todos_asin, todos_titulo
+        return todos_asin, todos_titulo, ult_fecha
 
 
     def graph_estado_inventario(self):
@@ -228,16 +261,23 @@ class crearGraficasSeller():
     def get_comentarios_negativos(self, n_weeks_ago, asin, search_asin, titulo, search_titulo):
         try:
             df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/comentarios negativos/comentarios negativos'+'historico'+'.csv', encoding='utf-8')
+            f = open (self.myRute+'/informes_seller/'+self.vendedor+'/comentarios negativos/comentarios negativos'+'historico'+'.txt','r')
+            ult_fecha = f.read()
+            f.close()        
         except:
             self.mws_csv_historico('comentarios negativos', n_weeks_ago)
             try:
                 df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/comentarios negativos/comentarios negativos'+'historico'+'.csv')
+                f = open (self.myRute+'/informes_seller/'+self.vendedor+'/comentarios negativos/comentarios negativos'+'historico'+'.txt','r')
+                ult_fecha = f.read()
+                f.close() 
             except:
                 return
         #df["Comentarios"]=df["Comentarios"].astype(str)
         #df["Comentarios"]=[x.encode("utf-8") for x in list(df['Comentarios'])]
         df = df.rename(columns = {"Clasificaci\\xc3\\xb3n" : "Clasificación"})
         self.gr.add_df('comentarios negativos', df)
+        return ult_fecha
 
     #INFORME EXCESO DE INVENTARIO
 
@@ -250,11 +290,16 @@ class crearGraficasSeller():
     def get_exceso_inventario(self, n_weeks_ago, asin, search_asin, titulo, search_titulo):
         try:
             df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/exceso inventario/exceso inventario'+str(n_weeks_ago)+'.csv')
+            f = open (self.myRute+'/informes_seller/'+self.vendedor+'/exceso inventario/exceso inventario'+str(n_weeks_ago)+'.txt','r')
+            ult_fecha = f.read()
+            f.close() 
         except:
-            print('except')
             self.mws_csv('exceso inventario', n_weeks_ago)
             try:
                 df=pd.read_csv(self.myRute+'/informes_seller/'+self.vendedor+'/exceso inventario/exceso inventario'+str(n_weeks_ago)+'.csv')
+                f = open (self.myRute+'/informes_seller/'+self.vendedor+'/exceso inventario/exceso inventario'+str(n_weeks_ago)+'.txt','r')
+                ult_fecha = f.read()
+                f.close() 
             except:
                 return
         df["a"]=1
@@ -265,7 +310,7 @@ class crearGraficasSeller():
             dfaux=df[df.Marketplace.isin([m])]
             self.gr.add_df('excedente de inventario '+m, self.filtra(dfaux, asin, search_asin, titulo, search_titulo))
         self.gr.add_df('excedente de inventario', self.filtra(df, asin, search_asin, titulo, search_titulo))
-
+        return ult_fecha
 
     def graph_exceso_inventario(self):
         try:
@@ -341,8 +386,9 @@ secret_key='YBQi9mi3I/UVvTlbyPuElaJX737VBsoepGDTuDW2'
 
 def ventas_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
-    todos_asin, todos_titulos=cgs.get_envios_amazon_historico(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
-    graph=''
+    todos_asin, todos_titulos, ult_fecha, ult_fecha2=cgs.get_envios_amazon_historico(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
+    graph='<div class="caption v-middle text-center">Última hora actualización envios amazon:'+ult_fecha+'</div>'
+    graph+='<div class="caption v-middle text-center">Última hora actualización datos inventario:'+ult_fecha2+'</div>'
     if len(threading.enumerate())<15:
         hilo=Thread(target=cgs.mws_csv_historico, args=['envios amazon', 20])
         hilo3=Thread(target=cgs.mws_csv, args=['datos inventario', 1])
@@ -360,9 +406,10 @@ def ventas_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=Non
 
 def productos_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
-    todos_asin, todos_titulo=cgs.get_estado_inventario(n_weeks_ago=n_weeks_ago, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
-    cgs.get_exceso_inventario(n_weeks_ago, asin, search_asin, titulo, search_titulo)
-    graph=""
+    todos_asin, todos_titulo, ult_fecha=cgs.get_estado_inventario(n_weeks_ago=n_weeks_ago, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
+    ult_fecha2=cgs.get_exceso_inventario(n_weeks_ago, asin, search_asin, titulo, search_titulo)
+    graph='<div class="caption v-middle text-center">Última hora actualización estado inventario:'+ult_fecha+'</div>'
+    graph+='<div class="caption v-middle text-center">Última hora actualización exceso inventario:'+ult_fecha2+'</div>'
     if len(threading.enumerate())<15:
         hilo=Thread(target=cgs.mws_csv, args=['estado inventario', 1])
         hilo2=Thread(target=cgs.mws_csv, args=['exceso inventario', 1])
@@ -381,8 +428,8 @@ def productos_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=
 
 def customers_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
     cgs=crearGraficasSeller(vendedor, access_key, merchant_id, secret_key)
-    cgs.get_comentarios_negativos(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
-    graph=''
+    ult_fecha=cgs.get_comentarios_negativos(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
+    graph='<div class="caption v-middle text-center">Última hora actualización comentarios negativos:'+ult_fecha+'</div>'
     if len(threading.enumerate())<15:
         hilo=Thread(target=cgs.mws_csv_historico, args=['comentarios negativos', 20])
         try:
@@ -393,12 +440,12 @@ def customers_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=
     graph+=cgs.graph_comentarios_negativos()
     return graph
 
-def competidores(termino, num_items, marketplace):
+def competidores_seller(termino, num_items, marketplace):
     cgs=crearGraficasSeller('', '', '', '')
     cgs.get_competidores(termino, num_items, marketplace)
     return cgs.graph_competidores()
 
-def resenas(asin, num_items, marketplace):
+def resenas_seller(asin, num_items, marketplace):
     cgs=crearGraficasSeller('', '', '', '')
     cgs.get_resenas(asin, num_items, marketplace)
     return cgs.graph_resenas()
@@ -406,8 +453,9 @@ def resenas(asin, num_items, marketplace):
 
 #print(resenas('B07RYMPWHS', 5, 'es'))
 
-#print(productos_seller('izas', access_key, merchant_id, secret_key, 2))
-#print(ventas('nose', access_key, merchant_id, secret_key, 1))
+
+#print(ventas_seller('izas', access_key, merchant_id, secret_key, 1))
+#print(datetime.now())
 #hilo=Thread(target=hola, args=['envios amazon'], name='mws')
 #hilo.start()
 #list=[x.getName() for x in threading.enumerate()]
