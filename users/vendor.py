@@ -8,6 +8,7 @@ from graficos import graficas
 from cambiar_region import cambiar_region
 from scrapear import scrap_amazon
 from scrapear import scrap_resenas
+from resenas import palabras_clave, cambio_a_fecha
 
 #Esta clase obtendrá los dataframes y el html de todas las gráficas, dentro hay dos tipos de funciones, las que empiezan por 'get' se encargan de obtener los dataframes y guardarlos en la clase Graficas, las que empiezan por 'gen' se encargan de obtener el html de los gráficos usando funciones de la clase Graficas
 class crearGraficasVendor():
@@ -302,19 +303,59 @@ class crearGraficasVendor():
         except:
             return '\n\nNo se ha podido cargar el gráfico "Competidores"\n\n'
 
-    def get_resenas(self, asin, num_items, marketplace):
+    def get_resenas_scrapy(self, asin, num_items, marketplace):
         try:
             scrap_resenas(asin, num_items, marketplace)
             df=pd.read_csv(self.myRute+'/scrap/resenas/rresenas_bot_items.csv')
+            df["Valoración"] = df.apply(lambda x: "Positivo" if int(x["estrellas"]) > 3 else "Negativo", axis=1)
+            df["Cantidad"]=1
             self.gr.add_df('resenas', df)
+            df2=palabras_clave(df, 4)
+            print(df2)
+            pos = df2.drop(df2[df2['valoracion']=='Negativa'].index)
+            neg = df2.drop(df2[df2['valoracion']=='Positiva'].index)
+            self.gr.add_df('palabras clave pos', pos)
+            self.gr.add_df('palabras clave neg', neg)
+            dfaux=df.copy()
+            #dfaux['fecha']=dfaux.apply(lambda x: cambio_a_fecha(dfaux['fecha'], marketplace), axis=1)
+            dfaux['fecha']=[cambio_a_fecha(x, marketplace) for x in list(dfaux['fecha'])]
+            dfaux = dfaux.groupby(by="fecha", as_index=False).sum()
+            print(dfaux.columns)
+            self.gr.add_df('resenas tiempo', dfaux)
         except:
             pass
 
-    def graph_resenas(self):
+    def graph_resenas_scrapy(self):
         try:
-            return self.gr.get_html(self.gr.tam(self.gr.tabla('resenas',etiquetas=(self.gr.dict_df['resenas'].columns), titulo='Reseñas', columnwidth=[50, 150, 50, 20, 50, 200]), h=700))
+            return self.gr.get_html(self.gr.tam(self.gr.tabla('resenas',etiquetas= ['comprador', 'fecha', 'estrellas', 'titulo', 'descripcion'], titulo='Reseñas', columnwidth=[50, 50, 20, 50, 200]), h=700))
         except:
             return '\n\nNo se ha podido cargar el gráfico "Reseñas"\n\n'
+
+    def graph_resenas_scrapy2(self):
+        try:
+            gr1={'id':'circular', 'id_df':'resenas', 'etiquetas':['Valoración'], 'valor':'Cantidad', 'hovertext':[], 'row':0, 'col':1, 'titulo':'Cantidad de comentarios positivos y negativos'}
+            gr2={'id':'indicador', 'id_df':'resenas', 'etiqueta':'estrellas', 'mean':True, 'formato':{'suffix': "estrellas"}, 'row':0, 'col':0, 'titulo':'Valoración media'}
+            return self.gr.get_html(self.gr.tam(self.gr.varios([gr2, gr1], 'Valoración del producto:', 2, 1), h=500, color='lightblue'))
+        except:
+            '\n\nNo se ha podido cargar el gráfico "Valoración del producto"\n\n'
+
+    def graph_resenas_scrapy3(self):
+        try:
+            return self.gr.get_html(self.gr.word_cloud('palabras clave pos', 'Palabra', 'Frecuencia', 'Palabras más repetidas en reseñas positivas'))
+        except:
+            return'\n\nNo se ha podido cargar el gráfico "Palabras más repetidas en reseñas positivas"\n\n'
+
+    def graph_resenas_scrapy4(self):
+        try:
+            return self.gr.get_html(self.gr.word_cloud('palabras clave neg', 'Palabra', 'Frecuencia', 'Palabras más repetidas en reseñas negativas'))
+        except:
+            return'\n\nNo se ha podido cargar el gráfico "Palabras más repetidas en reseñas negativas"\n\n'
+
+    def graph_resenas_scrapy5(self):
+        try:
+            return self.gr.get_html(self.gr.temporal('resenas tiempo', 'fecha', 'Cantidad', 'Número de reseñas por día'))
+        except:
+            return'\n\nNo se ha podido cargar el gráfico "Palabras más repetidas en reseñas negativas"\n\n'
 '''
 def gen_graficos():
     v=crearGraficasVendor('miquelrius')
@@ -374,10 +415,18 @@ def competidores(termino, num_items, marketplace):
     cgs.get_competidores(termino, num_items, marketplace)
     return cgs.graph_competidores()
 
-def resenas(asin, num_items, marketplace):
-    cgs=crearGraficasVendor('')
-    cgs.get_resenas(asin, num_items, marketplace)
-    return cgs.graph_resenas()
+def resenas(asin=None, num_items=None, marketplace=None):
+    if asin!=None and num_items != None and marketplace!= None and asin!='' and num_items!='' and marketplace !='':
+        cgs=crearGraficasSeller('', '', '', '')
+        cgs.get_resenas_scrapy(asin, int(num_items), marketplace)
+        graph= cgs.graph_resenas_scrapy()
+        graph+=cgs.graph_resenas_scrapy2()
+        graph+=cgs.graph_resenas_scrapy3()
+        graph+=cgs.graph_resenas_scrapy4()
+        graph+=cgs.graph_resenas_scrapy5()
+        return graph
+    else:
+        return '<div class="caption v-middle text-center">Seleccione ASIN, número de itmes y marketplace para ver las reseñas:</div>'
 
 '''def index1(vendedor):
     v=crearGraficasVendor(vendedor)

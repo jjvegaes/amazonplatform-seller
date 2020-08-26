@@ -12,7 +12,7 @@ from django.urls import path
 from users import limpieza
 from limpieza import Limpieza
 from vendor import productos, customers2, ventas
-from seller import productos_seller, customers_seller, ventas_seller
+from seller import productos_seller, customers_seller, ventas_seller, resenas_seller
 
 access_key='AKIAIRF2R7EOJFNTGBEA'
 merchant_id='A2GU67S0S60AC1'
@@ -90,15 +90,20 @@ def customers(request):
     if request.method == "POST":
         s_asin = request.POST.get('asin')
         s_titulo = request.POST.get('titulo')
+        s_asin2 = request.POST.get('asin2')
+        s_num_items = request.POST.get('num_items')
+        s_marketplace = request.POST.get('marketplace')
         #form = yourForm(request.POST)
         #asins_picked=form.cleaned_data.get('picked')
         grap_customers = customers_seller('izas', access_key, merchant_id, secret_key, 2, search_asin=s_asin, search_titulo=s_titulo)
+        grap_resenas = resenas_seller(s_asin2, s_num_items, s_marketplace)
     else:
         grap_customers = customers_seller('izas', access_key, merchant_id, secret_key, 2)
+        grap_resenas = resenas_seller()
     #form=yourForm(asins)
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:
-        return render(request, "customers.html", {'graficos': grap_customers})
+        return render(request, "customers.html", {'graficos': grap_customers, 'resenas':grap_resenas})
     # En otro caso redireccionamos al login
     return redirect('/login')
     

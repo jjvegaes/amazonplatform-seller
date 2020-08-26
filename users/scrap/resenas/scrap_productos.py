@@ -21,7 +21,7 @@ def spider_crawler(asin, num_items, marketplace, version):
     settings['BOT_NAME'] = 'resenas_bot'
     settings['SPIDER_MODULES'] = ['scrap.resenas.resenas_bot.spiders']
     settings['NEWSPIDER_MODULE'] = 'scrap.resenas.resenas_bot.spiders'
-    settings['DOWNLOAD_DELAY'] = 1
+    #settings['DOWNLOAD_DELAY'] = 1
 
     #CSV import:
     settings['ITEM_PIPELINES']={'scrap.resenas.resenas_bot.pipelines.ResenasBotPipeline':200}

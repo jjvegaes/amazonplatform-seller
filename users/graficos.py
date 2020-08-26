@@ -2,12 +2,13 @@ import plotly.express as px
 import plotly
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import random
 
 #Clase para crear gráficas interactivas
 class graficas():
 
     #Diccionario con los tipos de gráficos (para luego usar en los subplots de la función 'varios')
-    tipos={'barras':'bar', 'barras_apiladas':'bar', 'circular':'pie', 'lineal':'scatter', 'temporal':'scatter', 'embudo':'funnel', 'indicador':'Indicator'}
+    tipos={'barras':'bar', 'barras_apiladas':'bar', 'circular':'pie', 'lineal':'scatter','word_cloud':'scatter', 'temporal':'scatter', 'embudo':'funnel', 'indicador':'Indicator'}
     colors=['blue', 'green', 'red', 'orange', 'yellow', 'cyan', 'black', 'magenta', 'brown', 'aliceblue', 'gray', 'greenyellow', 'antiquewhite', 'violet', 'aquamarine', 'azure', 'beige', 'bisque', 'blanchedalmond', 'silver', 'blueviolet', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgrey', 'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkslategrey', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'grey', 'aqua', 'honeydew', 'hotpink', 'indianred', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgrey', 'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightslategrey', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rosybrown', 'royalblue', 'rebeccapurple', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'wheat', 'white', 'whitesmoke', 'yellowgreen']
     #La clase tendrá un diccionario de dataframes con clave id del dataframe y valor el dataframe
     def __init__(self, dict_df):
@@ -126,7 +127,36 @@ class graficas():
         fig= go.Figure(data=go.Table(columnwidth = columnwidth, header=dict(values=etiquetas, font=dict(size=10), align="left"), cells=dict( values=[self.dict_df[id][k].tolist() for k in etiquetas],align = "left")))
         fig.update_layout(title=titulo)
         return fig
-    
+
+    def word_cloud(self, id, etiqueta, valor, titulo):
+        tam=self.dict_df[id].shape[0]
+        colors = [plotly.colors.DEFAULT_PLOTLY_COLORS[random.randrange(1, 10)] for i in range(tam)]
+        print(random.shuffle(list(range(tam))))
+        print(random.choices(range(tam), k=tam))
+        x=list(range(tam))
+        random.shuffle(x)
+        y=list(range(tam))
+        random.shuffle(y)
+        print(x)
+        print(y)
+        if tam<8:
+            multiplicador=0.2
+        elif tam<15:
+            multiplicador=0.5
+        elif tam<25:
+            multiplicador=1
+        elif tam<100:
+            multiplicador=1.5
+        else:
+            multiplicador=2
+        data = go.Scatter(x=x, y=y, mode='text', text=list(self.dict_df[id][etiqueta]), marker={'opacity': 1}, textfont={'size': [(float(x)*multiplicador+5)/(tam*0.01) for x in list(self.dict_df[id][valor])], 'color':colors})
+        l = go.Layout({'xaxis': {'range':[tam-tam*1.3, tam*1.2], 'showgrid': False, 'showticklabels': False, 'zeroline': False, 'visible': False}, 'yaxis': {'range':[tam-tam*1.1, tam*1.1], 'showgrid': False, 'showticklabels': False, 'zeroline': False, 'visible': False}})
+        fig= go.Figure(data=[data], layout=l)
+        fig.update_layout(title=titulo)
+        return fig
+        
+    #Para un filtro
+    #https://stackoverflow.com/questions/56671386/create-dropdown-button-to-filter-based-on-a-categorical-column
     
     #Esta función es capaz de integrar varios gráficos en los mismos ejes, los distintos gráficos se pasan en param como una lista de diccionarios.
     #Por ejemplo:
@@ -227,6 +257,8 @@ class graficas():
                 data=self.temporal(p['id_df'], p['x'], p['y'], titulo, p['hovertext']).data
             elif(p['id']=='indicador'):
                 data=self.indicador(p['id_df'], p['etiqueta'], p['mean'], titulo, p['formato']).data
+            elif(p['id']=='word_cloud'):
+                data=self.word_cloud(p['id_df'], p['etiqueta'], p['valor'], titulo).data
             else:
                 data=self.embudo(p['id_df'], p['etiquetas'], p['valor'], titulo, p['hovertext']).data
             for d in data:

@@ -166,6 +166,24 @@
     <div id="graphicsmargin">
         {{ graficos | safe }}
     </div>
+
+    <div class="caption v-middle text-center", id="filtrosresenas">
+
+        <form action="/customers.html" method="POST">
+            <input type="text" name="asin2" value="" style="width:100px" / >
+            <input type="text" name="num_items" value="" style="width:100px" / >
+            <input type="text" name="marketplace" value="" style="width:100px" / >
+            <input type="submit" value="Filtrar">
+            {% csrf_token %}
+            
+        </form>
+    </div>
+
+    <div id="graphicsresena">
+        {{ resenas | safe }}
+    </div>
+
+
     <div id="footermargin">
         <footer class="mx-auto" style="background-color: rgb(248,248,248);">
             <div class="row">
