@@ -24,12 +24,11 @@ def scrap_resenas(palabra, num, market):
 
 def execute(palabra, num, market, version, resenas):
     if resenas:
-
         m=r.spider_crawler(palabra, num, market, version)
         time.sleep(5+num/20)
     else:
         m=a.spider_crawler(palabra, num, market, version)
-        time.sleep(20+num)
+        time.sleep(20+num*1.5)
     try:
         if resenas:
             df=pd.read_csv(os.path.dirname(__file__)+"/scrap/resenas/rresenas_bot_items.csv", encoding= 'utf-8')
