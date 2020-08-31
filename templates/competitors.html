@@ -39,22 +39,6 @@
             margin-left: 13%
         }
     </style>
-    <style type="text/css">
-    .Filtrar{
-    text-decoration: none;
-    padding: 10px;
-    font-weight: 600;
-    font-size: 20px;
-    color: #ffffff;
-    background-color: #1883ba;
-    border-radius: 6px;
-    border: 2px solid #0016b0;
-     }
-    .Filtrar:hover{
-    color: #1883ba;
-    background-color: #ffffff;
-      }
-    </style>
 </head>
 
 <body>
@@ -129,11 +113,18 @@
         </ul>
     </div>
 </nav>
+                                    
+    
+<br><br><br>
 
-    <div style="width: 1600px;height: 944px;">
-   
-    <section data-aos="fade-left" data-aos-duration="200" data-aos-delay="300" data-aos-once="true" class="py-5">
-   
+
+<section data-aos="fade-left" data-aos-duration="900" data-aos-delay="400" data-aos-once="true" class="py-5">
+    <div class="caption v-middle text-center">
+        <h1 class="cd-headline clip">
+            <span class="blc">Select a range, if wished, here:  </span>
+        </h1>
+    </div>
+    <br><br>
     
     <div class="container d-flex justify-content-center">
         <div class="card" id="example">
@@ -147,30 +138,20 @@
                     <input class="form-control" type="text" id="to" name="to"/></div>
             </div>
         </div>
-        
-             <div class="caption v-middle text-center"style = "float: right"style="width:90%  style= "width: 50px";>
-     <div class="col-sm-6 col-md-4">
-    <form action="/products.html" method="POST">
-      <strong> <font color ="Navy" face="Candara" <label for="">ASIN</label> </strong> </font>
-        
-        <input type="text" name="asin" value="" style="width:150px" / >
-     
-      <strong> <font color ="Navy" face="Candara" <label for="">Título de producto</label> </strong> </font>
-          
-        <input type="text" name="titulo" value="" style="width:150px" / >
-    <br>
-    <br>
-        <input type="submit" value="Filtrar" style = "float: right right" style type="text/css">
-        {% csrf_token %}
-        
-    </form>
-    </div>
-    </div>
-    <br><br><br>
-    </div>
-   
     </div>
     
+    
+    <div class="caption v-middle text-center">
+
+        <form action="/products.html" method="POST">
+            <input type="text" name="busqueda" value="" style="width:100px" / >
+            <input type="text" name="num_items" value="" style="width:100px" / >
+            <input type="text" name="marketplace" value="" style="width:100px" / >
+            <input type="submit" value="Filtrar">
+            {% csrf_token %}
+            
+        </form>
+        </div>
     <div id="graphicsmargin">
         {{ graficos | safe }}
     </div>

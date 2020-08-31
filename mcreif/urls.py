@@ -29,6 +29,7 @@ urlpatterns = [
     path('graphics.html', views.graphics),
     path('customers.html', views.customers),
     path('products.html', views.products),
+    path('competitors.html', views.competitors),
     path('refunds.html', views.refunds),
     path('reports.html', views.reports),
     path('sales.html', views.sales),
