@@ -82,7 +82,7 @@ class crearGraficasVendor():
             gr2={'id':'temporal', 'x':'Fecha', 'y':'Precio medio de venta', 'secondary_y':True, 'hovertext':None}
             return self.gr.get_html(self.gr.multiple('tendencias de ventas', [gr1,gr2], 'Tendencias de rendimiento de ventas', True, 'Ingresos por envíos', 'Precio medio de venta'))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Tendencias de rendimiento de ventas"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Tendencias de rendimiento de ventas"</div>'
     #DIAGNOSTICO DE VENTAS:
     #Obtenemos el dataframe diagnostico de ventas:
     def get_diagnostico_ventas(self, asin, search_asin, titulo, search_titulo):
@@ -117,13 +117,13 @@ class crearGraficasVendor():
             gr2={'id':'circular','id_df':'diagnostico de ventas sin 0', 'etiquetas':['ASIN'], 'valor':'Unidades enviadas','row':0, 'col':1, 'hovertext':['Título del producto']}
             return self.gr.get_html(self.gr.varios([gr1, gr2], 'Ventas por producto', 2, 1))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Ventas por producto"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Ventas por producto"</div>'
 
     def gen_diagnostico_ventas2(self):
         try:
             return self.gr.get_html(self.gr.tam(self.gr.barras('diagnostico de ventas sin 0',etiquetas=['ASIN'], valores=['Ingresos por envíos'], titulo='Ingresos por ASIN', colores=True, orientacion='v', hovertext=['Título del producto']), h=700))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Ingresos por ASIN"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Ingresos por ASIN"</div>'
 
     def gen_diagnostico_ventas3(self):
         try:
@@ -131,13 +131,13 @@ class crearGraficasVendor():
             gr2={'id':'circular','id_df':'diagnostico de ventas top 20 unidades', 'etiquetas':['ASIN'], 'valor':'Unidades enviadas', 'titulo':'Unidades','row':0, 'col':1, 'hovertext':['Título del producto']}
             return self.gr.get_html(self.gr.tam(self.gr.varios([gr1, gr2], 'Top 20 productos', 2, 1),h=600, color='lightblue'))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Top 20 productos"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Top 20 productos"</div>'
 
     def gen_diagnostico_ventas4(self):
         try:
             return self.gr.get_html(self.gr.tam(self.gr.barras('diagnostico de ventas buy box',etiquetas=['ASIN'], valores=['Buy box perdida (Precio)'], titulo='Buy box perdida (%)', colores=False, orientacion='v', hovertext=['Título del producto']), h=600, ))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Buy box perdida (%)"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Buy box perdida (%)"</div>'
     #DIAGNOSTICO DE TRÁFICO:
     #Obtenemos el dataframe
     def get_diagnostico_trafico(self, asin, search_asin, titulo, search_titulo):
@@ -156,7 +156,7 @@ class crearGraficasVendor():
         #return self.gr.get_html(self.gr.tam(self.gr.circular('diagnostico de trafico', etiquetas=['Subcategoría', 'ASIN'], valor='% de visitas totales', titulo='Visitas a cada producto'), h=800))
             return self.gr.get_html(self.gr.tam(self.gr.circular('diagnostico de trafico', etiquetas=[ 'Subcategoría', 'ASIN'], valor='% de visitas totales', titulo='Visitas a cada producto', hovertext=['Título del producto']), h=800))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Visitas a cada producto"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Visitas a cada producto"</div>'
     #RESEÑAS DE CLIENTES:
     #Obtenemos el dataframe:
     def get_resenas(self, asin, search_asin, titulo, search_titulo):
@@ -177,7 +177,7 @@ class crearGraficasVendor():
         try:
             return self.gr.get_html(self.gr.tam(self.gr.barras('resenas',etiquetas=['ASIN'], valores=['Valoración media del cliente'], titulo='Valoracion media', colores=True, orientacion='v', hovertext=['Título del producto']), h=700))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Valoracion media"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Valoracion media"</div>'
 
     def gen_resenas2(self):
         try:
@@ -192,13 +192,13 @@ class crearGraficasVendor():
             #gr2={'id':'barras', 'id_df':'diagnostico de trafico 1 día', 'etiquetas':['ASIN'], 'valores':['Visitas de Envío 1 día', 'Visitas de Envío 1 día - Periodo anterior'], 'colores':False,  'titulo':'visitas', 'orientacion':'v', 'row':0, 'col':1}
             #return self.gr.get_html(self.gr.varios([gr1, gr2], 'Diagnostico de tráfico', 2, 1))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Resumen de la valoración"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Resumen de la valoración"</div>'
 
     def gen_resenas3(self):
         try:
             return self.gr.get_html(self.gr.tam(self.gr.barras('resenas numero',etiquetas=['ASIN'], valores=['Número de reseñas de clientes'], titulo='Número de reseñas por ASIN', colores=True, orientacion='v', hovertext=['Título del producto']), h=700))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Número de reseñas por ASIN"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Número de reseñas por ASIN"</div>'
     #ESTADO DEL INVENTARIO
     #Obtenemos el dataframe
     def get_estado_inventario(self, asin, search_asin, titulo, search_titulo):
@@ -215,13 +215,13 @@ class crearGraficasVendor():
         try:
             return self.gr.get_html(self.gr.tam(self.gr.barras('estado inventario',etiquetas=['ASIN'], valores=['Unidades disponibles aptas para venta'], titulo='Unidades disponibles aptas para venta', colores=True, orientacion='v', hovertext=['Título del producto']), h=700, color='lightblue'))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Unidades disponibles aptas para venta"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Unidades disponibles aptas para venta"</div>'
 
     def gen_estado_inventario2(self):
         try:
             return self.gr.get_html(self.gr.tam(self.gr.barras('estado inventario no aptas',etiquetas=['ASIN'], valores=['Unidades disponibles no aptas para venta'], titulo='Unidades disponibles no aptas para venta', colores=True, orientacion='v', hovertext=['Título del producto']), h=700))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Unidades disponibles no aptas para venta"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Unidades disponibles no aptas para venta"</div>'
 
     def get_informacion_geografica(self, asin, search_asin, titulo, search_titulo):
         try:
@@ -236,7 +236,7 @@ class crearGraficasVendor():
         try:
             return self.gr.get_html(self.gr.mapa_calor('informacion geografica', 'Ingresos por envíos', hovertext=['Título del producto']))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Mapa de calor"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Mapa de calor"</div>'
 
     def get_todo(self, asin, search_asin, titulo, search_titulo):
         try:
@@ -271,7 +271,7 @@ class crearGraficasVendor():
             gr2={'id':'lineal', 'x':'ASIN', 'y':'Ingresos por envíos', 'rectas':True, 'puntos':False, 'secondary_y':True, 'hovertext':['Título del producto']}
             return self.gr.get_html(self.gr.multiple('estratefia ordenado unidades', [gr1, gr2], 'Unidades disponibles y ventas', True, 'Unidades disponibles aptas para venta', 'Ingresos por envíos'))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Unidades disponibles y ventas"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Unidades disponibles y ventas"</div>'
 
     def gen_visitas_ventas_publicidad(self):
         try:
@@ -279,7 +279,7 @@ class crearGraficasVendor():
             gr2={'id':'lineal', 'x':'ASIN', 'y':'Gasto', 'rectas':True, 'puntos':False, 'secondary_y':True, 'hovertext':['Título del producto']}
             return self.gr.get_html(self.gr.multiple('estratefia ordenado visitas', [gr1, gr2], 'Visitas, ventas y gasto en publicidad', True, '% de visitas y ventas', 'Gasto publicidad'))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Visitas, ventas y gasto en publicidad"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Visitas, ventas y gasto en publicidad"</div>'
 
     def gen_inventario_publicidad(self):
         try:
@@ -287,7 +287,7 @@ class crearGraficasVendor():
             gr2={'id':'lineal', 'x':'ASIN', 'y':'Gasto', 'rectas':True, 'puntos':False, 'secondary_y':True, 'hovertext':['Título del producto']}
             return self.gr.get_html(self.gr.multiple('estratefia ordenado unidades', [gr1, gr2], 'Unidades disponibles y gasto en publicidad', True, 'Unidades disponibles aptas para ventas', 'Gasto publicidad'))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Unidades disponibles y gasto en publicidad"\n\n'
+            return '\n\nNo se ha podido cargar el gráfico "Unidades disponibles y gasto en publicidad"</div>'
 
         def get_competidores(self, termino, num_items, marketplace):
         try:
@@ -301,7 +301,7 @@ class crearGraficasVendor():
         try:
             return self.gr.get_html(self.gr.tam(self.gr.tabla('competidores',etiquetas=(self.gr.dict_df['competidores'].columns), titulo='Palabra clave'), h=700))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Competidores"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Competidores"</div>'
 
     def get_resenas_scrapy(self, asin, num_items, marketplace):
         try:
@@ -329,7 +329,7 @@ class crearGraficasVendor():
         try:
             return self.gr.get_html(self.gr.tam(self.gr.tabla('resenas',etiquetas= ['comprador', 'fecha', 'estrellas', 'titulo', 'descripcion'], titulo='Reseñas', columnwidth=[50, 50, 20, 50, 200]), h=700))
         except:
-            return '\n\nNo se ha podido cargar el gráfico "Reseñas"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Reseñas"</div>'
 
     def graph_resenas_scrapy2(self):
         try:
@@ -337,25 +337,25 @@ class crearGraficasVendor():
             gr2={'id':'indicador', 'id_df':'resenas', 'etiqueta':'estrellas', 'mean':True, 'formato':{'suffix': "estrellas"}, 'row':0, 'col':0, 'titulo':'Valoración media'}
             return self.gr.get_html(self.gr.tam(self.gr.varios([gr2, gr1], 'Valoración del producto:', 2, 1), h=500, color='lightblue'))
         except:
-            '\n\nNo se ha podido cargar el gráfico "Valoración del producto"\n\n'
+            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Valoración del producto"</div>'
 
     def graph_resenas_scrapy3(self):
         try:
             return self.gr.get_html(self.gr.word_cloud('palabras clave pos', 'Palabra', 'Frecuencia', 'Palabras más repetidas en reseñas positivas'))
         except:
-            return'\n\nNo se ha podido cargar el gráfico "Palabras más repetidas en reseñas positivas"\n\n'
+            return'<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Palabras más repetidas en reseñas positivas"</div>'
 
     def graph_resenas_scrapy4(self):
         try:
             return self.gr.get_html(self.gr.word_cloud('palabras clave neg', 'Palabra', 'Frecuencia', 'Palabras más repetidas en reseñas negativas'))
         except:
-            return'\n\nNo se ha podido cargar el gráfico "Palabras más repetidas en reseñas negativas"\n\n'
+            return'<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Palabras más repetidas en reseñas negativas"</div>'
 
     def graph_resenas_scrapy5(self):
         try:
             return self.gr.get_html(self.gr.temporal('resenas tiempo', 'fecha', 'Cantidad', 'Número de reseñas por día'))
         except:
-            return'\n\nNo se ha podido cargar el gráfico "Palabras más repetidas en reseñas negativas"\n\n'
+            return'<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Palabras más repetidas en reseñas negativas"</div>'
 '''
 def gen_graficos():
     v=crearGraficasVendor('miquelrius')
@@ -410,10 +410,15 @@ def customers2(vendedor='miquelrius', asin=None, search_asin=None, titulo=None, 
     graph=graph+v.gen_resenas3()
     return graph, todos_asin, todos_titulo
 
-def competidores(termino, num_items, marketplace):
-    cgs=crearGraficasVendor('')
-    cgs.get_competidores(termino, num_items, marketplace)
-    return cgs.graph_competidores()
+
+def competidores(termino=None, num_items=None, marketplace=None):
+    if termino!= None and num_items != None and marketplace != None and termino != '' and num_items != '' and marketplace != '':
+        cgs=crearGraficasVendor('', '', '', '')
+        cgs.get_competidores(termino, num_items, marketplace)
+        return cgs.graph_competidores()
+    else:
+        return '<div class="caption v-middle text-center">Seleccione término de búsqueda, número de itmes y marketplace para ver los competidores</div>'
+
 
 def resenas(asin=None, num_items=None, marketplace=None):
     if asin!=None and num_items != None and marketplace!= None and asin!='' and num_items!='' and marketplace !='':

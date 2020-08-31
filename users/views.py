@@ -12,7 +12,7 @@ from django.urls import path
 from users import limpieza
 from limpieza import Limpieza
 from vendor import productos, customers2, ventas
-from seller import productos_seller, customers_seller, ventas_seller, resenas_seller
+from seller import productos_seller, customers_seller, ventas_seller, resenas_seller, competidores_seller
 
 access_key='AKIAIRF2R7EOJFNTGBEA'
 merchant_id='A2GU67S0S60AC1'
@@ -150,8 +150,25 @@ def sales(request):
         return render(request, "sales.html", {'graficos': grap_sales})
     # En otro caso redireccionamos al login
     return redirect('/login')
-    
 
+def competitors(request):
+    if request.method == "POST":
+        busqueda = request.POST.get('busqueda')
+        num_items = request.POST.get('num_items')
+        marketplace = request.POST.get('marketplace')
+        #form = yourForm(request.POST)
+        #asins_picked=form.cleaned_data.get('picked')
+        grap_competidores = competidores_seller(busqueda, num_items, marketplace)
+    else:
+        grap_competidores = competidores_seller()
+    #form=yourForm(asins)
+    # Si estamos identificados devolvemos la portada
+    if request.user.is_authenticated:
+        return render(request, "competitors.html", {'graficos': grap_competidores})
+    # En otro caso redireccionamos al login
+    return redirect('/login')
+    
+#MySQL-python
 
 def settings(request):
     # Si estamos identificados devolvemos la portada
