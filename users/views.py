@@ -10,10 +10,10 @@ from django import forms
 from django.urls import path
 
 from users import limpieza
-from limpieza import Limpieza
-from vendor import productos, customers2, ventas
-from seller import productos_seller, customers_seller, ventas_seller, resenas_seller, competidores_seller
-
+from users.limpieza import Limpieza
+#from vendor import productos, customers2, ventas
+#from seller import productos_seller, customers_seller, ventas_seller, resenas_seller, competidores_seller
+from users.vendor_seller import get_products, get_ventas, get_customers, get_resenas, get_competidores
 access_key='AKIAIRF2R7EOJFNTGBEA'
 merchant_id='A2GU67S0S60AC1'
 secret_key='YBQi9mi3I/UVvTlbyPuElaJX737VBsoepGDTuDW2'
@@ -95,11 +95,11 @@ def customers(request):
         s_marketplace = request.POST.get('marketplace')
         #form = yourForm(request.POST)
         #asins_picked=form.cleaned_data.get('picked')
-        grap_customers = customers_seller('izas', access_key, merchant_id, secret_key, 2, search_asin=s_asin, search_titulo=s_titulo)
-        grap_resenas = resenas_seller(s_asin2, s_num_items, s_marketplace)
+        grap_customers=get_customers(request.user.username, search_asin=s_asin, search_titulo=s_titulo, n_weeks_ago=2)
+        grap_resenas=get_resenas(request.user.username, s_asin2, s_num_items, s_marketplace)
     else:
-        grap_customers = customers_seller('izas', access_key, merchant_id, secret_key, 2)
-        grap_resenas = resenas_seller()
+        grap_customers=get_customers(request.user.username, n_weeks_ago=2)
+        grap_resenas(request.user.username)
     #form=yourForm(asins)
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:
@@ -115,9 +115,9 @@ def products(request):
         s_titulo = request.POST.get('titulo')
         #form = yourForm(request.POST)
         #asins_picked=form.cleaned_data.get('picked')
-        grap_products = productos_seller('izas', access_key, merchant_id, secret_key, 2, search_asin=s_asin, search_titulo=s_titulo)
+        grap_products=get_products(request.user.username, search_asin=s_asin, search_titulo=s_titulo, n_weeks_ago=2)
     else:
-        grap_products = productos_seller('izas', access_key, merchant_id, secret_key, 2)
+        grap_products=get_products(request.user.username, n_weeks_ago=2)
     #form=yourForm(asins)
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:
@@ -141,9 +141,9 @@ def sales(request):
         s_titulo = request.POST.get('titulo')
         #form = yourForm(request.POST)
         #asins_picked=form.cleaned_data.get('picked')
-        grap_sales = ventas_seller('izas', access_key, merchant_id, secret_key, 2, search_asin=s_asin, search_titulo=s_titulo)
+        grap_sales=get_ventas(request.user.username, search_asin=s_asin, search_titulo=s_titulo, n_weeks_ago=2)
     else:
-        grap_sales = ventas_seller('izas', access_key, merchant_id, secret_key, 2)
+        grap_sales = get_ventas(request.user.username, n_weeks_ago=2)
     #form=yourForm(asins)
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:
@@ -158,9 +158,10 @@ def competitors(request):
         marketplace = request.POST.get('marketplace')
         #form = yourForm(request.POST)
         #asins_picked=form.cleaned_data.get('picked')
-        grap_competidores = competidores_seller(busqueda, num_items, marketplace)
+        grap_competidores=get_competidores(request.user.username, busqueda, num_items, marketplace)
     else:
-        grap_competidores = competidores_seller()
+
+        grap_competidores=get_competidores(request.user.username)
     #form=yourForm(asins)
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:

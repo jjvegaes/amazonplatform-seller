@@ -1,20 +1,20 @@
-from graficos import graficas
-from cambiar_region import cambiar_region
+from users.graficos import graficas
+from users.cambiar_region import cambiar_region
 import pandas as pd
 from datetime import datetime
 import os
 import plotly.express as px
 import plotly
-from limpieza import Limpieza
+from users.limpieza import Limpieza
 from threading import Thread
 import threading
 import time
 import math
 import re
-from scrapear import scrap_amazon
-from scrapear import scrap_resenas
+#from users.scrapear import scrap_amazon
+#from users.scrapear import scrap_resenas
 from datetime import datetime
-from resenas import palabras_clave, cambio_a_fecha
+#from users.resenas import palabras_clave, cambio_a_fecha
 
 mutex=threading.Lock()
 
@@ -202,7 +202,7 @@ class crearGraficasSeller():
         #return self.gr.get_html(self.gr.circular('envios gestionados por amazon', ['sales-channel', 'sku'], 'quantity-shipped', 'prueba'))
             return self.gr.get_html(self.gr.tam(self.gr.barras('envios gestionados por amazon',etiquetas=['asin'], valores=['Ingresos'], titulo='Ingresos por ASIN', colores=True, orientacion='v', hovertext=['product-name']), h=700))
         except:
-            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Ingresos por ASIN"</div>'
+            return '\n\nNo se ha podido cargar el gráfico "Ingresos por ASIN"\n\n'
     
     def graph_envios_amazon2(self):
         try:
@@ -210,7 +210,7 @@ class crearGraficasSeller():
             gr2={'id':'circular','id_df':'envios gestionados por amazon 20 cantidad', 'etiquetas':['asin'], 'valor':'quantity-shipped', 'titulo':'Unidades','row':0, 'col':1, 'hovertext':['product-name']}
             return self.gr.get_html(self.gr.tam(self.gr.varios([gr1, gr2], 'Top 20 productos', 2, 1),h=600, color='lightblue'))
         except:
-            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Top 20 productos"</div>'
+            return '\n\nNo se ha podido cargar el gráfico "Top 20 productos"\n\n'
 
 
     def graph_envios_amazon3(self):
@@ -219,13 +219,13 @@ class crearGraficasSeller():
             gr2={'id':'temporal', 'x':'ingresos por día', 'y':'Precio medio de venta', 'secondary_y':True, 'hovertext':None}
             return self.gr.get_html(self.gr.multiple('envios gestionados por amazon historico', [gr1, gr2], 'Tendencias de rendimiento de ventas', True, 'Ingresos por envíos', 'Precio medio de venta'))
         except:
-            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Ingresos por ASIN"</div>'
+            return '\n\nNo se ha podido cargar el gráfico "Ingresos por ASIN"\n\n'
 
     def graph_envios_amazon4(self):
         try:
             return self.gr.get_html(self.gr.mapa_calor('envios gestionados por amazon mapa', 'Ingresos', hovertext=[]))
         except:
-            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Mapa de calor de ingresos"</div>'
+            return '\n\nNo se ha podido cargar el gráfico "Mapa de calor de ingresos"\n\n'
 
     #INFORME: ESTADO DEL INVENTARIO
 
@@ -255,7 +255,7 @@ class crearGraficasSeller():
         try:
             return self.gr.get_html(self.gr.tam(self.gr.barras('estado inventario',etiquetas=['asin'], valores=['total-quantity','sellable-quantity'], titulo='Inventario disponible', colores=False, orientacion='v', hovertext=['product-name']), h=700))
         except:
-            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "INventario disponible"</div>'
+            return '\n\nNo se ha podido cargar el gráfico "INventario disponible"\n\n'
 
     #INFORME: COMENTARIOS NEGATIVOS
 
@@ -286,7 +286,7 @@ class crearGraficasSeller():
         try:
             return self.gr.get_html(self.gr.tam(self.gr.tabla('comentarios negativos',etiquetas=["b'Fecha", "Clasificación", 'Comentarios', 'Tu respuesta', 'E-mail del cliente'], titulo='Comentarios negativos'), h=700))
         except:
-            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Comentarios negativos"</div>'
+            return '\n\nNo se ha podido cargar el gráfico "Comentarios negativos"\n\n'
 
     def get_exceso_inventario(self, n_weeks_ago, asin, search_asin, titulo, search_titulo):
         try:
@@ -317,7 +317,7 @@ class crearGraficasSeller():
         try:
             return self.gr.get_html(self.gr.tam(self.gr.barras('excedente de inventario',etiquetas=['asin'], valores=['Total Quantity (Sellable)', 'Estimated Excess'], titulo='Cantidad total y excesa', orientacion='v', hovertext=['product-name']), h=700))
         except:
-            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Cantidad total y excesa de inventario"</div>'
+            return '\n\nNo se ha podido cargar el gráfico "Cantidad total y excesa de inventario"\n\n'
     
     def graph_exceso_inventario2(self):
         try:
@@ -330,26 +330,26 @@ class crearGraficasSeller():
             return self.gr.get_html(fig)
             #return self.gr.get_html(self.gr.tam(self.gr.barras('excedente de inventario',etiquetas=['Asin'], valores=['Units Sold - Last 7 Days', 'Units Sold - Last 30 Days', 'Units Sold - Last 60 Days', 'Units Sold - Last 90 Days'], titulo='Unidades vendidas de los productos excesos', orientacion='v', hovertext=['Product Name']), h=700))
         except:
-            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Unidades vendidas de inventario exceso"</div>'   
+            return '\n\nNo se ha podido cargar el gráfico "Unidades vendidas de inventario exceso"\n\n'   
     
     def graph_exceso_inventario3(self):
         try:
             return self.gr.get_html(self.gr.tam(self.gr.circular('excedente de inventario', etiquetas=[ 'Alert', 'Marketplace', 'asin'], valor='a', titulo='Alertas', hovertext=['product-name']), h=800))
         except:
-            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Ingresos por ASIN"</div>'
+            return '\n\nNo se ha podido cargar el gráfico "Ingresos por ASIN"\n\n'
 
     def graph_exceso_inventario4(self):
-        try:
-            marketplaces=set(list(self.gr.dict_df['excedente de inventario']['Marketplace']))
-            grs=""
-            for m in marketplaces:
-                gr1={'id':'lineal', 'x':'asin', 'y':'Your Price', 'rectas':True, 'puntos':False, 'hovertext':None, 'secondary_y':True}
-                gr2={'id':'lineal', 'x':'asin', 'y':'Recommended sales price', 'rectas':True, 'puntos':False, 'hovertext':None, 'secondary_y':True}
-                gr3={'id':'barras', 'etiquetas':['asin'], 'valores':['Recommended sale duration (days)'], 'colores':False, 'hovertext':['product-name'], 'secondary_y':False}
-                grs+= self.gr.get_html(self.gr.tam(self.gr.multiple('excedente de inventario '+m, [gr3, gr1, gr2], 'Precio de venta y recomendado '+m, True, 'Días', 'Precio'), h=450, color='aquamarine'))
-            return grs
-        except:
-            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Precio de venta y recomendado"</div>'
+        #try:
+        marketplaces=set(list(self.gr.dict_df['excedente de inventario']['Marketplace']))
+        grs=""
+        for m in marketplaces:
+            gr1={'id':'lineal', 'x':'asin', 'y':'Your Price', 'rectas':True, 'puntos':False, 'hovertext':None, 'secondary_y':True}
+            gr2={'id':'lineal', 'x':'asin', 'y':'Recommended sales price', 'rectas':True, 'puntos':False, 'hovertext':None, 'secondary_y':True}
+            gr3={'id':'barras', 'etiquetas':['asin'], 'valores':['Recommended sale duration (days)'], 'colores':False, 'hovertext':['product-name'], 'secondary_y':False}
+            grs+= self.gr.get_html(self.gr.tam(self.gr.multiple('excedente de inventario '+m, [gr3, gr1, gr2], 'Precio de venta y recomendado '+m, True, 'Días', 'Precio'), h=450, color='aquamarine'))
+        return grs
+        #except:
+        #    return '\n\nNo se ha podido cargar el gráfico "Precio de venta y recomendado"\n\n'
 
     def get_competidores(self, termino, num_items, marketplace):
         try:
@@ -363,12 +363,11 @@ class crearGraficasSeller():
         try:
             return self.gr.get_html(self.gr.tam(self.gr.tabla('competidores',etiquetas=(self.gr.dict_df['competidores'].columns), titulo='Palabra clave'), h=700))
         except:
-            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Competidores"</div>'
+            return '\n\nNo se ha podido cargar el gráfico "Competidores"\n\n'
 
     def get_resenas(self, asin, num_items, marketplace):
         try:
             scrap_resenas(asin, num_items, marketplace)
-            print("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
             df=pd.read_csv(self.myRute+'/scrap/resenas/rresenas_bot_items.csv')
             df["Valoración"] = df.apply(lambda x: "Positivo" if int(x["estrellas"]) > 3 else "Negativo", axis=1)
             df["Cantidad"]=1
@@ -392,7 +391,7 @@ class crearGraficasSeller():
         try:
             return self.gr.get_html(self.gr.tam(self.gr.tabla('resenas',etiquetas= ['comprador', 'fecha', 'estrellas', 'titulo', 'descripcion'], titulo='Reseñas', columnwidth=[50, 50, 20, 50, 200]), h=700))
         except:
-            return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Reseñas"</div>'
+            return '\n\nNo se ha podido cargar el gráfico "Reseñas"\n\n'
 
     def graph_resenas2(self):
         try:
@@ -400,25 +399,25 @@ class crearGraficasSeller():
             gr2={'id':'indicador', 'id_df':'resenas', 'etiqueta':'estrellas', 'mean':True, 'formato':{'suffix': "estrellas"}, 'row':0, 'col':0, 'titulo':'Valoración media'}
             return self.gr.get_html(self.gr.tam(self.gr.varios([gr2, gr1], 'Valoración del producto:', 2, 1), h=500, color='lightblue'))
         except:
-            '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Valoración del producto"</div>'
+            return '\n\nNo se ha podido cargar el gráfico "Valoración del producto"\n\n'
 
     def graph_resenas3(self):
         try:
             return self.gr.get_html(self.gr.word_cloud('palabras clave pos', 'Palabra', 'Frecuencia', 'Palabras más repetidas en reseñas positivas'))
         except:
-            return'<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Palabras más repetidas en reseñas positivas"</div>'
+            return'\n\nNo se ha podido cargar el gráfico "Palabras más repetidas en reseñas positivas"\n\n'
 
     def graph_resenas4(self):
         try:
             return self.gr.get_html(self.gr.word_cloud('palabras clave neg', 'Palabra', 'Frecuencia', 'Palabras más repetidas en reseñas negativas'))
         except:
-            return'<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Palabras más repetidas en reseñas negativas"</div>'
+            return'\n\nNo se ha podido cargar el gráfico "Palabras más repetidas en reseñas negativas"\n\n'
 
     def graph_resenas5(self):
         try:
             return self.gr.get_html(self.gr.temporal('resenas tiempo', 'fecha', 'Cantidad', 'Número de reseñas por día'))
         except:
-            return'<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Palabras más repetidas en reseñas negativas"</div>'
+            return'\n\nNo se ha podido cargar el gráfico "Palabras más repetidas en reseñas negativas"\n\n'
 
 
 access_key='AKIAIRF2R7EOJFNTGBEA'
@@ -483,15 +482,15 @@ def customers_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=
     return graph
 
 def competidores_seller(termino=None, num_items=None, marketplace=None):
-    if termino!= None and num_items != None and marketplace != None and termino != '' and num_items != '' and marketplace != '':
+    '''if termino!= None and num_items != None and marketplace != None and termino != '' and num_items != '' and marketplace != '':
         cgs=crearGraficasSeller('', '', '', '')
         cgs.get_competidores(termino, num_items, marketplace)
         return cgs.graph_competidores()
-    else:
-        return '<div class="caption v-middle text-center">Seleccione término de búsqueda, número de itmes y marketplace para ver los competidores</div>'
+    else:'''
+    return '<div class="caption v-middle text-center">Seleccione término de búsqueda, número de itmes y marketplace para ver los competidores:</div>'
 
 def resenas_seller(asin=None, num_items=None, marketplace=None):
-    if asin!=None and num_items != None and marketplace!= None and asin!='' and num_items!='' and marketplace !='':
+    '''if asin!=None and num_items != None and marketplace!= None and asin!='' and num_items!='' and marketplace !='':
         cgs=crearGraficasSeller('', '', '', '')
         cgs.get_resenas(asin, int(num_items), marketplace)
         graph= cgs.graph_resenas()
@@ -500,13 +499,12 @@ def resenas_seller(asin=None, num_items=None, marketplace=None):
         graph+=cgs.graph_resenas4()
         graph+=cgs.graph_resenas5()
         return graph
-    else:
-        return '<div class="caption v-middle text-center">Seleccione ASIN, número de itmes y marketplace para ver las reseñas:</div>'
+    else:'''
+    return '<div class="caption v-middle text-center">Seleccione ASIN, número de itmes y marketplace para ver las reseñas:</div>'
 
 
-print(resenas_seller('B01NH0XWNU', 100, 'ca'))
-from random import randrange
-print(randrange(1,15))
+#print(resenas_seller('B01NH0XWNU', 100, 'ca'))
+
 
 #print(ventas_seller('izas', access_key, merchant_id, secret_key, 1))
 #print(datetime.now())
