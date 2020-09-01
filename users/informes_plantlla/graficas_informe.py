@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import pandas.plotting as plotting
+import matplotlib as mpl
 sns.set()
 sns.set_style('dark')
 sns.set_palette("pastel")
@@ -10,7 +11,10 @@ sns.set_palette("pastel")
 # generate df
 #df = pd.DataFrame({'asin':['a', 'b', 'c'], 'esin':['c', 'd', 'e'], 'ventas':[1,2,3], 'gastos':[2,3,4]})
 class graficas_informe():
-    def __init__(self):
+    def __init__(self, ruta):
+        
+        
+        self.ruta=ruta
         self.dict_df={}
 
     def add_df(self, id, df):
@@ -24,18 +28,18 @@ class graficas_informe():
         cont=0
         for i in param:
             if(i['tipo']=='barras'):
-                barra(id, i['valores'], i['etiquetas'], ax=axes[cont], subplot=True)
+                self.barra(id, i['valores'], i['etiquetas'], ax=axes[cont], subplot=True)
                 print('barra')
             elif(i['tipo']=='tabla'):
-                tabla(id, ax=axes[cont], subplot=True)
+                self.tabla(id, ax=axes[cont], subplot=True)
                 print('tabla', cont)
             elif(i['tipo']=='quesito'):
-                quesito(id, i['valor'], i['etiqueta'], ax=axes[cont], subplot=True)
+                self.quesito(id, i['valor'], i['etiqueta'], ax=axes[cont], subplot=True)
                 print('queso', cont)
             elif(i['tipo']=='linea'):
-                linea(id, i['x'], i['y'], ax=axes[cont], subplot=True)
+                self.linea(id, i['x'], i['y'], ax=axes[cont], subplot=True)
             elif(i['tipo']=='linea_barra'):
-                linea_barra(id, i['x'], i['y1'], i['y2'], ax=axes[cont], subplot=True)
+                self.linea_barra(id, i['x'], i['y1'], i['y2'], ax=axes[cont], subplot=True)
             cont+=1
         plt.tight_layout()
         
@@ -56,19 +60,39 @@ class graficas_informe():
             if len(valores)==1:
                 sns.barplot(x=etiquetas[0], y=valores[0], hue=etiquetas[1], data=self.dict_df[id], ax=ax)
             else:
-                df_aux=dict_df[id].melt(id_vars=etiquetas, value_vars=valores)
-                sns.barplot(x=etiquetas[0], y='value', hue='variable', data=self.dict_df[id], ax=ax)
+                df_aux=self.dict_df[id].melt(id_vars=etiquetas, value_vars=valores)
+                sns.barplot(x=etiquetas[0], y='value', hue='variable', data=df_aux, ax=ax)
         if not subplot:
-            plt.savefig(id+'_barras.png')
+            plt.rcParams.update({'font.size': 40})
+            fig = plt.gcf()
+            fig.set_size_inches(10.5, 6.5)
+            plt.xticks(rotation=90)
+            fig.savefig(self.ruta+'/'+id+'_barras.png', bbox_inches = "tight")
             plt.close(ax)
 
 
 
     def quesito(self, id, valor, etiqueta, ax=None, subplot=False):
-        dict_df[id].plot.pie(subplots=True, labels=self.dict_df[id][etiqueta], y=valor, figsize=(6, 3), ax=ax)
-        if not subplot:
-            plt.savefig(id+'_quesitos.png')
-            plt.close(ax)
+        if ax != None:
+            self.dict_df[id].plot.pie(subplots=True, labels=self.dict_df[id][etiqueta], y=valor, figsize=(6, 3), ax=ax, textprops={'fontsize': 14})
+            if not subplot:
+                mpl.rcParams['font.size'] = 1000
+                plt.rcParams.update({'font.size': 1000})
+                plt.legend('')
+                fig = plt.gcf()
+                fig.set_size_inches(40.5, 40.5)
+                fig.savefig(self.ruta+'/'+id+'_quesitos.png', bbox_inches = "tight")
+                plt.close(ax)
+        else:
+            fig, ax = plt.subplots()
+            wedges, labels, autopct = ax.pie(list(self.dict_df[id][valor]),labels=self.dict_df[id][etiqueta],  autopct='%.0f%%', wedgeprops=dict(width=.7))
+            for lab in labels:
+                lab.set_fontsize(15)
+            plt.setp(labels, fontsize=15)
+            if not subplot:
+                plt.legend('')
+                fig.set_size_inches(2, 2)
+                fig.savefig(self.ruta+'/'+id+'_quesitos.png', bbox_inches = "tight")
 
 
     def tabla(self, id, ax=None, subplot=False):

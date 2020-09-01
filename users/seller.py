@@ -1,11 +1,11 @@
-from users.graficos import graficas
-from users.cambiar_region import cambiar_region
+from graficos import graficas
+from cambiar_region import cambiar_region
 import pandas as pd
 from datetime import datetime
 import os
 import plotly.express as px
 import plotly
-from users.limpieza import Limpieza
+from limpieza import Limpieza
 from threading import Thread
 import threading
 import time

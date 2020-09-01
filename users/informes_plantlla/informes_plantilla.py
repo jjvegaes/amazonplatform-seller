@@ -1,4 +1,3 @@
-from graficas_informe import graficas_informe
 from docx import Document
 from docx.shared import Inches
 import os
@@ -160,21 +159,87 @@ class informe_semanal():
             last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         self.document.add_page_break()
 
+    def pag9(self, ingreso_mensual,  gasto_mensual,  cuadro_texto, graficos):
+        self.document.add_heading('Ingresos mensuales', 2)
+        self.document.add_paragraph(
+            'Ingreso mensual: '+str(ingreso_mensual)+' €', style='List Bullet'
+        )
+        self.document.add_paragraph(
+            'Gasto mensual: '+str(gasto_mensual)+' €', style='List Bullet'
+        )
+        self.document.add_paragraph(cuadro_texto)
+        for gr in graficos:
+            self.document.add_picture(os.path.dirname(__file__)+'/imagenes/'+gr, width=Inches(4.5))
+            last_paragraph = self.document.paragraphs[-1] 
+            last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        self.document.add_page_break()
+
+    def pag10(self, ingreso_anual,  gasto_anual,  cuadro_texto, graficos):
+        self.document.add_heading('Ingresos anuales', 2)
+        self.document.add_paragraph(
+            'Ingreso mensual: '+str(ingreso_anual)+' €', style='List Bullet'
+        )
+        self.document.add_paragraph(
+            'Gasto mensual: '+str(gasto_anual)+' €', style='List Bullet'
+        )
+        self.document.add_paragraph(cuadro_texto)
+        for gr in graficos:
+            self.document.add_picture(os.path.dirname(__file__)+'/imagenes/'+gr, width=Inches(4.5))
+            last_paragraph = self.document.paragraphs[-1] 
+            last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        self.document.add_page_break()
+
+    def pag11(self, roas,  acos,  cuadro_texto, graficos):
+        self.document.add_heading('ROAS y ACOS', 2)
+        self.document.add_paragraph(
+            'ROAS: '+str(roas)+' €', style='List Bullet'
+        )
+        self.document.add_paragraph(
+            'ACOS: '+str(acos)+' %', style='List Bullet'
+        )
+        self.document.add_paragraph(cuadro_texto)
+        for gr in graficos:
+            self.document.add_picture(os.path.dirname(__file__)+'/imagenes/'+gr, width=Inches(4.5))
+            last_paragraph = self.document.paragraphs[-1] 
+            last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        self.document.add_page_break()
+
+    def pag12(self, pedidos_totales,  pedidos_aceptados, pedidos_entregados,  cuadro_texto, graficos):
+        self.document.add_heading('Pedidos', 1)
+        self.document.add_paragraph(
+            'Pedidos totales: '+str(pedidos_totales), style='List Bullet'
+        )
+        self.document.add_paragraph(
+            'Pedidos aceptados: '+str(pedidos_aceptados), style='List Bullet'
+        )
+        self.document.add_paragraph(
+            'Pedidos entregados: '+str(pedidos_entregados), style='List Bullet'
+        )
+        self.document.add_paragraph(cuadro_texto)
+        for gr in graficos:
+            self.document.add_picture(os.path.dirname(__file__)+'/imagenes/'+gr, width=Inches(4.5))
+            last_paragraph = self.document.paragraphs[-1] 
+            last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        self.document.add_page_break()
+
     
 
     def finaliza_doc(self):
         self.document.add_page_break()
         self.document.save(os.path.dirname(__file__)+'/demo.docx')
 
-informe_sem=informe_semanal('picsil')
-informe_sem.portada()
-informe_sem.pag1(4452.5, 20, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
-informe_sem.pag2(16284.87, 100, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
-informe_sem.pag3(405, 110.25, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
-informe_sem.pag4('Esto es un texto para editar',['ingresos.png', 'ventas.png'], exceso_inventario=10, reabastecer=20)
-informe_sem.pag5(98, 95.2, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
-informe_sem.pag6('B07IEURE', 'B06DFE45', 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
-informe_sem.pag7(['Campaña 1', 'Campaña 2', 'Campaña 3', 'Campaña 4'], 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
-informe_sem.pag8(1000, 950, 100, 99, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
-
-informe_sem.finaliza_doc()
+#informe_sem=informe_semanal('picsil')
+#informe_sem.portada()
+#informe_sem.pag1(4452.5, 20, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
+#informe_sem.pag2(16284.87, 100, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
+#informe_sem.pag3(405, 110.25, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
+#informe_sem.pag4('Esto es un texto para editar',['ingresos.png', 'ventas.png'], exceso_inventario=10, reabastecer=20)
+#informe_sem.pag5(98, 95.2, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
+#informe_sem.pag6('B07IEURE', 'B06DFE45', 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
+#informe_sem.pag7(['Campaña 1', 'Campaña 2', 'Campaña 3', 'Campaña 4'], 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
+#informe_sem.pag8(1000, 950, 100, 99, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
+#informe_sem.pag9(1800, 1000, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
+#informe_sem.pag10(54645, 9504, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
+#informe_sem.pag11(126, 15, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
+#informe_sem.pag12(1000, 950, 50, 'Esto es un texto para editar', ['ingresos.png', 'ventas.png'])
+#informe_sem.finaliza_doc()

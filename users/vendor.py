@@ -387,7 +387,7 @@ def productos(vendedor='miquelrius',asin=None, search_asin=None, titulo=None, se
     v.get_estado_inventario(asin, search_asin, titulo, search_titulo)
     graph=graph+v.gen_estado_inventario()
     graph=graph+v.gen_estado_inventario2()
-    return graph, todos_asin, todos_titulo
+    return graph
 
 def ventas(vendedor='miquelrius', asin=None, search_asin=None, titulo=None, search_titulo=None):
     
@@ -400,7 +400,7 @@ def ventas(vendedor='miquelrius', asin=None, search_asin=None, titulo=None, sear
     graph+=v.gen_inventario_ventas()
     graph+=v.gen_visitas_ventas_publicidad()
     graph+=v.gen_inventario_publicidad()
-    return graph, todos_asin, todos_titulo
+    return graph
 
 def customers2(vendedor='miquelrius', asin=None, search_asin=None, titulo=None, search_titulo=None):
     v=crearGraficasVendor(vendedor)
@@ -408,7 +408,7 @@ def customers2(vendedor='miquelrius', asin=None, search_asin=None, titulo=None, 
     graph=v.gen_resenas()
     graph=graph+v.gen_resenas2()
     graph=graph+v.gen_resenas3()
-    return graph, todos_asin, todos_titulo
+    return graph
 
 
 def competidores(termino=None, num_items=None, marketplace=None):
