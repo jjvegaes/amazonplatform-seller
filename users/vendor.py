@@ -4,11 +4,11 @@ import os
 import plotly.express as px
 import plotly
 
-from graficos import graficas
-from cambiar_region import cambiar_region
-from scrapear import scrap_amazon
-from scrapear import scrap_resenas
-from resenas import palabras_clave, cambio_a_fecha
+from users.graficos import graficas
+from users.cambiar_region import cambiar_region
+#from users.scrapear import scrap_amazon
+#from users.scrapear import scrap_resenas
+from users.resenas import palabras_clave, cambio_a_fecha
 
 #Esta clase obtendrá los dataframes y el html de todas las gráficas, dentro hay dos tipos de funciones, las que empiezan por 'get' se encargan de obtener los dataframes y guardarlos en la clase Graficas, las que empiezan por 'gen' se encargan de obtener el html de los gráficos usando funciones de la clase Graficas
 class crearGraficasVendor():
@@ -289,7 +289,7 @@ class crearGraficasVendor():
         except:
             return '\n\nNo se ha podido cargar el gráfico "Unidades disponibles y gasto en publicidad"</div>'
 
-        def get_competidores(self, termino, num_items, marketplace):
+    def get_competidores(self, termino, num_items, marketplace):
         try:
             scrap_amazon(termino, num_items, marketplace)
             df=pd.read_csv(self.myRute+'/scrap/amazon/amazon_bot_items.csv')
@@ -412,16 +412,16 @@ def customers2(vendedor='miquelrius', asin=None, search_asin=None, titulo=None, 
 
 
 def competidores(termino=None, num_items=None, marketplace=None):
-    if termino!= None and num_items != None and marketplace != None and termino != '' and num_items != '' and marketplace != '':
+    '''if termino!= None and num_items != None and marketplace != None and termino != '' and num_items != '' and marketplace != '':
         cgs=crearGraficasVendor('', '', '', '')
         cgs.get_competidores(termino, num_items, marketplace)
         return cgs.graph_competidores()
-    else:
-        return '<div class="caption v-middle text-center">Seleccione término de búsqueda, número de itmes y marketplace para ver los competidores</div>'
+    else:'''
+    return '<div class="caption v-middle text-center">Seleccione término de búsqueda, número de itmes y marketplace para ver los competidores</div>'
 
 
 def resenas(asin=None, num_items=None, marketplace=None):
-    if asin!=None and num_items != None and marketplace!= None and asin!='' and num_items!='' and marketplace !='':
+    '''if asin!=None and num_items != None and marketplace!= None and asin!='' and num_items!='' and marketplace !='':
         cgs=crearGraficasSeller('', '', '', '')
         cgs.get_resenas_scrapy(asin, int(num_items), marketplace)
         graph= cgs.graph_resenas_scrapy()
@@ -430,8 +430,8 @@ def resenas(asin=None, num_items=None, marketplace=None):
         graph+=cgs.graph_resenas_scrapy4()
         graph+=cgs.graph_resenas_scrapy5()
         return graph
-    else:
-        return '<div class="caption v-middle text-center">Seleccione ASIN, número de itmes y marketplace para ver las reseñas:</div>'
+    else:'''
+    return '<div class="caption v-middle text-center">Seleccione ASIN, número de itmes y marketplace para ver las reseñas:</div>'
 
 '''def index1(vendedor):
     v=crearGraficasVendor(vendedor)
