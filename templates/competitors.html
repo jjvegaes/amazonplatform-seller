@@ -117,13 +117,6 @@
     
 <br><br><br>
 
-
-<section data-aos="fade-left" data-aos-duration="900" data-aos-delay="400" data-aos-once="true" class="py-5">
-    <div class="caption v-middle text-center">
-        <h1 class="cd-headline clip">
-            <span class="blc">Select a range, if wished, here:  </span>
-        </h1>
-    </div>
     <br><br>
     
     <div class="container d-flex justify-content-center">
@@ -139,19 +132,25 @@
             </div>
         </div>
     </div>
-    
-    
+    <br>
+    <br>
+    <br>
+    <br>    
     <div class="caption v-middle text-center">
 
         <form action="/products.html" method="POST">
+            <strong> <font color ="Navy" face="Candara" <label for="">Términos de búsqueda</label> </strong> </font>
             <input type="text" name="busqueda" value="" style="width:100px" / >
+            <strong> <font color ="Navy" face="Candara" <label for="">Número de productos</label> </strong> </font>
             <input type="text" name="num_items" value="" style="width:100px" / >
+            <strong> <font color ="Navy" face="Candara" <label for="">Marketplace</label> </strong> </font>        
             <input type="text" name="marketplace" value="" style="width:100px" / >
             <input type="submit" value="Filtrar">
             {% csrf_token %}
             
         </form>
         </div>
+        
     <div id="graphicsmargin">
         {{ graficos | safe }}
     </div>

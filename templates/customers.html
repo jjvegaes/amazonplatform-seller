@@ -179,8 +179,11 @@
     <div class="caption v-middle text-center", id="filtrosresenas">
 
         <form action="/customers.html" method="POST">
+            <strong> <font color ="Navy" face="Candara" <label for="">ASIN</label> </strong> </font>
             <input type="text" name="asin2" value="" style="width:100px" / >
+            <strong> <font color ="Navy" face="Candara" <label for="">Número de reseñas</label> </strong> </font>
             <input type="text" name="num_items" value="" style="width:100px" / >
+             <strong> <font color ="Navy" face="Candara" <label for="">Marketplace</label> </strong> </font>
             <input type="text" name="marketplace" value="" style="width:100px" / >
             <input type="submit" value="Filtrar">
             {% csrf_token %}
