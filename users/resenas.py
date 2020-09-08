@@ -5,9 +5,14 @@ import time
 import os
 import datetime
 
+#Función que dado un dataframe de reseñas devuelve otro dataframe con palabras positivas y negativas y la frecuencia. El umbral es la frecuencia con la cual quieres que aparezca la palabra en el dataframe
 def palabras_clave(df, umbral):
+    #Palabras que le pueden seguir 1 o más palabras importantes
     conectores=['bastante', 'tengo', 'hasta', 'llegó', 'llego', 'desde', 'gran', 'está', 'nada', 'buen', 'algo', 'ninguna', 'ningún', 'ningun', 'primera', 'primer',  'casi', 'problema',   'este', 'siguiente', 'unos', 'unas', 'cada', 'otro', 'otra', 'otros', 'otras', 'mucho', 'ahora',  'bien', 'daba',   'demasiado', 'bien', 'como', 'hace', 'porque', 'parece', 'otra']
+    #Palabras que le pueden seguir 2 o más palabras importantes
     conectores2=['pero', 'aunque',  'aun que', 'para', 'además', 'ademas', 'también', 'tambien','creo', 'pensar', 'tiene', 'tenía', 'hay', 'había', 'sobre', 'puede', 'todo', 'toda', 'durante']
+    
+    #separamos el dataframe en comentarios positivas y negativas
     palabras_positivas={}
     palabras_negativas={}
     df=df.fillna(1)
@@ -16,19 +21,16 @@ def palabras_clave(df, umbral):
     comentarios_positivos=list(df_positivos['descripcion'])
     comentarios_negativos=list(df_negativos['descripcion'])
 
+    #Creamos listas con todas las palabras:
     palabras_positivas=list()
     for c in comentarios_positivos:
         palabras_positivas.extend(str(c).split())
-
     palabras_negativas=list()
     for c in comentarios_negativos:
         palabras_negativas.extend(str(c).split())
     
-    frecuencia_positiva={}
-    frecuencia_negativa={}
-    print(palabras_positivas)
-    print(palabras_negativas)
 
+    #Las palabras que esten en conectores le añadimos 1, 2, 3, 4 y 5 palabras más y las que estén en conectores2 le añadimos 2, 3, 4 y 5
     for i in range(len(palabras_positivas)):
         if palabras_positivas[i] in conectores:
             try:
@@ -41,15 +43,13 @@ def palabras_clave(df, umbral):
                 pass
         elif palabras_positivas[i] in conectores2:
             try:
-                #palabras_positivas.append(palabras_positivas[i]+' '+palabras_positivas[i+1])
                 palabras_positivas.append(palabras_positivas[i]+' '+palabras_positivas[i+1]+' '+palabras_positivas[i+2])
                 palabras_positivas.append(palabras_positivas[i]+' '+palabras_positivas[i+1]+' '+palabras_positivas[i+2]+' '+palabras_positivas[i+3])
                 palabras_positivas.append(palabras_positivas[i]+' '+palabras_positivas[i+1]+' '+palabras_positivas[i+2]+' '+palabras_positivas[i+3]+' '+palabras_positivas[i+4])
                 palabras_positivas.append(palabras_positivas[i]+' '+palabras_positivas[i+1]+' '+palabras_positivas[i+2]+' '+palabras_positivas[i+3]+' '+palabras_positivas[i+4]+' '+palabras_positivas[i+5])
             except:
                 pass
-            #print(palabras_positivas[i])
-
+    #Con negativas
     for i in range(len(palabras_negativas)):
         if palabras_negativas[i] in conectores:
             try:
@@ -62,16 +62,16 @@ def palabras_clave(df, umbral):
                 pass
         elif palabras_negativas[i] in conectores2:
             try:
-                #palabras_negativas.append(palabras_negativas[i]+' '+palabras_negativas[i+1])
                 palabras_negativas.append(palabras_negativas[i]+' '+palabras_negativas[i+1]+' '+palabras_negativas[i+2])
                 palabras_negativas.append(palabras_negativas[i]+' '+palabras_negativas[i+1]+' '+palabras_negativas[i+2]+' '+palabras_negativas[i+3])
                 palabras_negativas.append(palabras_negativas[i]+' '+palabras_negativas[i+1]+' '+palabras_negativas[i+2]+' '+palabras_negativas[i+3]+' '+palabras_negativas[i+4])
                 palabras_negativas.append(palabras_negativas[i]+' '+palabras_negativas[i+1]+' '+palabras_negativas[i+2]+' '+palabras_negativas[i+3]+' '+palabras_negativas[i+4]+' '+palabras_negativas[i+5])
             except:
                 pass
-            #print(palabras_negativas[i])
 
-
+    #Sacamos la frecuencia de cada palabra en las listas y las ponemos en un diccionario
+    frecuencia_positiva={}
+    frecuencia_negativa={}
     for p in palabras_positivas:
         p=p.replace(".","").replace(",","").replace(";", "")
         p=p.lower()
@@ -80,7 +80,6 @@ def palabras_clave(df, umbral):
                 frecuencia_positiva[p]+=1
             else:
                 frecuencia_positiva[p]=1
-
     for p in palabras_negativas:
         p=p.replace(".","").replace(",","").replace(";", "")
         p=p.lower()
@@ -90,12 +89,12 @@ def palabras_clave(df, umbral):
             else:
                 frecuencia_negativa[p]=1
 
+    #Creamos los dataframes y solo añadimos las palabras que superan el umbral:
     positivas = pd.DataFrame({'Palabra': [], 'Frecuencia': []})
     for key, value in frecuencia_positiva.items():
         if value>=umbral:
             positivas=positivas.append({'Palabra' : key , 'Frecuencia' : value} , ignore_index=True)
     positivas['valoracion']='Positiva'
-
     negativas = pd.DataFrame({'Palabra': [], 'Frecuencia': []})
     for key, value in frecuencia_negativa.items():
         if value>=umbral:
@@ -104,15 +103,18 @@ def palabras_clave(df, umbral):
 
     return positivas.append(negativas, ignore_index = True)
 
-
+#Función que pasa de una fecha de formato string (ejemplo: 8 de febrero de 2019) y lo pasa a datetime
 def cambio_a_fecha(fecha, marketplace):
+    #EN estos marketplaces tenemos que hacer estos cambios
     if marketplace=='de':
         fecha=fecha.replace('.', '')
     if marketplace=='com' or marketplace=='ca':
         fecha=fecha.replace(',', '')
+    #El año es el segundo número que tenemos, el día ponemos con uno porque lo que nos importa es el mes y el año
     numeros=[int(s) for s in fecha.split() if s.isdigit()]
     ano=numeros[1]
     dia=1
+    #Según el marketplace se calcula el mes de una manera(hay que tener en cuenta el idioma)
     if marketplace=='es':
         meses={'enero':1, 'febrero':2, 'marzo':3, 'abril':4, 'mayo':5, 'junio':6, 'julio':7, 'agosto':8, 'septiembre':9, 'octubre':10, 'noviembre':11, 'diciembre':12}
         mes=fecha[fecha.find('de')+3:]
@@ -145,6 +147,7 @@ def cambio_a_fecha(fecha, marketplace):
         meses={'January':1, 'February':2, 'March':3, 'April':4, 'May':5, 'June':6, 'July':7, 'August':8, 'September':9, 'October':10, 'November':11, 'December':12}
         mes=meses[fecha[:fecha.find(' ')]]
 
+    #Devolvemos la fecha
     return datetime.datetime(year=ano, month=mes, day=dia)
 
     #Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November und Dezember
@@ -241,7 +244,7 @@ def obten_resenas():
         for i in range(len(asins)):
             print('-------------------------------------'+str(cont))
             cont+=1
-            scrap_resenas(asins[i], 25, marketplace[7:])
+            scrap_resenas(asins[i], 100, marketplace[7:])
             if otra_vez:
                 try:
                     df2=pd.read_csv(os.path.dirname(__file__)+'/scrap/resenas/rresenas_bot_items.csv')
@@ -270,7 +273,7 @@ def obten_resenas():
     writer.save()
 #obten_resenas()
 #nombres=['Simba Sleepamazon.co.uk', 'bedzonlineamazon.co.uk', 'Molblly Home EUamazon.co.uk', 'Duermexamazon.es', 'VENTA-STOCKamazon.fr', 'ABeddingamazon.es', 'Grupo Simpuramazon.fr', 'Farmarelaxamazon.it', 'Dormideoamazon.es', 'CHANG XU DONG SHOPamazon.es', 'Buy Gifts, S.Lamazon.es', 'OUTLET-SOFA-DIRECTamazon.it', 'Materassiedogheamazon.it', 'Grupo Simpuramazon.es', 'NOFFA-WJamazon.fr', 'RS tradingamazon.it', 'Starlight Beds Ltdamazon.co.uk', 'ty56fdfamazon.co.uk',  'SETL GmbHamazon.it', 'Träumegut24amazon.de', 'literie-moins-cheramazon.fr', 'Kamahaus Storeamazon.es', 'xinhaowangamazon.fr', 'PROXELamazon.co.uk', 'ABUSINESSDCamazon.es', 'VISCOSOFTamazon.fr']
-#nombres=['Emma Colchónamazon.es', 'PIKOLINamazon.es']
+nombres=['PIKOLINamazon.es']
 def otro():
 
     writer = ExcelWriter('palabras_clave_resenas.xlsx')
@@ -278,7 +281,7 @@ def otro():
         if n!='Träumegut24amazon.de' and n!='literie-moins-cheramazon.fr':
             df=pd.read_excel('resenas.xlsx', sheet_name=n)
             print(n)
-            df2=palabras_clave(df, 4)
+            df2=palabras_clave(df, 6)
             df2.to_excel(writer, sheet_name=n)
     writer.save()
-#otro()
+otro()

@@ -14,17 +14,17 @@ from crochet import setup, retrieve_result
 import time
 setup()
 
-#Llama a esta funci贸n con una palabra clave y un n煤mero de items y te devuelve el df con la informaci贸n
+#Llama a esta funci贸n con una palabra clave y un n煤mero de items y se ejecuta el scrapy, es como la de amazon_bot
 def spider_crawler(asin, num_items, marketplace, version):
     settings = Settings()
     settings['USER_AGENT']='Mozilla / '+str(version)+'.0'
     settings['BOT_NAME'] = 'resenas_bot'
-    settings['SPIDER_MODULES'] = ['users.scrap.resenas.resenas_bot.spiders']
-    settings['NEWSPIDER_MODULE'] = 'users.scrap.resenas.resenas_bot.spiders'
+    settings['SPIDER_MODULES'] = ['scrap.resenas.resenas_bot.spiders']
+    settings['NEWSPIDER_MODULE'] = 'scrap.resenas.resenas_bot.spiders'
     #settings['DOWNLOAD_DELAY'] = 1
 
     #CSV import:
-    settings['ITEM_PIPELINES']={'users.scrap.resenas.resenas_bot.pipelines.ResenasBotPipeline':200}
+    settings['ITEM_PIPELINES']={'scrap.resenas.resenas_bot.pipelines.ResenasBotPipeline':200}
 
     settings['ROBOTSTXT_OBEY'] = True
 

@@ -1,11 +1,11 @@
-from users.graficos import graficas
-from users.cambiar_region import cambiar_region
+from graficos import graficas
+from cambiar_region import cambiar_region
 import pandas as pd
 from datetime import datetime
 import os
 import plotly.express as px
 import plotly
-from users.limpieza import Limpieza
+from limpieza import Limpieza
 from threading import Thread
 import threading
 import time
@@ -14,9 +14,10 @@ import re
 #from users.scrapear import scrap_amazon
 #from users.scrapear import scrap_resenas
 from datetime import datetime
-#from users.resenas import palabras_clave, cambio_a_fecha
+from users.resenas import palabras_clave, cambio_a_fecha
+#ESTA CLASE ES PARECIDA A LA DE VENDOR
 
-mutex=threading.Lock()
+mutex=threading.Lock()#Para no pedir dos informes de mws a la vez
 
 class crearGraficasSeller():
     def __init__(self, vendedor, access_key, merchant_id, secret_key):
@@ -28,9 +29,9 @@ class crearGraficasSeller():
         self.merchant_id=merchant_id
         self.secret_key=secret_key
         #IDs de los informes a usar:
-        self.dict_reports={'datos inventario':'_GET_AFN_INVENTORY_DATA_', 'comentarios negativos':'_GET_SELLER_FEEDBACK_DATA_', 'estado inventario':'_GET_FBA_FULFILLMENT_INVENTORY_HEALTH_DATA_','envios amazon':'_GET_AMAZON_FULFILLED_SHIPMENTS_DATA_', 'exceso inventario':'_GET_EXCESS_INVENTORY_DATA_'}
+        self.dict_reports={'informacion pedidos':'_GET_FLAT_FILE_ALL_ORDERS_DATA_BY_LAST_UPDATE_','datos inventario':'_GET_AFN_INVENTORY_DATA_', 'comentarios negativos':'_GET_SELLER_FEEDBACK_DATA_', 'estado inventario':'_GET_FBA_FULFILLMENT_INVENTORY_HEALTH_DATA_','envios amazon':'_GET_AMAZON_FULFILLED_SHIPMENTS_DATA_', 'exceso inventario':'_GET_EXCESS_INVENTORY_DATA_', 'reabastecer inventario':'_GET_RESTOCK_INVENTORY_RECOMMENDATIONS_REPORT_'}
 
-    #FILTROS
+    #FILTROS (igual que los de vendor.py)
 
     def filtra_x_asin(self, df, asin):
         if asin!=None:
@@ -60,20 +61,31 @@ class crearGraficasSeller():
     def filtra(self, df, asin, asin_search, titulo, titulo_search):
         return self.filtra_x_asin(self.filtra_x_search_asin(self.filtra_x_titulo(self.filtra_x_search_titulo(df, titulo_search),titulo), asin_search), asin)
 
-    #Obtención de informes usando mws:
+    #OBTENCIÓN DE INFORMES CON MWS:
 
     #Informes que no son históricos (el nuevo sustituye al viejo y si no existe se crea)
-    def mws_csv(self, id, n_weeks_ago):
+    def mws_csv(self, id, n_weeks_ago, start_date=None, end_date=None):
         mutex.acquire()
         try:
-            l=Limpieza()
-            df=l.limpieza2(self.access_key, self.merchant_id, self.secret_key, self.dict_reports[id], n_weeks_ago)
-            if df.__str__() != "None": 
-                df.to_csv(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+str(n_weeks_ago)+'.csv')
-                print('Cargado el informe '+id)
-            f=open(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+str(n_weeks_ago)+'.txt', 'w')
-            f.write(str(datetime.now()))
-            f.close()
+            if start_date==None and end_date==None:#Usamos n_weeks ago para calcular las fechas
+                l=Limpieza()
+                df=l.limpieza2(self.access_key, self.merchant_id, self.secret_key, self.dict_reports[id], n_weeks_ago)
+                if df.__str__() != "None": #Si se ha obtenido lo guardamos
+                    df.to_csv(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+str(n_weeks_ago)+'.csv')
+                    print('Cargado el informe '+id)
+                #Guardamos la fecha en la que se ha subido
+                f=open(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+str(n_weeks_ago)+'.txt', 'w')
+                f.write(str(datetime.now()))
+                f.close()
+            else:#Igual que antes pero llamando a limpieza
+                l=Limpieza()
+                df=l.limpieza(self.access_key, self.merchant_id, self.secret_key, self.dict_reports[id], start_date, end_date)
+                if df.__str__() != "None": 
+                    df.to_csv(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+'aux'+'.csv')
+                    print('Cargado el informe '+id)
+                f=open(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+'aux'+'.txt', 'w')
+                f.write(str(datetime.now()))
+                f.close()
             mutex.release()
         except:
             mutex.release()
@@ -88,17 +100,19 @@ class crearGraficasSeller():
             df2=l.limpieza2(self.access_key, self.merchant_id, self.secret_key, self.dict_reports[id], 1)
             if df2.__str__() != "None": 
                 df=df.append(df2, ignore_index = True)
+                #Borramos duplicados
                 if id=='envios amazon':
                     df = df.drop_duplicates('b"amazon-order-id')
                 elif id=='comentarios negativos':
                     df= df.drop_duplicates('Comentarios')
                 df.to_csv(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+'historico'+'.csv', encoding="utf-8")
                 print('Cargado el informe '+id)
+            #Guardamos la fecha
             f=open(self.myRute+'/informes_seller/'+self.vendedor+'/'+id+'/'+id+'historico'+'.txt', 'w')
             f.write(str(datetime.now()))
             f.close()
             mutex.release()
-        except:
+        except:#En este caso no existe y se crea de nuevo
             try:
                 l=Limpieza()
                 df=l.limpieza2(self.access_key, self.merchant_id, self.secret_key, self.dict_reports[id], n_weeks_ago)
@@ -280,13 +294,13 @@ class crearGraficasSeller():
         self.gr.add_df('comentarios negativos', df)
         return ult_fecha
 
-    #INFORME EXCESO DE INVENTARIO
-
     def graph_comentarios_negativos(self):
         try:
             return self.gr.get_html(self.gr.tam(self.gr.tabla('comentarios negativos',etiquetas=["b'Fecha", "Clasificación", 'Comentarios', 'Tu respuesta', 'E-mail del cliente'], titulo='Comentarios negativos'), h=700))
         except:
             return '\n\nNo se ha podido cargar el gráfico "Comentarios negativos"\n\n'
+
+    #INFORME EXCESO DE INVENTARIO
 
     def get_exceso_inventario(self, n_weeks_ago, asin, search_asin, titulo, search_titulo):
         try:
@@ -305,10 +319,12 @@ class crearGraficasSeller():
                 return
         df["a"]=1
         df =df.rename(columns = {'Asin' : 'asin', 'Product Name':'product-name'})
+        #Limpiamos datos:
         df['Your Price']=[float(re.findall("\d+\.\d+", x)[0]) for x in list(df['Your Price'])]
         marketplaces=set(list(df['Marketplace']))
         for m in marketplaces:
             dfaux=df[df.Marketplace.isin([m])]
+            #Añadimos un df por cada marketplace para tenerlo separado:
             self.gr.add_df('excedente de inventario '+m, self.filtra(dfaux, asin, search_asin, titulo, search_titulo))
         self.gr.add_df('excedente de inventario', self.filtra(df, asin, search_asin, titulo, search_titulo))
         return ult_fecha
@@ -339,17 +355,19 @@ class crearGraficasSeller():
             return '\n\nNo se ha podido cargar el gráfico "Ingresos por ASIN"\n\n'
 
     def graph_exceso_inventario4(self):
-        #try:
-        marketplaces=set(list(self.gr.dict_df['excedente de inventario']['Marketplace']))
-        grs=""
-        for m in marketplaces:
-            gr1={'id':'lineal', 'x':'asin', 'y':'Your Price', 'rectas':True, 'puntos':False, 'hovertext':None, 'secondary_y':True}
-            gr2={'id':'lineal', 'x':'asin', 'y':'Recommended sales price', 'rectas':True, 'puntos':False, 'hovertext':None, 'secondary_y':True}
-            gr3={'id':'barras', 'etiquetas':['asin'], 'valores':['Recommended sale duration (days)'], 'colores':False, 'hovertext':['product-name'], 'secondary_y':False}
-            grs+= self.gr.get_html(self.gr.tam(self.gr.multiple('excedente de inventario '+m, [gr3, gr1, gr2], 'Precio de venta y recomendado '+m, True, 'Días', 'Precio'), h=450, color='aquamarine'))
-        return grs
-        #except:
-        #    return '\n\nNo se ha podido cargar el gráfico "Precio de venta y recomendado"\n\n'
+        try:
+            marketplaces=set(list(self.gr.dict_df['excedente de inventario']['Marketplace']))
+            grs=""
+            for m in marketplaces:#Añadimos un gráfico por cada marketplace
+                gr1={'id':'lineal', 'x':'asin', 'y':'Your Price', 'rectas':True, 'puntos':False, 'hovertext':None, 'secondary_y':True}
+                gr2={'id':'lineal', 'x':'asin', 'y':'Recommended sales price', 'rectas':True, 'puntos':False, 'hovertext':None, 'secondary_y':True}
+                gr3={'id':'barras', 'etiquetas':['asin'], 'valores':['Recommended sale duration (days)'], 'colores':False, 'hovertext':['product-name'], 'secondary_y':False}
+                grs+= self.gr.get_html(self.gr.tam(self.gr.multiple('excedente de inventario '+m, [gr3, gr1, gr2], 'Precio de venta y recomendado '+m, True, 'Días', 'Precio'), h=450, color='aquamarine'))
+            return grs
+        except:
+            return '\n\nNo se ha podido cargar el gráfico "Precio de venta y recomendado"\n\n'
+
+    #Competidores de Scrapy, igual que vendor
 
     def get_competidores(self, termino, num_items, marketplace):
         try:
@@ -420,9 +438,7 @@ class crearGraficasSeller():
             return'\n\nNo se ha podido cargar el gráfico "Palabras más repetidas en reseñas negativas"\n\n'
 
 
-access_key='AKIAIRF2R7EOJFNTGBEA'
-merchant_id='A2GU67S0S60AC1'
-secret_key='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'
+#Funciones como las de vendor que llaman a los gráficos:
 
 
 def ventas_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=None, asin=None, search_asin=None, titulo=None, search_titulo=None):
@@ -430,6 +446,7 @@ def ventas_seller(vendedor, access_key, merchant_id, secret_key, n_weeks_ago=Non
     todos_asin, todos_titulos, ult_fecha, ult_fecha2=cgs.get_envios_amazon_historico(n_weeks_ago=5, asin=asin, search_asin=search_asin, titulo=titulo, search_titulo=search_titulo)
     graph='<div class="caption v-middle text-center">Última hora actualización envios amazon:'+ult_fecha+'</div>'
     graph+='<div class="caption v-middle text-center">Última hora actualización datos inventario:'+ult_fecha2+'</div>'
+    #Creamos hilos para que simultáneamente se actualicen los csv
     if len(threading.enumerate())<15:
         hilo=Thread(target=cgs.mws_csv_historico, args=['envios amazon', 20])
         hilo3=Thread(target=cgs.mws_csv, args=['datos inventario', 1])

@@ -8,7 +8,7 @@ pd.set_option('display.max_columns', 500)
 class Advertising():
     def __init__(self, client_id, client_secret, region, refresh_token):
         self.ad = AdvertisingApi(client_id, client_secret, region, refresh_token)
-        self.ad._access_token = "Atza|IwEBIFdbmmUQ9nLFge3VJ_dg5zSPqf9IyyWv3Na-BFAeOYw344yw9mJ2KJzN86Ve4EaNbLTWLQMyyWm2z-2I0rNuQ8vhj74g1P58nkqUs3pU2-BUcKHkDLDD9gTuHcWwTGC_cc9zmcRxtzC0ItBaALBnbjKuF9V5IaxbUvQyKzwXIPF8c0rxUq946uRC3j0KjazLXexaFf81sIUI89eH6h91LLGVmdyB3Oq2Z8bbzfH5ynwmHnOmPCGG_X-biMeBAKJ7OFrdjrlagw_Be5nsubrPP3rJ-oHFXReCmCtUCdgCWCosB6T1WLmpLHo4M-2B50--vyv07hhU2_MIvIUsBg0BoAIJtQpSo35rnhZ93wy68H_Jy6Di8wN3O3RRTzSd6leubFzLMYUMF0dtxJSRPYRIOJwxC4VObga4S8Nomp6AxRG-KQ"
+        self.ad._access_token = "Atza|IwEBIE-wYRMTKKsO3Dql7twOsDnLRZZyL8K8IW0_ASAQCg53dAcYCjSdFkbO7qL7jDdRumt79ii5Q84Uw8rtGyAXviPW2NV8bA6t4M-cXQcGAFQF6Bd430GnFoN_bajJzdwaFUkhF9-q75kwS6-sneLaU7blnfqwLWvAMPgt4tEpljOoBJhnuMDlw-xsb98TW6-RJLOwgjAB-VZ_TSUi1r6Qrg77WFU66S0L75l4Y8LKVRn8fw6xnrrH6eN9B5znMqQeSzqlKVuckp8nYjSsNWoGvAUwoxcepy93rQVXQYW410fZbQhO0rfnVz6W22ta803anshM7VgP4Fs2Zly_jtC5wTk5IkZCO4xd84UVtbq1qhAEZMJkNjnJfk3NjPZDuf308_2BpqeRGgodfxvs2mwIqSu8X-wVeVYGSAli2htgC8HRz36GVYn7aPr1RguxySMmq9sCBjrQligbkPtCKHSYSIm9DH0lBKMNyQn0tBZbFnOJJqskDITPdp2BMUhv3Qby2tc"
         self.ad.do_refresh_token()
 
     def df_all_campaigns(self):
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     client_id = "amzn1.application-oa2-client.a8fd6816f08d46569dfd2362198fc4d1"
     client_secret = "a743f8e758089168f35bfbc5bc3399567ae8e8e95dbeddc5fc17ecf7de2532de"
     region = 'eu'
-    refresh_token = "Atzr|IwEBIOtnNkfgRJInrjMG3ng7-FnpFW_4XQscmqLWJ7SX71lUD3bye47PgUiDSiFji8VHl5pdK7h5-5-udSYzZEFmtDcB3U8mzRIUyclebLdTrk9rErYzj6wIanmnMZQACDQXiatUUsjNdCBB08XdmhzrHIkuZ-hb6eps8uBjQKGRl-fW8aemnDJ4sytN278l3zizuEoJF4S07uu6_ekucmgUDniSlGdGNWiBb9gMl9QOHad5k3-QPzrO2n5BHBLna9nMpc0kGhfhzsPdTQvVIsB_YqPrrV7KMOWA3J6Nx-vBbLbPkZKt6dMXpitR0AZNEQczxygXjAdJcJ1nu2A6lr_AlLhuCedyhxryUkGt4SITtZrhTnFFPwTuSO6xLAUIztj11aw_q0co-APpv9WmrGov6I8HaND4A5e-fCVd43yQY_BkxoE1dXi6A8wgBzbs-cvxXBQ"
+    refresh_token = "Atzr|IwEBIO5zIbn3reyXTkV3daVaXVPbS4pqUQt5xiDIyZglZY4ejAmwwpXP241favZsccPoEdUugEKQIOANngXwLrRWWKlbHB9hr7CYdtouEWHbezcobKIW6UnvA4x-Sjz5LsCMq4LZEMgwWNpsuLYN5ztFrTkttJK5Dz8tCpvQKhYK3KEqMvOJtDdWd04pD87BLxdda-ChGK4H8qxTOXKAcsL7SceyCAG2B4wU4_uUMdflxv-GQgm5ho8NwYk841KaoyybfjAFGMmJ3pUkemmaUUhCAXPGt3xu8_EdCns7NHAK-cJvt5hcf301mBx-DghHrNW6pgaHBxzeTDzl2ufxhZVfRgm70eJmsKyMvEuyzvFM8hL6e5RRqmc9fjkuEuoKeQ5cuIrCs8vG_tSKiAMJY9viX3UGjAttFR1gFxRviDtq1SoVbEvSxN-GVS8GXmRx_ZBKGL77P1o9lMO29G9BC1uKhgYUVMiOeE1peF_1YofJg1qmYiyFw3LT6Cp2lij1F7Q8J08"
     
     ad = Advertising(client_id, client_secret, region, refresh_token= refresh_token)
     

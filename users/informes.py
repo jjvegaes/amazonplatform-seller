@@ -25,8 +25,6 @@ class Informe():
             print(info.parsed['ReportRequestInfo']['ReportProcessingStatus']['value'])
             time.sleep(start_sleep)          #Tiempo mínimo de espera entre dos "get_report_request_list"
             info=self.amazon_mws.get_report_request_list(request_id.parsed['ReportRequestInfo']['ReportRequestId']['value'])
-            if start_sleep<45:
-                start_sleep+=5
         if info.parsed['ReportRequestInfo']['ReportProcessingStatus']['value']=='_DONE_':#Si se ha completado el informe lo devolvemos
             return self.amazon_mws.get_report(info.parsed['ReportRequestInfo']['GeneratedReportId']['value']).parsed
         return None

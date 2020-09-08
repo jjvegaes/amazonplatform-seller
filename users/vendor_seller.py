@@ -1,9 +1,14 @@
 from users.vendor import productos, customers2, ventas, resenas, competidores
 from users.seller import productos_seller, customers_seller, ventas_seller, resenas_seller, competidores_seller
 
+#HAY QUE LLAMAR A ESTAS FUNCIONES PARA OBTENER LOS GRÁFICOS
+
+#Datos necesarios:
 keys={'izas':{'access_key':'AKIAIRF2R7EOJFNTGBEA', 'merchant_id':'A2GU67S0S60AC1', 'secret_key':'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'}}
 vendor=['miquelrius']
 seller=['izas']
+
+#Todos los tipo de dashboard, se llama a los de vendor o seller en funcion del vendedor:
 
 def get_products(vendedor, search_asin=None, search_titulo=None, n_weeks_ago=None):
     if vendedor in vendor:

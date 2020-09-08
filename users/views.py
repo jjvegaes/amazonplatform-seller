@@ -99,7 +99,7 @@ def customers(request):
         grap_resenas=get_resenas(request.user.username, s_asin2, s_num_items, s_marketplace)
     else:
         grap_customers=get_customers(request.user.username, n_weeks_ago=2)
-        grap_resenas(request.user.username)
+        grap_resenas=get_resenas(request.user.username)
     #form=yourForm(asins)
     # Si estamos identificados devolvemos la portada
     if request.user.is_authenticated:

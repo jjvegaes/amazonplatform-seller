@@ -14,6 +14,7 @@ class graficas():
     def __init__(self, dict_df):
         self.dict_df=dict_df.copy()
 
+    #Para añadir un nuevo dataframe al diccionario
     def add_df(self, id, df):
         self.dict_df[id]=df
 
@@ -21,21 +22,20 @@ class graficas():
     #Etiquetas es una lista de uno o dos valores, si lleva dos el primero será para cada columna y el segundo para el color de columna, valores es una lista sin limite por cada valor se usará un color de columna según etiqueta.
     def barras(self, id, etiquetas, valores, colores=False, titulo=None, orientacion='v', hovertext=None):
         if orientacion=='v': 
-            if colores==True:
+            if colores==True:#Si usamos colores, la etiqueta valor es la que tenga los colores
                 return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], hover_data=hovertext, color=valores[0], title=titulo, orientation=orientacion)
             else:
-                if len(valores)==1 and len(etiquetas)==1:
+                if len(valores)==1 and len(etiquetas)==1:#Con una etiqueta y un valor es un diagrama de barras simple
                     return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], barmode='group',hover_data=hovertext, title=titulo, orientation=orientacion)
                 else:
-                    if len(valores)==1:
-                        return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], color=etiquetas[1],hover_data=hovertext, barmode='group', title=titulo, orientation=orientacion)
-                        
-                    else:
-                        for h in hovertext:
+                    if len(valores)==1:#tenemos un valor y dos etiquetass
+                        return px.bar(self.dict_df[id], x=etiquetas[0], y=valores[0], color=etiquetas[1],hover_data=hovertext, barmode='group', title=titulo, orientation=orientacion)     
+                    else:#tenemos mas de un valor y una etiqueta
+                        for h in hovertext:#Para que cuando hagamos el melt no se pierdan las etiquetas
                             etiquetas.append(h)
-                        df_aux=self.dict_df[id].melt(id_vars=etiquetas, value_vars=valores)
+                        df_aux=self.dict_df[id].melt(id_vars=etiquetas, value_vars=valores)#Para poder crear un diagrama con más de un valor por etiqueta
                         return px.bar(df_aux, x=etiquetas[0], y="value", color='variable', barmode='group',hover_data=hovertext, title=titulo, orientation=orientacion)
-        else:
+        else:#es igual que el vertical
             if colores==True:
                 return px.bar(self.dict_df[id], x=valores[0], y=etiquetas[0], hover_data=hovertext, color=valores[0], title=titulo, orientation=orientacion)
             else:
@@ -52,9 +52,9 @@ class graficas():
     #Gráfico de barras apiladas, tiene los mismos parámetros que barras normal (sin colores)
     def barras_apiladas(self, id, etiquetas, valores, titulo=None, orientacion='v', hovertext=None):
         if orientacion=='v':
-            if(len(etiquetas)==1):
+            if(len(etiquetas)==1):#Una etiqueta y varios valores
                 return px.bar(self.dict_df[id], x=etiquetas[0], y=valores, title=titulo, hover_data=hovertext, orientation=orientacion)
-            else:
+            else:#Dos etiquetas y varios valores
                 return px.bar(self.dict_df[id], x=etiquetas[0], y=valores, color=etiquetas[1], title=titulo, hover_data=hovertext, orientation=orientacion)
         else:
             if(len(etiquetas)==1):
@@ -72,19 +72,19 @@ class graficas():
     #Crea un gráfico de una recta y/o puntos (según se marquen los parámetros rectas y puntos) con los valores x e y.
     #x e y no son listas, son strings con las variables del df a usar
     def lineal(self, id, x, y, rectas=True, puntos=True, titulo=None, hovertext=None):
-        if rectas and puntos:
+        if rectas and puntos:#Rectas y puntos
             fig = go.Figure(data=go.Scatter(x=self.dict_df[id][x], y=self.dict_df[id][y], mode='lines+markers', name=y, hovertext=hovertext))
-        elif rectas:
+        elif rectas:#Solo la recta
             fig = go.Figure(data=go.Scatter(x=self.dict_df[id][x], y=self.dict_df[id][y], mode='lines', name=y, hovertext=hovertext))
-        else:
+        else:#Solo los puntos
             fig = go.Figure(data=go.Scatter(x=self.dict_df[id][x], y=self.dict_df[id][y], mode='markers', name=y, hovertext=hovertext))
-        fig.update_layout(title=titulo)
+        fig.update_layout(title=titulo)#Añadimos el título
         return fig
 
-    #lineal('hola', 'asin', 'gastos', rectas=False)
-    #Crea un gráfico lineal como el anterior pero en este caso x debe de ser datos del tipo DateTime
+    #Crea un gráfico lineal como el anterior pero en este caso x debe de ser datos del tipo DateTime (se añaden filtros temporales)
     def temporal(self, id, x, y, titulo, hovertext=None):
         fig = go.Figure(data=go.Scatter(x=self.dict_df[id][x], y=self.dict_df[id][y], mode='lines', name=y, hovertext=hovertext))
+        #Para los filtros temporales:
         fig.update_xaxes(
             rangeslider_visible=True,
             rangeselector=dict(
@@ -102,43 +102,43 @@ class graficas():
 
     #Crea un gráfico de embudo etiquetas es una lista de 1 o 2 valores, si etiquetas tiene un valor se crea un gráfico de embudo normal, si tiene 2 el primero se usará para el eje 'y' y el segundo para el color
     def embudo(self, id, etiquetas, valor, titulo=None, hovertext=None):
-        if(len(etiquetas)==1):
+        if(len(etiquetas)==1):#Una etiqueta
             return px.funnel(self.dict_df[id], x=valor, y=etiquetas[0], title=titulo, hover_data=hovertext)
-        else:
+        else:#Más de una etiqueta
             return px.funnel(self.dict_df[id], x=valor, y=etiquetas[0], color=etiquetas[1], title=titulo, hover_data=hovertext,)
 
-
+    #Indicador dada una etiqueta del dataframe, si mean es True se hace la media de todos los valores de esa etiqueta, si es False se hace la suma, formato es lo que se debe de poner después de la etiqueta
     def indicador(self, id, etiqueta, mean=False, titulo=None, formato={'suffix': "€"}):
-        total = self.dict_df[id][etiqueta].sum()
+        total = self.dict_df[id][etiqueta].sum()#Creamos el indicador
         if mean:
-            total=total/self.dict_df[id].shape[0]
+            total=total/self.dict_df[id].shape[0]#Creamos el indicadorr
         fig= go.Figure(go.Indicator( mode = "number", value = total, number = formato, domain = {'x': [0, 1], 'y': [0, 1]}))
         fig.update_layout(title=titulo)
         return fig
 
-
+    #Creamos un Mapa de calor (etiqueta es el valor por el que un punto en el mapa es intenso o no), antes de llamar a esta función llamar a la del archivo cambiar_region para obtener latitud y longitud
     def mapa_calor(self, id, etiqueta, hovertext=None):
         return px.density_mapbox(self.dict_df[id], lat='Latitud', lon='Longitud', z=etiqueta, radius=20,
                         center=dict(lat=40.4167, lon=-3.70325), zoom=5,
                         mapbox_style="stamen-terrain", hover_data=hovertext)
     
-    
+    #Crea una tabla dadas unas etiquetas del dataframe que se quiere que aparezcan en la tabla, columnwidth es una lista de tamaños de cada columna
     def tabla(self, id, etiquetas, titulo, columnwidth=None):
         fig= go.Figure(data=go.Table(columnwidth = columnwidth, header=dict(values=etiquetas, font=dict(size=10), align="left"), cells=dict( values=[self.dict_df[id][k].tolist() for k in etiquetas],align = "left")))
         fig.update_layout(title=titulo)
         return fig
 
+    #Nos permite crear una nube de palabras, etiqueta es la columna del df donde aparecen las palabras y valor es el tamaño de estas palabras
     def word_cloud(self, id, etiqueta, valor, titulo):
         tam=self.dict_df[id].shape[0]
-        colors = [plotly.colors.DEFAULT_PLOTLY_COLORS[random.randrange(1, 10)] for i in range(tam)]
-        print(random.shuffle(list(range(tam))))
-        print(random.choices(range(tam), k=tam))
+        colors = [plotly.colors.DEFAULT_PLOTLY_COLORS[random.randrange(1, 10)] for i in range(tam)] #Cogemos los 10 colores de python
+        #Creamos los valores x con una lista desordenada:
         x=list(range(tam))
         random.shuffle(x)
+        #Creamos los valores y con una lista desordenada:
         y=list(range(tam))
         random.shuffle(y)
-        print(x)
-        print(y)
+        #Según el tamaño tenemos un multiplicador u otro, esto es porque según el número de palabras deben de ser más grandes o pequeñas para que se vea bien
         if tam<8:
             multiplicador=0.2
         elif tam<15:
@@ -149,6 +149,7 @@ class graficas():
             multiplicador=1.5
         else:
             multiplicador=2
+        #Obtenemos el gráfico y lo devolvemos:
         data = go.Scatter(x=x, y=y, mode='text', text=list(self.dict_df[id][etiqueta]), marker={'opacity': 1}, textfont={'size': [(float(x)*multiplicador+5)/(tam*0.01) for x in list(self.dict_df[id][valor])], 'color':colors})
         l = go.Layout({'xaxis': {'range':[tam-tam*1.3, tam*1.2], 'showgrid': False, 'showticklabels': False, 'zeroline': False, 'visible': False}, 'yaxis': {'range':[tam-tam*1.1, tam*1.1], 'showgrid': False, 'showticklabels': False, 'zeroline': False, 'visible': False}})
         fig= go.Figure(data=[data], layout=l)
@@ -161,18 +162,20 @@ class graficas():
     #Esta función es capaz de integrar varios gráficos en los mismos ejes, los distintos gráficos se pasan en param como una lista de diccionarios.
     #Por ejemplo:
     #gr=graficas(dict_df)
-    #g1={'id':'lineal', 'x':'asin', 'y':'ventas', 'rectas':True, 'puntos':False}
-    #g2={'id':'barras', 'etiquetas':['asin'], 'valores':['gastos'], 'colores':False, 'orientacion':'v'}
-    #gr.multiple('df1', [g1,g2], 'prueba')
+    #g1={'id':'lineal', 'x':'asin', 'y':'ventas', 'rectas':True, 'puntos':False, 'secondary_y':False}
+    #g2={'id':'barras', 'etiquetas':['asin'], 'valores':['gastos'], 'colores':False, 'orientacion':'v', 'secondary_y':True}
+    #gr.multiple('df1', [g1,g2], 'prueba', doble_eje=True, etiqueta1='ventas', etiqueta2='gastos')
     def multiple(self, id, param, titulo, doble_eje=False, etiqueta1=None, etiqueta2=None):
         color=0
+        #Creamos el doble eje:
         if doble_eje==True:
             fig = make_subplots(specs=[[{"secondary_y": True}]])
             fig.update_yaxes(title_text=etiqueta1, secondary_y=False)
             fig.update_yaxes(title_text=etiqueta2, secondary_y=True)
         else:
             fig=go.Figure()
-        fig.update_layout(title_text=titulo)
+        fig.update_layout(title_text=titulo)#Asignamos el título
+        #Vamos dibujando todos los gráficos, según el tipo llamamos a uno u otro
         for p in param:
             if(p['id']=='barras'):
                 data=self.barras(id,p['etiquetas'], p['valores'], p['colores'], titulo, 'v', p['hovertext']).data
@@ -188,9 +191,9 @@ class graficas():
                 data=self.temporal(id, p['x'], p['y'], titulo, p['hovertext']).data
             else:
                 data=self.embudo(id, p['x'], p['y'],  titulo, p['hovertext']).data
-            for d in data:
+            for d in data:#Vamos añadiendo todos los gráficos al nuestro
                 d.marker.color=self.colors[color]
-                color+=1
+                color+=1#Para que el siguiente tenga otro color
                 if doble_eje:
                     if p['secondary_y']:
                         fig.add_trace(d, secondary_y=True)
@@ -198,7 +201,7 @@ class graficas():
                         fig.add_trace(d, secondary_y=False)
                 else:
                     fig.add_trace(d)
-            if (p['id']=='temporal'):
+            if (p['id']=='temporal'):#Si añadimos un temporal tenemos que ponerle los filtros
                 fig.update_xaxes(
                     rangeslider_visible=True,
                     rangeselector=dict(
@@ -222,8 +225,8 @@ class graficas():
     #g4={'id':'barras', 'etiquetas':['asin'], 'valores':['ventas','gastos'], 'colores':False, 'orientacion':'h', 'row':1, 'col':1}
     #gr.varios('df1', [g1,g2,g3,g4], 'prueba', 2, 2)
     def varios(self, param, titulo, ncols, nrows):
-        
         color=0
+        #Creamos una matriz con la cuadricula que vamos a usar:
         cuadricula=list(list())
         for i in range(nrows):
             aux=[]
@@ -231,6 +234,7 @@ class graficas():
                 aux.append('')
             cuadricula.append(aux)
         titulos=[]
+        #Creamos la cuadricula
         for p in param:
             cuadricula[p['row']][p['col']]={"type":self.tipos[p['id']]}
             titulos.append(p['titulo'])
@@ -242,6 +246,7 @@ class graficas():
             subplot_titles = titulos
         )
         fig.update_layout(title_text=titulo)
+        #Vamos dibujando todos los gráficos, según el tipo llamamos a uno u otro
         for p in param:
             if(p['id']=='barras'):
                 data=self.barras(p['id_df'] ,p['etiquetas'], p['valores'], p['colores'], titulo, p['orientacion'], p['hovertext']).data
@@ -276,6 +281,7 @@ class graficas():
     def get_html(self, fig):
         return plotly.offline.plot(fig, include_plotlyjs=False, output_type='div')
 
+    #Para cambiar el tamaño de una figura y el color
     def tam(self, fig, w=None, h=None, color=None):
         return fig.update_layout( autosize=True, width=w, height=h, margin=dict( l=50, r=50, b=100, t=100, pad=4 ), paper_bgcolor=color)
 
