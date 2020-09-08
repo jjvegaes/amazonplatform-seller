@@ -5,36 +5,45 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
 #pip install python-docx
 
-
+#clase que crea el documento word
 class informe_semanal():
+    #Constructor que se le pasa el nombre de la empresa
     def __init__(self, empresa):
         self.empresa=empresa
         self.document = Document()
 
+    #Crea la portada del documento
     def portada(self):
-        self.document.add_paragraph('\n\n\n\n\n\n\n')
-        t=self.document.add_heading('Informe Semanal '+self.empresa, 0)
+        self.document.add_paragraph('\n\n\n\n\n\n\n')#Saltos de línea
+        t=self.document.add_heading('Informe Semanal '+self.empresa, 0)#Título
         
-        t.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        t.alignment = WD_ALIGN_PARAGRAPH.CENTER#Texto centrado
+        #Tamaño del texto:
         title_style = t.style
         title_style.font.size = Pt(40)
 
         self.document.add_paragraph('\n\n')
+        #Logo Macreif:
         self.document.add_picture(os.path.dirname(__file__)+'/imagenes/logo_mcreif.png', width=Inches(4.5))
         last_paragraph = self.document.paragraphs[-1] 
         last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        self.document.add_page_break()
+        self.document.add_page_break()#Pasa a otra página
+
+    #A partir de ahora se definen las distintas páginas del informe, tienen todas una estructura parecida
 
     def pag1(self, ingresos, ventas, cuadro_texto, graficos):
-        self.document.add_heading('Temas generales', 1)
-        self.document.add_heading('Ingresos semanales', 2)
+        self.document.add_heading('Temas generales', 1)#Título nivel 1
+        self.document.add_heading('Ingresos semanales', 2)#Título nivel 2
+        #Lista con los ingresos y ventas:
         self.document.add_paragraph(
             'Ingresos: '+str(ingresos)+' €', style='List Bullet'
         )
         self.document.add_paragraph(
             'Ventas: '+str(ventas)+' unidades', style='List Bullet'
         )
+        #Parafo para añadir cosas:
         self.document.add_paragraph(cuadro_texto)
+        #Aquí se insertan los gráficos:
         for gr in graficos:
             self.document.add_picture(os.path.dirname(__file__)+'/imagenes/'+gr, width=Inches(4.5))
             last_paragraph = self.document.paragraphs[-1] 
@@ -48,6 +57,18 @@ class informe_semanal():
         )
         self.document.add_paragraph(
             'Ventas: '+str(ventas)+' unidades', style='List Bullet'
+        )
+        self.document.add_paragraph(cuadro_texto)
+        for gr in graficos:
+            self.document.add_picture(os.path.dirname(__file__)+'/imagenes/'+gr, width=Inches(4.5))
+            last_paragraph = self.document.paragraphs[-1] 
+            last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        self.document.add_page_break()
+
+    def pag2_2(self, ticket_medio, cuadro_texto, graficos):
+        self.document.add_heading('Ticket Medio', 2)
+        self.document.add_paragraph(
+            'Ticket medio de compra: '+str(ticket_medio)+' €', style='List Bullet'
         )
         self.document.add_paragraph(cuadro_texto)
         for gr in graficos:
@@ -71,7 +92,23 @@ class informe_semanal():
             last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         self.document.add_page_break()
 
-    def pag4(self, cuadro_texto, graficos, buy_box=None, exceso_inventario=None, reabastecer=None):
+    def pag3_2(self, unidades_totales, unidades_aptas, cuadro_texto, graficos):
+        self.document.add_heading('Inventario', 1)
+        self.document.add_heading('Unidades aptas en el inventario', 2)
+        self.document.add_paragraph(
+            'Unidades totales en el inventario: '+str(unidades_totales)+' unidades', style='List Bullet'
+        )
+        self.document.add_paragraph(
+            'Unidades aptas para la venta del inventario: '+str(unidades_aptas)+' unidades', style='List Bullet'
+        )
+        self.document.add_paragraph(cuadro_texto)
+        for gr in graficos:
+            self.document.add_picture(os.path.dirname(__file__)+'/imagenes/'+gr, width=Inches(4.5))
+            last_paragraph = self.document.paragraphs[-1] 
+            last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        self.document.add_page_break()
+
+    def pag4(self, cuadro_texto, graficos, buy_box=None, exceso_inventario=None, numero_low_stock=None, numero_out_of_stock=None):
         self.document.add_heading('Alertas', 2)
         if buy_box != None:
             self.document.add_paragraph(
@@ -81,9 +118,13 @@ class informe_semanal():
             self.document.add_paragraph(
                 'Unidades en exceso del inventario: '+str(exceso_inventario)+' unidades', style='List Bullet'
             )
-        if reabastecer != None:
+        if numero_low_stock != None:
             self.document.add_paragraph(
-                'Unidades a reabastecer del inventario: '+str(reabastecer)+' unidades', style='List Bullet'
+                'Productos que tienen bajo stock: '+str(numero_low_stock)+' unidades', style='List Bullet'
+            )
+        if numero_out_of_stock != None:
+            self.document.add_paragraph(
+                'Productos que no tienen stock: '+str(numero_out_of_stock)+' unidades', style='List Bullet'
             )
         
         self.document.add_paragraph(cuadro_texto)
@@ -119,7 +160,22 @@ class informe_semanal():
         )
         self.document.add_paragraph(cuadro_texto)
         for gr in graficos:
-            self.document.add_picture(os.path.dirname(__file__)+'/imagenes/'+gr, width=Inches(4.5))
+            self.document.add_picture(os.path.dirname(__file__)+'/imagenes/'+gr, width=Inches(6.5))
+            last_paragraph = self.document.paragraphs[-1] 
+            last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        self.document.add_page_break()
+    
+    def pag6_2(self, producto_mas_ingresos, producto_mas_vendido, cuadro_texto, graficos):
+        self.document.add_heading('Top ventas mensuales', 2)
+        self.document.add_paragraph(
+            'Producto más vendido: '+producto_mas_vendido, style='List Bullet'
+        )
+        self.document.add_paragraph(
+            'Producto con más ingresos: '+producto_mas_ingresos, style='List Bullet'
+        )
+        self.document.add_paragraph(cuadro_texto)
+        for gr in graficos:
+            self.document.add_picture(os.path.dirname(__file__)+'/imagenes/'+gr, width=Inches(6.5))
             last_paragraph = self.document.paragraphs[-1] 
             last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         self.document.add_page_break()
@@ -204,16 +260,22 @@ class informe_semanal():
             last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         self.document.add_page_break()
 
-    def pag12(self, pedidos_totales,  pedidos_aceptados, pedidos_entregados,  cuadro_texto, graficos):
+    def pag12(self, pedidos_totales,  pedidos_pendientes, pedidos_enviando, pedidos_enviados, pedidos_cancelados,  cuadro_texto, graficos):
         self.document.add_heading('Pedidos', 1)
         self.document.add_paragraph(
             'Pedidos totales: '+str(pedidos_totales), style='List Bullet'
         )
         self.document.add_paragraph(
-            'Pedidos aceptados: '+str(pedidos_aceptados), style='List Bullet'
+            'Pedidos pendientes: '+str(pedidos_pendientes), style='List Bullet'
         )
         self.document.add_paragraph(
-            'Pedidos entregados: '+str(pedidos_entregados), style='List Bullet'
+            'Pedidos enviando: '+str(pedidos_enviando), style='List Bullet'
+        )
+        self.document.add_paragraph(
+            'Pedidos enviados: '+str(pedidos_enviados), style='List Bullet'
+        )
+        self.document.add_paragraph(
+            'Pedidos cancelados: '+str(pedidos_cancelados), style='List Bullet'
         )
         self.document.add_paragraph(cuadro_texto)
         for gr in graficos:

@@ -20,24 +20,28 @@ class crearGraficasVendor():
 
     #FILTROS
 
+    #Dado un df, devuelve otro df donde solo aparezcan ASINS de la lista que se le pasa como parámetro llamada asin
     def filtra_x_asin(self, df, asin):
         if asin!=None:
             return df[df.ASIN.isin(asin)]
         else:
             return df
 
+    #Dado un df y un string llamado asin devuelve las fila donde los ASINS contengan asin
     def filtra_x_search_asin(self, df, asin):
         if asin!=None:
             return df[df['ASIN'].str.contains(asin, case=False)]
         else:
             return df
 
+    #Dado un df, devuelve otro df donde solo aparezcan Títulos de la lista que se le pasa como parámetro llamada titulo
     def filtra_x_titulo(self, df, titulo):
         if titulo!=None:
             return df[df['Título del producto'].isin(titulo)]
         else:
             return df
 
+    #Dado un df y un string llamado titulo devuelve las fila donde los Títulos contengan titulo
     def filtra_x_search_titulo(self, df, titulo):
         if titulo!=None:
             return df[df['Título del producto'].str.contains(titulo, case=False)]
@@ -83,6 +87,7 @@ class crearGraficasVendor():
             return self.gr.get_html(self.gr.multiple('tendencias de ventas', [gr1,gr2], 'Tendencias de rendimiento de ventas', True, 'Ingresos por envíos', 'Precio medio de venta'))
         except:
             return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Tendencias de rendimiento de ventas"</div>'
+    
     #DIAGNOSTICO DE VENTAS:
     #Obtenemos el dataframe diagnostico de ventas:
     def get_diagnostico_ventas(self, asin, search_asin, titulo, search_titulo):
@@ -110,6 +115,7 @@ class crearGraficasVendor():
             return todos_asin, todos_titulo
         except:
             return [], []
+    
     #Dibujamos las gráficas de diagnostico de ventas:
     def gen_diagnostico_ventas(self):
         try:
@@ -138,18 +144,17 @@ class crearGraficasVendor():
             return self.gr.get_html(self.gr.tam(self.gr.barras('diagnostico de ventas buy box',etiquetas=['ASIN'], valores=['Buy box perdida (Precio)'], titulo='Buy box perdida (%)', colores=False, orientacion='v', hovertext=['Título del producto']), h=600, ))
         except:
             return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Buy box perdida (%)"</div>'
+    
     #DIAGNOSTICO DE TRÁFICO:
     #Obtenemos el dataframe
     def get_diagnostico_trafico(self, asin, search_asin, titulo, search_titulo):
         try:
             df=pd.read_excel(self.myRute+'/informes_vendor/'+self.vendedor+'/diagnostico de trafico/Diagnóstico de tráfico_Detalles_ES.xlsx')
             df2=df.drop(df[df['% de visitas totales']=='—'].index)#Eliminamos ASIN sin visitas
-            #df3==df.drop(df[df['Visitas de Envío 1 día']=='—'].index)
-            #df3=df3.replace({"—": 0}
             self.gr.add_df('diagnostico de trafico', self.filtra(df2, asin, search_asin, titulo, search_titulo))
-            #self.gr.add_df('visitas de Envío 1 día',)
         except:
             pass
+
     #Generamos el gráfico
     def gen_diagnostico_trafico(self):
         try:
@@ -157,6 +162,7 @@ class crearGraficasVendor():
             return self.gr.get_html(self.gr.tam(self.gr.circular('diagnostico de trafico', etiquetas=[ 'Subcategoría', 'ASIN'], valor='% de visitas totales', titulo='Visitas a cada producto', hovertext=['Título del producto']), h=800))
         except:
             return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Visitas a cada producto"</div>'
+    
     #RESEÑAS DE CLIENTES:
     #Obtenemos el dataframe:
     def get_resenas(self, asin, search_asin, titulo, search_titulo):
@@ -199,6 +205,7 @@ class crearGraficasVendor():
             return self.gr.get_html(self.gr.tam(self.gr.barras('resenas numero',etiquetas=['ASIN'], valores=['Número de reseñas de clientes'], titulo='Número de reseñas por ASIN', colores=True, orientacion='v', hovertext=['Título del producto']), h=700))
         except:
             return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Número de reseñas por ASIN"</div>'
+    
     #ESTADO DEL INVENTARIO
     #Obtenemos el dataframe
     def get_estado_inventario(self, asin, search_asin, titulo, search_titulo):
@@ -223,6 +230,8 @@ class crearGraficasVendor():
         except:
             return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Unidades disponibles no aptas para venta"</div>'
 
+    #INFORMACIÓN GEOGRÁFICA
+
     def get_informacion_geografica(self, asin, search_asin, titulo, search_titulo):
         try:
             o=cambiar_region(self.myRute+'/informes_vendor/'+self.vendedor+'/informacion geografica/Información geográfica sobre ventas_Detalles_ES.xlsx')
@@ -232,14 +241,18 @@ class crearGraficasVendor():
         except:
             pass
 
+    #Mapa de calor:
     def gen_informacion_geografica(self):
         try:
             return self.gr.get_html(self.gr.mapa_calor('informacion geografica', 'Ingresos por envíos', hovertext=['Título del producto']))
         except:
             return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Mapa de calor"</div>'
 
+    #CRUCE DE DISTINTOS DATAFRAMES (TRAFICO, VENTAS Y PUBLICIDAD):
+
     def get_todo(self, asin, search_asin, titulo, search_titulo):
         try:
+            #Obtenemos todos los datos y hacemos una limpieza:
             ventas=pd.read_excel(self.myRute+'/informes_vendor/'+self.vendedor+'/diagnostico de ventas/Diagnóstico de ventas_Vista de detalles_ES3.xlsx')
             ventas = ventas.groupby(by="ASIN").sum()
             trafico=pd.read_excel(self.myRute+'/informes_vendor/'+self.vendedor+'/diagnostico de trafico/Diagnóstico de tráfico_Detalles_ES3.xlsx')
@@ -252,10 +265,11 @@ class crearGraficasVendor():
             inventario=pd.read_excel(self.myRute+'/informes_vendor/'+self.vendedor+'/estado inventario/Estado del inventario_ES3.xlsx')
             todos_asin=list(inventario['ASIN'])
             todos_titulo=list(inventario['Título del producto'])
-            #inventario = inventario.groupby(by="ASIN").sum()
+            #Cruzamos todos los dataframes:
             df=pd.merge(ventas, trafico, on='ASIN')
             df=pd.merge(df, publicidad, on='ASIN')
             df=pd.merge(df, inventario, on='ASIN')
+            #Los ordenamos y los guardamos
             df_ordenadoUnidades = df.sort_values('Unidades disponibles aptas para venta').iloc[::-1]
             df_ordenadoVisitas = df.fillna(0).sort_values('% de visitas totales').iloc[::-1]
             self.gr.add_df('estrategia', self.filtra(df, asin, search_asin, titulo, search_titulo))
@@ -265,6 +279,7 @@ class crearGraficasVendor():
         except:
             return [],[]
 
+    #Dibujamos todos los gráficos
     def gen_inventario_ventas(self):
         try:
             gr1={'id':'barras', 'etiquetas':['ASIN'], 'valores':['Unidades disponibles aptas para venta'], 'colores':False, 'secondary_y':False, 'hovertext':['Título del producto']}
@@ -289,6 +304,9 @@ class crearGraficasVendor():
         except:
             return '\n\nNo se ha podido cargar el gráfico "Unidades disponibles y gasto en publicidad"</div>'
 
+    #INFORME DE COMPETIDORES (SCRAPY)
+
+    #Obtenemos el informe del scrapy
     def get_competidores(self, termino, num_items, marketplace):
         try:
             scrap_amazon(termino, num_items, marketplace)
@@ -297,34 +315,39 @@ class crearGraficasVendor():
         except:
             pass
 
+    #Lo dibujamos
     def graph_competidores(self):
         try:
             return self.gr.get_html(self.gr.tam(self.gr.tabla('competidores',etiquetas=(self.gr.dict_df['competidores'].columns), titulo='Palabra clave'), h=700))
         except:
             return '<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Competidores"</div>'
 
+    #RESEÑAS (SCRAPY):
+
+    #Obtenemos las reseñas por scrapy:
     def get_resenas_scrapy(self, asin, num_items, marketplace):
         try:
             scrap_resenas(asin, num_items, marketplace)
             df=pd.read_csv(self.myRute+'/scrap/resenas/rresenas_bot_items.csv')
+            #Añadimos columnas y guardamos:
             df["Valoración"] = df.apply(lambda x: "Positivo" if int(x["estrellas"]) > 3 else "Negativo", axis=1)
             df["Cantidad"]=1
             self.gr.add_df('resenas', df)
+            #Dataframe de palabras más repetidas:
             df2=palabras_clave(df, 4)
-            print(df2)
             pos = df2.drop(df2[df2['valoracion']=='Negativa'].index)
             neg = df2.drop(df2[df2['valoracion']=='Positiva'].index)
             self.gr.add_df('palabras clave pos', pos)
             self.gr.add_df('palabras clave neg', neg)
+            #Dataframe con tiempos ya limpiados:
             dfaux=df.copy()
-            #dfaux['fecha']=dfaux.apply(lambda x: cambio_a_fecha(dfaux['fecha'], marketplace), axis=1)
             dfaux['fecha']=[cambio_a_fecha(x, marketplace) for x in list(dfaux['fecha'])]
             dfaux = dfaux.groupby(by="fecha", as_index=False).sum()
-            print(dfaux.columns)
             self.gr.add_df('resenas tiempo', dfaux)
         except:
             pass
-
+    
+    #Dibujamos todos los gráficos
     def graph_resenas_scrapy(self):
         try:
             return self.gr.get_html(self.gr.tam(self.gr.tabla('resenas',etiquetas= ['comprador', 'fecha', 'estrellas', 'titulo', 'descripcion'], titulo='Reseñas', columnwidth=[50, 50, 20, 50, 200]), h=700))
@@ -356,24 +379,7 @@ class crearGraficasVendor():
             return self.gr.get_html(self.gr.temporal('resenas tiempo', 'fecha', 'Cantidad', 'Número de reseñas por día'))
         except:
             return'<div class="caption v-middle text-center">No se ha podido cargar el gráfico "Palabras más repetidas en reseñas negativas"</div>'
-'''
-def gen_graficos():
-    v=crearGraficasVendor('miquelrius')
-    v.get_tendencias_ventas()
-    graph=v.gen_tendencias_ventas()
-    v.get_diagnostico_ventas()
 
-    graph=graph+v.gen_diagnostico_ventas2()
-    graph=graph+v.gen_diagnostico_ventas3()
-    graph=graph+v.gen_diagnostico_ventas4()
-    v.get_diagnostico_trafico()
-    graph=graph+v.gen_diagnostico_trafico()
-    v.get_resenas()
-    graph=graph+v.gen_resenas()
-    graph=graph+v.gen_resenas2()
-    graph=graph+v.gen_resenas3()
-    return graph
-'''
 
 #A continuación se facilitan funciones que usan funciones de crearGraficasVendor para crear el html de una serie de gráficas en concreto:
 def productos(vendedor='miquelrius',asin=None, search_asin=None, titulo=None, search_titulo=None):
@@ -432,32 +438,3 @@ def resenas(asin=None, num_items=None, marketplace=None):
         return graph
     else:'''
     return '<div class="caption v-middle text-center">Seleccione ASIN, número de itmes y marketplace para ver las reseñas:</div>'
-
-'''def index1(vendedor):
-    v=crearGraficasVendor(vendedor)
-    v.get_tendencias_ventas()
-    graph=v.gen_tendencias_ventas()
-    return graph
-
-def index2(vendedor):
-    v=crearGraficasVendor(vendedor)
-    v.get_diagnostico_ventas()
-    graph=v.gen_diagnostico_ventas2()
-    return graph
-
-def index3(vendedor):
-    v=crearGraficasVendor(vendedor)
-    v.get_resenas()
-    graph=v.gen_resenas()
-    return graph
-
-def todo(vendedor):
-    graph=index1(vendedor)
-    graph=graph+index2(vendedor)
-    return graph+index3(vendedor)'''
-
-
-
-
-#pip install -U kaleido
-#pip install psutil
